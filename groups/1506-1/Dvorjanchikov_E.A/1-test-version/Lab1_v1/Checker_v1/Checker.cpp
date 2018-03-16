@@ -9,13 +9,13 @@ int main()
 {
 	FILE* fp;
 	errno_t err;
-	err = fopen_s(&fp, "input.bin", "rb");
+	err = fopen_s(&fp, "input", "rb");
 	int p;
 	fread_s(&p, sizeof(int), sizeof(int), 1, fp);
 	int * resmas = new int[p];
 	fread_s(resmas, p * sizeof(int), sizeof(int), p, fp);
 	fclose(fp);
-	err = fopen_s(&fp, "output.bin", "rb");
+	err = fopen_s(&fp, "output", "rb");
 	int k;
 	fread_s(&k, sizeof(int), sizeof(int), 1, fp);
 	int * copymas = new int[k];

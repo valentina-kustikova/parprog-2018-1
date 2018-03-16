@@ -252,7 +252,7 @@ int main()
 {
 	FILE* fp;
 	errno_t err;
-	err = fopen_s(&fp, "input.bin", "rb");
+	err = fopen_s(&fp, "input", "rb");
 	fread_s(&mas_size, sizeof(int), sizeof(int), 1, fp);
 	int * mas = new int[mas_size];
 	fread_s(mas, mas_size * sizeof(int), sizeof(int), mas_size, fp);
@@ -272,7 +272,7 @@ int main()
 	}
 	sizes_mas[count_divene - 1] = mas_size - shift * (count_divene - 1);
 	Sort(mas);
-	err = fopen_s(&fp, "output.bin", "wb");
+	err = fopen_s(&fp, "output", "wb");
 	fwrite(&mas_size, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(int), mas_size, fp);
 	fclose(fp);

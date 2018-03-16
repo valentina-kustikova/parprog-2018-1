@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	FILE* fp;
 	errno_t err;
 	srand(time(0));
-	err = fopen_s(&fp, "input.bin", "wb");
+	err = fopen_s(&fp, "input", "wb");
 	int k = atoi(argv[1]);
 	fwrite(&k, sizeof(int), 1, fp);
 	int * mas = new int[k];

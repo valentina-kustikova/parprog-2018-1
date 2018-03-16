@@ -15,7 +15,7 @@ int main()
 		fscanf_s(fp, "%i", &mas[i]);
 	}
 	fclose(fp);
-	err = fopen_s(&fp, "input.bin", "wb");
+	err = fopen_s(&fp, "input", "wb");
 	fwrite(&k, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(int), k, fp);
 	fclose(fp);
