@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <iostream>
 #include <time.h> 
@@ -175,27 +176,4 @@ static void Conv(CPoint *a, int n, int &m)
 		a[i].x += c.x;
 		a[i].y += c.y;
 	}
-}
-
-int main()
-{
-	int n;
-	CPoint *mainArrOfPoints = 0;
-	int amountOfPoints = 10;
-	int linCountConv = 0;
-	srand(time(0));
-	cout << "Array size: " << amountOfPoints << endl;
-
-	mainArrOfPoints = new CPoint[amountOfPoints];
-	for (int i = 0; i < amountOfPoints; i++)
-	{
-		mainArrOfPoints[i].x = rand() % 100;
-		mainArrOfPoints[i].y = rand() % 100;
-	}
-	for (int i = 0; i < amountOfPoints; i++)
-		cout << "(" << mainArrOfPoints[i].x << "," << mainArrOfPoints[i].y << ")" << endl;
-	cout << endl;
-	Conv(mainArrOfPoints, amountOfPoints, linCountConv);
-	for (int i = 0; i < linCountConv; i++)
-		cout << "(" << mainArrOfPoints[i].x << "," << mainArrOfPoints[i].y << ")" << endl;
 }

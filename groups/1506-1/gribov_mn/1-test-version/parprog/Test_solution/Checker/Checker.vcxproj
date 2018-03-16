@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{224BC329-B5E0-4FB8-94E0-CE18E77BAADB}</ProjectGuid>
-    <RootNamespace>Graham</RootNamespace>
+    <ProjectGuid>{6C3F06B6-93A7-489B-AD07-254EABFEF583}</ProjectGuid>
+    <RootNamespace>Checker</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -111,10 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Before_code.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Sol.h" />
+    <ClCompile Include="checker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{224BC329-B5E0-4FB8-94E0-CE18E77BAADB}</ProjectGuid>
-    <RootNamespace>Graham</RootNamespace>
+    <ProjectGuid>{24F23AAA-8E3A-4375-9D53-F7C9EE61E6FC}</ProjectGuid>
+    <RootNamespace>Generator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -111,10 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Before_code.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Sol.h" />
+    <ClCompile Include="generator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
