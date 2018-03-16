@@ -1,6 +1,9 @@
-﻿  Main.cpp
+﻿  SeqFilter.cpp
+SeqFilter.cpp(115): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
+SeqFilter.cpp(116): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
+SeqFilter.cpp(117): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
   Создание кода
-  3 of 52 functions ( 5.8%) were compiled, the rest were copied from previous compilation.
+  2 of 55 functions ( 3.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
