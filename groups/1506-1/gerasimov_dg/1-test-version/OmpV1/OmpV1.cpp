@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <iomanip>
 #include <time.h>
 #include <fstream>
@@ -11,8 +11,8 @@ void LineMatrixMultiply(double* A, double* B, double* C, int n);
 int main(int argc, char *argv[])
 {
 	setlocale(0, "RUS");
-	FILE *stream;	// ôàéë âõîäíûõ äàííûõ
-	char* name = new char[20];	//èìÿ ôàéëà
+	FILE *stream;	// Ñ„Ð°Ð¹Ð» Ð²Ñ…Ð¾Ð´Ð½Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ…
+	char* name = new char[20];	//Ð¸Ð¼Ñ Ñ„Ð°Ð¹Ð»Ð°
 	errno_t err;
 	if (argc > 1) {
 		name = argv[1];
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 		err = freopen_s(&stream, name, "rb", stdin);
 		if (err != 0)
 		{
-			cout << "Ôàéë íå íàéäåí!" << endl;
+			cout << "Ð¤Ð°Ð¹Ð» Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½!" << endl;
 			return 0;
 		}
 	}
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 		err = freopen_s(&stream, "matr.in", "rb", stdin);
 		if (err != 0)
 		{
-			cout << "Ôàéë íå íàéäåí!" << endl;
+			cout << "Ð¤Ð°Ð¹Ð» Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½!" << endl;
 			return 0;
 		}
 	}
@@ -36,27 +36,27 @@ int main(int argc, char *argv[])
 	srand(time(0));
 	int N;
 	double *A, *B, *C;
-	// ñ÷èòûâàåì ðàçìåð ìàòðèöû
+	// ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°ÐµÐ¼ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹
 	fread(&N, sizeof(N), 1, stdin);
 	A = new double[N*N];
 	B = new double[N*N];
 	C = new double[N*N];
 
-	// ñ÷èòûâàåì 1-þ ìàòðèöó
+	// ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°ÐµÐ¼ 1-ÑŽ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñƒ
 	fread(A, sizeof(*A), N*N, stdin);
-	// ñ÷èòûâàåì 2-þ ìàòðèöó
+	// ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°ÐµÐ¼ 2-ÑŽ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñƒ
 	fread(B, sizeof(*B), N*N, stdin);
 
-	// Âûïîëíåíèå ïîñëåäîâàòåëüíîé ïðîãðàììû
+	// Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾Ð¹ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹
 	double time = omp_get_wtime();
 	LineMatrixMultiply(A, B, C, N);
 	time = omp_get_wtime() - time;
 
-	// çàïèñü âðåìåíè âûïîëíåíèÿ
+	// Ð·Ð°Ð¿Ð¸ÑÑŒ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ
 	fwrite(&time, sizeof(time), 1, stdout);
-	// çàïèñü ðàçìåðà ìàòðèöû
+	// Ð·Ð°Ð¿Ð¸ÑÑŒ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð° Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹
 	fwrite(&N, sizeof(N), 1, stdout);
-	// çàïèñü ðåçóëüòèðóþùåé ìàòðèöû
+	// Ð·Ð°Ð¿Ð¸ÑÑŒ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð¸Ñ€ÑƒÑŽÑ‰ÐµÐ¹ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹
 	fwrite(C, sizeof(*C), N*N, stdout);
 	return 0;
 }

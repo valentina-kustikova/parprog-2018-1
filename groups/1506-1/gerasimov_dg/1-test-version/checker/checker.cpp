@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <iomanip>
 #include <cstdio>
 #include <cmath> 
@@ -7,7 +7,7 @@
 using namespace std;
 
 int main(int argc, char * argv[])
-{// в командной строке 1 аргумент - входные данные, 2 - выходные, 3 - эталонный результат
+{// РІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРµ 1 Р°СЂРіСѓРјРµРЅС‚ - РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ, 2 - РІС‹С…РѕРґРЅС‹Рµ, 3 - СЌС‚Р°Р»РѕРЅРЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚
 	errno_t err, err1, err2;
 	FILE *bui;
 	FILE *buo;
@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
 		err2 = fopen_s(&bua, "answer.ans", "rb");
 	}
 
-	ofstream fout;	// файл для записи в него результата
+	ofstream fout;	// С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё РІ РЅРµРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 	fout.open("result.txt");
 
 	if (err != 0 || err1 != 0|| err2 != 0)
@@ -43,17 +43,17 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	// считываем размерность матриц
+	// СЃС‡РёС‚С‹РІР°РµРј СЂР°Р·РјРµСЂРЅРѕСЃС‚СЊ РјР°С‚СЂРёС†
 	int N;
 	fread(&N, sizeof(N), 1, bui);
 
-	//Выделяем память для матриц
+	//Р’С‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РґР»СЏ РјР°С‚СЂРёС†
 	double *ans = new double[N*N];
 	double *res = new double[N*N];
 	double ans_time = 0;
 	double res_time = 0;
 
-	// считываем время выполнения программы и результирующую матрицу
+	// СЃС‡РёС‚С‹РІР°РµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РїСЂРѕРіСЂР°РјРјС‹ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰СѓСЋ РјР°С‚СЂРёС†Сѓ
 	fread(&res_time, sizeof(res_time), 1, buo);
 	int n;
 	fread(&n, sizeof(n), 1, buo);
@@ -61,7 +61,7 @@ int main(int argc, char * argv[])
 	cout << res_time << endl;
 	cout << n << endl;
 
-	// считываем время выполнения и результирующую матрицу из эталонного файла
+	// СЃС‡РёС‚С‹РІР°РµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Рё СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰СѓСЋ РјР°С‚СЂРёС†Сѓ РёР· СЌС‚Р°Р»РѕРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
 	fread(&ans_time, sizeof(res_time), 1, bua);
 	fread(&n, sizeof(n), 1, bua);
 	fread(ans, sizeof(*ans), N*N, bua);
@@ -87,7 +87,7 @@ int main(int argc, char * argv[])
 			cout << endl;
 		}
 	}
-	// Вычисляем ошибку, как квадрат нормы разности решений   
+	// Р’С‹С‡РёСЃР»СЏРµРј РѕС€РёР±РєСѓ, РєР°Рє РєРІР°РґСЂР°С‚ РЅРѕСЂРјС‹ СЂР°Р·РЅРѕСЃС‚Рё СЂРµС€РµРЅРёР№   
 	double diff = 0.0;
 	for (int i = 0; i < N; i++)
 	{
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 		fout << 3 << endl;
 		cout << "WA. Output is not correct." << endl;
 	}
-	// записываем время
+	// Р·Р°РїРёСЃС‹РІР°РµРј РІСЂРµРјСЏ
 	//fout << res_time*1e7 << endl;
 	fout << res_time << endl;
 

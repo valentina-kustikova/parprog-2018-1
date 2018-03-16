@@ -1,6 +1,6 @@
-#include <omp.h>
+п»ї#include <omp.h>
 
-// Перемножение матриц
+// РџРµСЂРµРјРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†
 void LineMatrixMultiply(double* A, double* B, double* C, int n)
 {
 	int i, j, k; 

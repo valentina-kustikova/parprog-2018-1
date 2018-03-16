@@ -1,4 +1,4 @@
-// viewer.cpp получает на вход имя файла и преобразует его содержимое из бинарного вида в текстовый
+п»ї// viewer.cpp РїРѕР»СѓС‡Р°РµС‚ РЅР° РІС…РѕРґ РёРјСЏ С„Р°Р№Р»Р° Рё РїСЂРµРѕР±СЂР°Р·СѓРµС‚ РµРіРѕ СЃРѕРґРµСЂР¶РёРјРѕРµ РёР· Р±РёРЅР°СЂРЅРѕРіРѕ РІРёРґР° РІ С‚РµРєСЃС‚РѕРІС‹Р№
 
 #include <cstdio> 
 #include <omp.h> 
@@ -11,7 +11,7 @@ using namespace std;
 int main(int argc, char * argv[])
 {
 	setlocale(0, "RUS");
-	ofstream fout;	// файл для записи в него данных
+	ofstream fout;	// С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё РІ РЅРµРіРѕ РґР°РЅРЅС‹С…
 	fout.open("matr.txt");
 
 	int N;
@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
 		err = freopen_s(&stream, name, "rb", stdin);
 		if (err != 0)
 		{
-			cout << "Файл не найден!" << endl;
+			cout << "Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ!" << endl;
 			return 0;
 		}
 	}
@@ -34,16 +34,16 @@ int main(int argc, char * argv[])
 		freopen_s(&stream, "matr.out", "rb", stdin);
 	}
 
-	// считываем время выполнения
+	// СЃС‡РёС‚С‹РІР°РµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ
 	double time;
 	fread(&time, sizeof(time), 1, stdin);
 	cout << time << endl;
-	// считываем размер матрицы
+	// СЃС‡РёС‚С‹РІР°РµРј СЂР°Р·РјРµСЂ РјР°С‚СЂРёС†С‹
 	fread(&N, sizeof(N), 1, stdin);
 	cout << N << endl;
 	cout << fixed << setprecision(4);
 	C = new double[N * N];
-	//считываем результирующую матрицу
+	//СЃС‡РёС‚С‹РІР°РµРј СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰СѓСЋ РјР°С‚СЂРёС†Сѓ
 	fread(C, sizeof(*C), N * N, stdin);
 	if (N < 11) {
 		for (int i = 0; i < N; i++)
@@ -55,11 +55,11 @@ int main(int argc, char * argv[])
 			std::cout << endl;
 		}
 	}
-	// записываем время выполнения в txt файл
+	// Р·Р°РїРёСЃС‹РІР°РµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РІ txt С„Р°Р№Р»
 	fout << time << endl;
-	// записываем размер матрицы в txt файл
+	// Р·Р°РїРёСЃС‹РІР°РµРј СЂР°Р·РјРµСЂ РјР°С‚СЂРёС†С‹ РІ txt С„Р°Р№Р»
 	fout << N << endl;
-	// записываем матрицу в txt файл
+	// Р·Р°РїРёСЃС‹РІР°РµРј РјР°С‚СЂРёС†Сѓ РІ txt С„Р°Р№Р»
 	fout << fixed << setprecision(4);
 	for (int i = 0; i < N; i++)
 	{
