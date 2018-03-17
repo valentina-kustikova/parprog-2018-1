@@ -1,5 +1,10 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Sol.h"
+#include <cstdio>
+//#include <time.h> 
 #include <chrono>
+
+using namespace std;
 
 int main(int argc, char * argv[])
 {
@@ -24,10 +29,10 @@ int main(int argc, char * argv[])
 		mainArrOfPoints[i].y = A[i+1];
 	}
 
-	chrono::steady_clock::time_point start = chrono::steady_clock::steady_clock::now();
+	double time = omp_get_wtime();
 	Conv(mainArrOfPoints, amountOfPoints, linCountConv);
-	chrono::steady_clock::time_point end = chrono::steady_clock::steady_clock::now();
-	int time = chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	time = omp_get_wtime() - time;
+	
 	fwrite(&time, sizeof(time), 1, stdout);
 	int *B = new int[2 * linCountConv];
 	for (int i = 0; i < linCountConv-2; i=i+2)

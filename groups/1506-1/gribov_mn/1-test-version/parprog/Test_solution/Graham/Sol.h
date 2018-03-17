@@ -1,8 +1,5 @@
 
-#include <stdio.h>
-#include <iostream>
-#include <time.h> 
-using namespace std;
+#include <omp.h>
 
 class CPoint
 {
