@@ -8,17 +8,6 @@ struct crsMatrix
 	double* Value; // Массив значений
 	int* Col; // Массив номеров столбцов
 	int* Row_Index;	// Массив индексов строк
-
-	crsMatrix() {}
-
-	crsMatrix(int N, int NZ)
-	{
-		Size = N;
-		Size_Z = NZ;
-		Value = new double[NZ];
-		Col = new int[NZ];
-		Row_Index = new int[N + 1];
-	}
 };
 
 /*
@@ -37,6 +26,22 @@ struct crsMatrix
 	IL = Idle Limit Exceeded = Превышено время простоя (бездействия) программы
 	DE = Deadly Error = Ошибка тестирующей системы
 */
+
+void InitMatr(int N, int NZ, crsMatrix &matr)
+{
+	matr.Size = N;
+	matr.Size_Z = NZ;
+	matr.Value = new double[NZ];
+	matr.Col = new int[NZ];
+	matr.Row_Index = new int[N + 1];
+}
+
+void FreeMatr(crsMatrix &matr)
+{
+	delete[] matr.Col;
+	delete[] matr.Value;
+	delete[] matr.Row_Index;
+}
 
 enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
 class result
@@ -118,6 +123,7 @@ double* ReadParticipantMult(char* file, int &size, double &time)
 {
 	FILE* matr;
 	int N = 1, Nz = 1;
+	crsMatrix C;
 
 	freopen_s(&matr, file, "rb", stdin);
 	fread(&N, sizeof(N), 1, stdin);
@@ -128,7 +134,8 @@ double* ReadParticipantMult(char* file, int &size, double &time)
 	for (int i = 0; i < N*N; i++)
 		res[i] = 0;
 
-	crsMatrix C(N, size_nonzero);
+	InitMatr(N, size_nonzero, C);
+
 
 	fread(C.Value, sizeof(*C.Value), size_nonzero, stdin);
 	fread(C.Col, sizeof(*C.Col), size_nonzero, stdin);
@@ -137,6 +144,7 @@ double* ReadParticipantMult(char* file, int &size, double &time)
 	fclose(matr);
 
 	Copying_dense(res,C,N);
+	FreeMatr(C);
 
 	return res;
 }
@@ -169,10 +177,6 @@ int Checker(char* file_p, char* file_s, double& time)
 
 int main(int argc, char* argv[])
 {
-
-	//   номер теста						1	2  3	4    5    6    7    8    9     10
-	//   размер матрицы						2 100 1000 2000 3000 4000 5000	1000 2000  4000  
-	//	 количество ненулевых элементов		1  10  100  100  100  100  100  250	 250   250
 	double res_time;
 	if (argc != 3)
 	{
