@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ctime>
 int arr[9] = { 1,4,10,23,57,132,301,701,1750 };
-int count_divene = 8;
+int count_divene = 1;
 int mas_size;
 int shift;
 int** mas_pointer;
