@@ -88,6 +88,10 @@ crsMatrix Generate_CRS(int size, int cntInRow, crsMatrix& matr)
 	return matr;
 }
 
+// 2,100,1000,2000,3000,2000,2500,1000,2500,
+// 1,10,100,100,100,1000,500,250,1000,
+
+
 int main(int argc, char* argv[])
 {
 	FILE *matr;
@@ -102,7 +106,6 @@ int main(int argc, char* argv[])
 	N = atoi(argv[1]);
 	Nz = atoi(argv[2]);
 	int size_nonzero = N * Nz;
-
 	if ((N < Nz) || (N <= 0) || (Nz <= 0) || (N == 1))
 	{
 		std::cout << "Incorrect arguments of main\n" << std::endl;
