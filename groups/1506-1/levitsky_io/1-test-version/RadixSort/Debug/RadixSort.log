@@ -1,3 +1,0 @@
-﻿  Main.cpp
-c:\users\trintal\source\repos\radixsort\radixsort\main.cpp(49): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-  RadixSort.vcxproj -> C:\Users\Trintal\source\repos\RadixSort\Debug\RadixSort.exe
