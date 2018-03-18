@@ -1,3 +1,6 @@
+// Lab2.cpp: определяет точку входа для консольного приложения.
+//
+
 #include  "iostream"
 #include <random>
 #include <ctime>
@@ -246,6 +249,7 @@ int main(int argc, char * argv[])
 	fread(&realSize, sizeof(int), 1, stdin);
 	int N = 0;
 	//получаем размер матрицы, который кратный степени 2
+
 	N = (int)(log2(realSize));
 	int k = pow(2, N);
 	if (realSize == k) { N = realSize; ; }
@@ -259,6 +263,7 @@ int main(int argc, char * argv[])
 	double *A = new double[N*N];
 	double *B = new double[N*N];
 	double *C = new double[N*N];
+	double *C_new = new double[realSize*realSize];
 
 	for (int i = 0; i<N; i++) {
 		for (int j = 0; j<N; j++) {
@@ -275,7 +280,9 @@ int main(int argc, char * argv[])
 	for (int i = 0; i<realSize; i++) {
 		for (int j = 0; j<realSize; j++) {
 			fread(&A[i*N + j], sizeof(double), 1, stdin);
+			//cout << A[i*N + j] << " ";
 		}
+		//cout << endl;
 
 	}
 
@@ -285,14 +292,41 @@ int main(int argc, char * argv[])
 		for (int j = 0; j < realSize; j++) {
 
 			fread(&B[i*N + j], sizeof(double), 1, stdin);
+			//cout << B[i*N + j] << " ";
 		}
+		//cout << endl;
+	}
+
+	//cout << endl;
+
+	Strassen(N, A, B, C);
+
+	/*for (int i = 0; i < N; i++) {
+	for (int j = 0; j < N; j++) {
+	cout << C[i*N + j] << " ";
+	}
+	cout << endl;
+	}
+	*/
+
+	for (int i = 0; i < realSize; i++) {
+		for (int j = 0; j < realSize; j++) {
+			C_new[i*realSize + j] = C[i*N + j];
+			cout << C_new[i*realSize + j] << " ";
+		}
+		cout << endl;
 	}
 
 
+	freopen_s(&matr_in, "matr.out", "wb", stdout);
+	fwrite(&realSize, sizeof(realSize), 1, stdout);
+	fwrite(C_new, sizeof(*C_new), realSize*realSize, stdout);
 
-	Strassen(N, A, B, C);
-	freopen_s(&matr_out, "matr.out", "wb", stdout);
-	fwrite(C, sizeof(*C), N*N, stdout);
+	//freopen_s(&matr_out, "answer.ans", "wb", stdout);
+	////fwrite(&time, sizeof(time), 1, answer);
+	//fwrite(&realSize, sizeof(realSize), 1, matr_out);
+	//fwrite(C_new, sizeof(*C_new), realSize*realSize, matr_out);
+
 
 	//fclose(&matr_out);
 	system("pause");

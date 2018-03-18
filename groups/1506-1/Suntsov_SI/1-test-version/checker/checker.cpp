@@ -1,137 +1,118 @@
-#include <cstdio> 
-#include <cmath> 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <string>
 
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath> 
+#include <fstream>
 
 using namespace std;
 
-/*
-AC = Accepted
-WA = Wrong Answer
-*/
-
-void String_to_Char(string str, char* ch);
-
-
-
 int main(int argc, char * argv[])
-{
+{// в командной строке 1 аргумент - входные данные, 2 - выходные, 3 - эталонный результат
+	errno_t input, input1, input2;
+	FILE *bui;
+	FILE *buo;
+	FILE *bua;
+
+	if (argc > 1) {
+		char* matrin = new char[20];
+		matrin = argv[1];
+		char* matrout = new char[20];
+		matrout = argv[2];
+		char* answer = new char[20];
+		answer = argv[3];
+		cout << matrin << " " << matrout << " " << answer << endl;
+
+		input = fopen_s(&bui, matrin, "rb");
+		input1 = fopen_s(&buo, matrout, "rb");
+		input2 = fopen_s(&bua, answer, "rb");
+	}
+	else {
+		input = fopen_s(&bui, "matr.in", "rb");
+		input1 = fopen_s(&buo, "matr.out", "rb");
+		input2 = fopen_s(&bua, "answer.ans", "rb");
+	}
+
 	ofstream fout;	// файл для записи в него результата
 	fout.open("result.txt");
 
-	char* fileIN = "matr.in";
-	char* fileOUT = "matr.out";
-	char* answer = "answer.ans";
-
-	if (argc > 1)
+	if (input != 0 || input1 != 0 || input2 != 0)
 	{
-		fileIN = argv[1];
-		string str = string(argv[1]) + string(".out");
-		fileOUT = new char[str.length()];
-		String_to_Char(str, fileOUT);
-		str = string(argv[1]) + string(".ans");
-		answer = new char[str.length()];
-		String_to_Char(str, answer);
+		fout << "PE. File" << endl;
+		return 0;
 	}
-	//Открываем файл входных данных, файл выходных данных и ответ 
-	FILE * bui;
-	fopen_s(&bui, fileIN, "rb");
-	FILE * buo;
-	fopen_s(&buo, fileOUT, "rb");
-	FILE * perfect;
-	fopen_s(&perfect, answer, "rb");
 
-	int N = 0;
-	int realSize;
-	//Считываем размер матрицы
-	fread(&realSize, sizeof(int), 1, bui);
-	//получаем размер матрицы, который кратный степени 2
-	N = (int)(log2(realSize));
-	int k = pow(2, N);
-	if (realSize == k) { N = realSize; ; }
+	// считываем размерность матриц
+	int N;
+	fread(&N, sizeof(N), 1, bui);
+
+	//Выделяем память для матриц
+	double *ans = new double[N*N];
+	double *res = new double[N*N];
+	double ans_time = 0;
+	double res_time = 0;
+
+	// считываем время выполнения программы и результирующую матрицу
+	//fread(&res_time, sizeof(res_time), 1, buo);
+	int n;
+	fread(&n, sizeof(n), 1, buo);
+	fread(res, sizeof(*res), N*N, buo);
+	//cout << res_time << endl;
+	//cout << n << endl;
+
+	// считываем время выполнения и результирующую матрицу из эталонного файла
+	//fread(&ans_time, sizeof(res_time), 1, bua);
+	fread(&n, sizeof(n), 1, bua);
+	fread(ans, sizeof(*ans), N*N, bua);
+	//cout << ans_time << endl;
+	//cout << n << endl;
+	cout << fixed << setprecision(4);
+	if (N < 11) {
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				cout << res[i*N + j] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				cout << ans[i*N + j] << " ";
+			}
+			cout << endl;
+		}
+	}
+
+	// Вычисляем ошибку   
+	double diff = 0.0;
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			double t = double(ans[i*N + j] - res[i*N + j]);
+			diff += double(t * t);
+		}
+	}
+	if (diff < 1e-5)
+	{
+		fout << "AC. Numbers are equal." << endl;
+		cout << "AC. Numbers are equal." << endl;
+	}
 	else
 	{
-		N++;
-		N = pow(2, N);
-	}
-
-	double **ans = new double*[N];
-	for (int count = 0; count < N; count++)
-		ans[count] = new double[N];
-
-	double **res = new double*[N];
-	for (int count = 0; count < N; count++)
-		res[count] = new double[N];
-
-
-
-	for (int i = 0; i < N; i++) {
-		fread(ans[i], sizeof(double), N, buo);
-	}
-
-
-	for (int i = 0; i < N; i++) {
-		fread(res[i], sizeof(double), N, perfect);
-	}
-
-
-	bool flag = true;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-
-			cout << res[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-
-			cout << ans[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-
-			if (res[i][j] != ans[i][j]) flag = false;
-		}
-	}
-	if (flag = true) {
-
-		fout << "AC. Numbers are equal." << endl;
-	}
-	else {
 		fout << "WA. Output is not correct." << endl;
+		cout << "WA. Output is not correct." << endl;
 	}
-
+	//fout << res_time*1e7 << endl;
+	//fout << res_time << endl;
 
 	fclose(buo);
 	fclose(bui);
-	fclose(perfect);
+	fclose(bua);
 	fout.close();
 	return 0;
-}
-
-
-void String_to_Char(string str, char* ch)
-{
-	for (int i = 0; i < str.length(); i++)
-		ch[i] = str[i];
-}
-
-
-int Order(int num) {
-	int order = 0;
-	while (num) {
-		num /= 10;
-		order++;
-	}
-	return order;
 }
