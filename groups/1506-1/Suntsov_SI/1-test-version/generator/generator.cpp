@@ -1,3 +1,4 @@
+
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
@@ -19,33 +20,10 @@ void String_to_Char(string str, char* ch)
 }
 
 
-void MatrMulti(double* A[], double* B[], double* C[], int N)
-{
-	for (int i = 0; i < N; i++)
-		for (int j = 0; j < N; j++)
-		{
-			for (int k = 0; k < N; k++)
-			{
-				C[i][j] += A[i][k] * B[k][j];
-			}
-		}
-
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++)
-		{
-
-			cout << C[i][j] << " ";
-
-		}
-		cout << endl;
-	}
-}
-
-
 int main(int argc, char* argv[])
 {
 
-	char* fileName = "mat.in";
+	char* fileName = "matr.in";
 	char* answerName = "answer.ans";
 	char* answerName1;
 	FILE* matr_in;
@@ -55,80 +33,56 @@ int main(int argc, char* argv[])
 
 
 	default_random_engine generator(chrono::system_clock::now().time_since_epoch().count());
-	uniform_real_distribution<double> distribution(-10.00, 100.00);
-
+	uniform_real_distribution<double> distribution(1, 4);
+	freopen_s(&matr_in, "matr.in", "wb", stdout);
+	int realSize = 64;
 	if (argc > 1)
 	{
-		n = n_tests[atoi(argv[1])];
+		realSize = n_tests[atoi(argv[1])];
 		//задаем имя для файла с результатом
 		fileName = argv[1];
 		string str = string(argv[1]) + ".ans";
-		cout << str;
-		answerName1 = new char[str.length()];
-		String_to_Char(str, answerName1);
+		//cout << str;
+		/*answerName1 = new char[str.length()];
+		String_to_Char(str, answerName1);*/
 	}
-	freopen_s(&matr_in, "mat.in", "wb", stdout);
 	// Записываем в бинарном виде размерность матриц
-	int realSize;
-	fwrite(&n, sizeof(realSize), 1, stdout);
+
+	fwrite(&realSize, sizeof(realSize), 1, stdout);
 	//получаем размер матрицы, который кратный степени 2
-	n = (int)(log2(realSize));
-	int k = pow(2, n);
-	if (realSize == k) { n = realSize; ; }
-	else
-	{
-		n++;
-		n = pow(2, n);
-	}
+	cout << realSize;
+	//n = (int)(log2(realSize));
+	//int k = pow(2, n);
+	//if (realSize == k) { n = realSize; ; }
+	//else
+	//{
+	//	n++;
+	//	n= pow(2, n);
+	//}
 	//инициализируем матрицы
 	double **A = new double*[realSize];
 	for (int i = 0; i < realSize; i++)
 		A[i] = new double[realSize];
 
-	double **A1 = new double*[n];
-	for (int i = 0; i < n; i++)
-		A1[i] = new double[n];
-	double **B1 = new double*[n];
-	for (int i = 0; i < n; i++)
-		B1[i] = new double[n];
-
-
 	double **B = new double*[realSize];
 	for (int i = 0; i < realSize; i++)
 		B[i] = new double[realSize];
-
-	double **C = new double*[n];
-	for (int i = 0; i < n; i++)
-		C[i] = new double[n];
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			C[i][j] = 0;
-		}
-	}
 	//создаем временный массив для строки матрицы
 
 	double * cur = new double[realSize];
 	double tmp = 0; // временный элемент для хранения случайного числа
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			A1[i][j] = 0;
-			B1[i][j] = 0;
-		}
-	}
 
-
-	//Заполняем и записываем матрицу А
+					//Заполняем и записываем матрицу А
 	for (int i = 0; i < realSize; i++) {
 		for (int j = 0; j < realSize; j++) {
 			tmp = distribution(generator);
 			cur[j] = tmp;
 			A[i][j] = tmp;
-			A1[i][j] = tmp;
+			//A1[i][j] = tmp;
+
 		}
 		fwrite(cur, sizeof(*cur), n, stdout);
-
 	}
 
 	//Заполняем и записываем матрицу В
@@ -137,14 +91,20 @@ int main(int argc, char* argv[])
 			tmp = distribution(generator);
 			cur[j] = tmp;
 			B[i][j] = tmp;
-			B1[i][j] = tmp;
+			//B1[i][j] = tmp;
+
 		}
 		fwrite(cur, sizeof(*cur), realSize, stdout);
 	}
 
+	for (int i = 0; i < realSize; i++) {
+		for (int j = 0; j < realSize; j++) { cout << A[i][j] << " "; }
+		cout << endl;
+	}
 
-	//Формирование заведомо правильного результата
-	std::chrono::time_point<std::chrono::system_clock> start, end;
+
+	//Формирование заведомо правильного результата вынес в отдельный проект
+	/*std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
 	MatrMulti(A, B, C, n);
 	end = std::chrono::system_clock::now();
@@ -155,13 +115,15 @@ int main(int argc, char* argv[])
 
 	freopen_s(&perfect, "answer.ans", "wb", stdout);
 
-	for (int i = 0; i < n; i++) {
-		fwrite(C[i], sizeof(double), n, perfect);
+	for (int i = 0; i < n; i++){
+	fwrite(C[i], sizeof(double), n, perfect);
 	}
 	fwrite(&time, sizeof(time), 1, perfect);
+	fclose(perfect);
+	*/
 
 	fclose(matr_in);
-	fclose(perfect);
+
 	return 0;
 
 }
