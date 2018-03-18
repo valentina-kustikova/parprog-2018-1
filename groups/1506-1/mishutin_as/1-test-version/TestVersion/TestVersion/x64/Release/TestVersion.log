@@ -1,11 +1,8 @@
-﻿  SeqFilter.cpp
-SeqFilter.cpp(115): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
-SeqFilter.cpp(116): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
-SeqFilter.cpp(117): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
+﻿  Main.cpp
   Создание кода
-  2 of 55 functions ( 3.6%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  11 of 168 functions ( 6.5%) were compiled, the rest were copied from previous compilation.
+    8 functions were new in current compilation
+    2 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   TestVersion.vcxproj -> E:\parprog-2018-1\groups\1506-1\mishutin_as\1-test-version\TestVersion\x64\Release\TestVersion.exe
   TestVersion.vcxproj -> E:\parprog-2018-1\groups\1506-1\mishutin_as\1-test-version\TestVersion\x64\Release\TestVersion.pdb (Full PDB)

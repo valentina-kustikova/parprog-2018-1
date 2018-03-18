@@ -15,6 +15,9 @@ for (int i = -radius; i <= radius; ++i) {
 
 //sequential gaussian filter
 void seqGaussFilter(Mat& source, Mat& output1, int radius, double sigma) {
+	if (sigma < 0) return;
+	if (source.cols == 1 || source.rows == 1) return;
+
 	double **kernel;
 	//output is a temporary matrix
 	Mat output = Mat::zeros(source.rows + 2, source.cols + 2, CV_8UC3);
@@ -127,5 +130,5 @@ void seqGaussFilter(Mat& source, Mat& output1, int radius, double sigma) {
 		}
 	}
 
-	delete(kernel);
+	delete[]kernel;
 }
