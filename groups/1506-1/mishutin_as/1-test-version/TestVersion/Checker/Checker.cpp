@@ -28,15 +28,19 @@ int main(int argc, char **argv) {
 	string sourceName = "../../TestVersion/source", outputName = "../../TestVersion/output", stdoutputName = "../../TestVersion/stdoutput";
 	cv::Mat source, output, stdfilter;
 	int num = atoi(argv[1]);
+	double sigma = stod(argv[2]);
 	sourceName += std::to_string(num) + ".png";
 	outputName += std::to_string(num) + ".png";
 	stdoutputName += std::to_string(num) + ".png";
 	
 	output = cv::imread(outputName, CV_LOAD_IMAGE_COLOR); //loads in BGR
 	imshow("output1", output);
+	GaussianBlur(source, stdfilter, cv::Size(3, 3), sigma); //just for check, standart cv filter
+	imshow("stdfilter", stdfilter);
+	imwrite(stdoutputName, stdfilter);
 	stdfilter = cv::imread(stdoutputName, CV_LOAD_IMAGE_COLOR); //loads in BGR
 	imshow("stdfilter", stdfilter);
-	printf(checkRes(output, stdfilter) ? "true" : "false");
+	printf(checkRes(output, stdfilter) ? "std filter and seqFilter are equal" : "std filter and seqFilter are NOT equal");
 	cv::waitKey();
 	return 0;
 }

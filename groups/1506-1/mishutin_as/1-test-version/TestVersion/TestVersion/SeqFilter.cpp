@@ -17,7 +17,7 @@ for (int i = -radius; i <= radius; ++i) {
 void seqGaussFilter(Mat& source, Mat& output1, int radius, double sigma) {
 	if (sigma < 0) return;
 	if (source.cols == 1 || source.rows == 1) return;
-
+	if (source.data == NULL) return;
 	double **kernel;
 	//output is a temporary matrix
 	Mat output = Mat::zeros(source.rows + 2, source.cols + 2, CV_8UC3);
@@ -25,12 +25,12 @@ void seqGaussFilter(Mat& source, Mat& output1, int radius, double sigma) {
 	for (int i = 0; i < radius * 2 + 1; ++i) kernel[i] = new double[radius * 2 + 1];
 	fillKernel(kernel, radius, sigma);
 	//check kernel
-	for (int i = 0; i < radius * 2 + 1; ++i) {
+	/*for (int i = 0; i < radius * 2 + 1; ++i) {
 		for (int j = 0; j < radius * 2 + 1; ++j) {
 			printf("%10.3f\t", kernel[i][j]);
 		}
 		std::cout << std::endl;
-	}
+	}*/
 	//left top corner
 	output.at<Vec3b>(0, 0)[0] = source.at<Vec3b>(0, 0)[0];
 	output.at<Vec3b>(0, 0)[1] = source.at<Vec3b>(0, 0)[1];

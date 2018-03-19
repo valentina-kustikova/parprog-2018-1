@@ -27,23 +27,28 @@ int main(int argc, char** argv) {
 	try {
 		Exception e;
 		source = imread(sourceName, CV_LOAD_IMAGE_COLOR);
-		throw e;
-		//loads in BGR
-		source.copyTo(stdfilter);
-		output = Mat::zeros(source.rows, source.cols, CV_8UC3);
-		double sigma = stod(argv[2]);
-		seqGaussFilter(source, output, RADIUS, sigma);
-		imshow("source1", source);
-		GaussianBlur(source, stdfilter, Size(3, 3), sigma); //just for check, standart cv filter
-		imshow("stdfilter", stdfilter);
-		imwrite(stdoutputName, stdfilter);
-		imshow("filtered", output);
-		imwrite(outputName, output);
+		
+		if (source.data != NULL) {
+			printf("not null\n");
+			source.copyTo(stdfilter);
+			output = Mat::zeros(source.rows, source.cols, CV_8UC3);
+			double sigma = stod(argv[2]);
+			seqGaussFilter(source, output, RADIUS, sigma);
+
+			imshow("source1", source);
+			imshow("filtered", output);
+			imwrite(outputName, output);
+
+		}
+		else { 
+			printf("null"); 
+			throw e;
+		
+		}
+
 	}
-	catch (Exception e) {
-		cout << "No such img!" << endl;
-		printf(e.msg.c_str());
-	}
-	waitKey();
+
+	catch (Exception e) {}
+waitKey();
 	return 0;
 }
