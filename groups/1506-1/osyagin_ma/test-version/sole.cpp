@@ -32,15 +32,9 @@ bool Dijkstra(int** GR, int st, int n, int* res)
         res[i] = distance[i];
     }
     for (i = 0; i < n; i++) {
-        if (distance[i] != INT_MAX)
-            std::cout << m << " > " << i + 1 << " = " << distance[i] << std::endl;
-        else{
-              std::cout << m << " > " << i + 1 << " = " << "маршрут недоступен" << std::endl;
-              success = false;
-
+        if (distance[i] == INT_MAX){
+            success = false;
         }
-
-
     }
  return success;
 }

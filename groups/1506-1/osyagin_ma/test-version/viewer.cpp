@@ -24,4 +24,5 @@ int main(int argc, char * argv[]) {
       solution.read((char*)&VNum, sizeof(VNum));
       std::cout << VNum << " ";
     }
+    std::cout << std::endl;
 }

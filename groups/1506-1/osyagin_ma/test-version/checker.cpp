@@ -37,28 +37,20 @@ class result
 		~result() { fclose (bur); }
 
 		void write_type(ext_cls t) { fwrite(&t, sizeof (t), 1, bur); }
-		// Сообщить тестирующей системе, что решение получило один из вердиктов verdict
 		void write_verdict(verdict v){
 			write_type(ext_cls::VERDICT); 
 			fwrite(&v, sizeof (v), 1, bur); 
 		}
-		// Написать сообщение от checker'a пользователю.
-		//Например, что решение верное, или неверное.
-		//Использовать только латинские буквы и знаки препинания
 		void write_message(string str){ 
 			write_type(ext_cls::MESSAGE); 
 			int l = str.size (); 
 			fwrite(&l, sizeof (l), 1, bur);
 			fwrite (&str[0], sizeof (str[0]), l, bur); 
 		}
-		// Сообщить тестирующей системе время работы программы участника,
-		//вычисленное с помощью before_code
-		// x имеет размерность 100 нс = 10 ^ (-7) сек
 		void write_time(long long x){ 
 			write_type(ext_cls::TIME); 
 			fwrite(&x, sizeof (x), 1, bur); 
 		}
-		// Сообщить тестирующей системе, память затребованную программой участника
 		void write_memory(unsigned long long x){ 
 			write_type(ext_cls::MEMORY); 
 			fwrite(&x, sizeof (x), 1, bur); 
@@ -68,29 +60,8 @@ class result
 
 
 int main (int argc, char* argv[]){
-	// Открываем файл входных данных, файл выходных данных и ответ участника
-/*	FILE * bui = fopen("matr.in", "rb");
-	FILE * buo = fopen("matr.out", "rb");
-	FILE * bua = fopen("answer.txt", "rb");
-	int n;
-	// Считываем размерность матриц
-	fread(&n, sizeof (n), 1, bui);
-	// Выделяем память для матрицы ответа жюри и ответа участника
-	double * ans = new double[n * n], *res = new double[n * n];
-	double ans_time, res_time;
-	// Считываем время работы программы участника и матрицу участника
-	fread(&res_time, sizeof (res_time), 1, buo);
-	fread(res, sizeof (*res), n * n, buo);
-	// Считываем время работы программы и матрицу жюри
-	fread(&ans_time, sizeof (ans_time), 1, bua);
-	fread(ans, sizeof (*ans), n * n, bua);
-	// Вычисляем ошибку, как квадрат нормы разности решений
-	double diff = 0.0;
-	for (int i = 0; i < n * n; i++)
-		diff += (ans[i] - res[i]) * (ans[i] - res[i]);*/
 	std::ifstream in1(argv[1], std::ios::binary); //perfect
-	std::ifstream in2(argv[2], std::ios::binary); //result 
-	
+	std::ifstream in2(argv[2], std::ios::binary); //result 	
 	bool success1,success2;
 	int AC = -1;
     double time1, time2;
