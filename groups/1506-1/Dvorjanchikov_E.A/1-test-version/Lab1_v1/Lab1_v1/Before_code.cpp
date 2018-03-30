@@ -9,6 +9,8 @@ int* shifts;
 int* sizes_mas;
 int rank;
 int pointer_k;
+float start_time;
+float end_time;
 int Rank(int tmp)
 {
 	int res = 0;
@@ -271,10 +273,15 @@ int main()
 		sizes_mas[i] = shift;
 	}
 	sizes_mas[count_divene - 1] = mas_size - shift * (count_divene - 1);
+	start_time = clock();
 	Sort(mas);
+	end_time = clock();
 	err = fopen_s(&fp, "output", "wb");
 	fwrite(&mas_size, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(int), mas_size, fp);
+	fclose(fp);
+	err = fopen_s(&fp, "time.txt", "w");
+	fprintf_s(fp, "Time %f \n", end_time - start_time);
 	fclose(fp);
 	return 0;
 }
