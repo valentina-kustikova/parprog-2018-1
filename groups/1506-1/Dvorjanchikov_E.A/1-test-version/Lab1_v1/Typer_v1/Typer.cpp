@@ -8,14 +8,14 @@ int main()
 	err = fopen_s(&fp, "input", "rb");
 	int p;
 	fread_s(&p, sizeof(int), sizeof(int), 1, fp);
-	int * resmas = new int[p];
-	fread_s(resmas, p * sizeof(int), sizeof(int), p, fp);
+	double * resmas = new double[p];
+	fread_s(resmas, p * sizeof(double), sizeof(double), p, fp);
 	fclose(fp);
 	err = fopen_s(&fp, "output.txt", "w");
 	fprintf_s(fp, "Size of mas %i \n", p);
 	for (int i = 0; i < p; i++)
 	{
-		fprintf(fp, "%i \n", resmas[i]);
+		fprintf(fp, "%lf \n", resmas[i]);
 	}
 	fclose(fp);
 	return 0;

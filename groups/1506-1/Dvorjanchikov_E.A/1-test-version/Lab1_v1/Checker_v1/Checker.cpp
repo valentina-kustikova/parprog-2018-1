@@ -1,7 +1,7 @@
 #include <stdio.h>  
 #include<cstdlib>
 
-int compare(const int *a, const int *b)
+double compare(const double *a, const double *b)
 {
 	return *a - *b;
 }
@@ -13,13 +13,13 @@ int main()
 	int p;
 	fread_s(&p, sizeof(int), sizeof(int), 1, fp);
 	int * resmas = new int[p];
-	fread_s(resmas, p * sizeof(int), sizeof(int), p, fp);
+	fread_s(resmas, p * sizeof(double), sizeof(double), p, fp);
 	fclose(fp);
 	err = fopen_s(&fp, "output", "rb");
 	int k;
 	fread_s(&k, sizeof(int), sizeof(int), 1, fp);
-	int * copymas = new int[k];
-	fread_s(copymas, k * sizeof(int), sizeof(int), k, fp);
+	double * copymas = new double[k];
+	fread_s(copymas, k * sizeof(double), sizeof(double), k, fp);
 	fclose(fp);
 	fopen_s(&fp, "status.txt", "a");
 	if (k != p)
@@ -27,7 +27,7 @@ int main()
 		fprintf_s(fp, "Error 1 \n");
 		return 1;
 	}
-	std::qsort(resmas, p, sizeof(int), (int(*) (const void *, const void *))compare);
+	std::qsort(resmas, p, sizeof(double), (int(*) (const void *, const void *))compare);
 	bool flag = true;
 	for (int i = 0; i < p; i++)
 	{

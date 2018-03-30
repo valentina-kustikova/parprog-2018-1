@@ -4,9 +4,9 @@ int arr[9] = { 1,4,10,23,57,132,301,701,1750 };
 int count_divene = 1;
 int mas_size;
 int shift;
-int** mas_pointer;
+double** mas_pointer;
 int* shifts;
-int* sizes_mas;
+double* sizes_mas;
 int rank;
 int pointer_k;
 float start_time;
@@ -21,15 +21,15 @@ int Rank(int tmp)
 	}
 	return res;
 }
-void Show(int* mas, int n)
+void Show(double* mas, int n)
 {
 	for (int i = 0; i < n; i++)
 	{
-		printf("%i \n", mas[i]);
+		printf("%lf \n", mas[i]);
 	}
 	printf("------------------------------------------------------------ \n");
 }
-void Dive(int* mas, int shift, int k, int step)
+void Dive(double* mas, int shift, int k, int step)
 {
 	if (step > 0)
 	{
@@ -39,36 +39,36 @@ void Dive(int* mas, int shift, int k, int step)
 		}
 		else
 		{
-			int tmp = mas[k*step + shift];
+			double tmp = mas[k*step + shift];
 			mas[k*step + shift] = mas[k*(step - 1) + shift];
 			mas[k*(step - 1) + shift] = tmp;
 			Dive(mas, shift, k, step - 1);
 		}
 	}
 }
-void Flood(int* mas, int shift, int k, int n)
+void Flood(double* mas, int shift, int k, int n)
 {
-	int step = (int)((n - shift - 1) / k) + 1;
+	int step = (double)((n - shift - 1) / k) + 1;
 	for (int i = 0; i < step; i++)
 	{
 		Dive(mas, shift, k, i);
 	}
 }
-void Deluge(int*mas, int k, int n)
+void Deluge(double*mas, int k, int n)
 {
 	for (int i = 0; i < k; i++)
 	{
 		Flood(mas, i, k, n);
 	}
 }
-void ShellSort(int *mas, int n)
+void ShellSort(double *mas, int n)
 {
 	for (int i = 9; i >= 0; i--)
 	{
 		Deluge(mas, arr[i], n);
 	}
 }
-int* Search(int* mas, int n, int tmp, int& size)
+double* Search(double* mas, int n, double tmp, int& size)
 {
 	int mid;
 	int left = 0;
@@ -115,7 +115,7 @@ int* Search(int* mas, int n, int tmp, int& size)
 	size = mid;
 	return mas + mid;
 }
-void Merge(int* f_mas, int* s_mas, int f_n, int s_n, int f_s, int s_s, int *res, int r_s)
+void Merge(double* f_mas, double* s_mas, int f_n, int s_n, int f_s, int s_s, double *res, int r_s)
 {
 	for (int i = 0; i < f_n + s_n; i++)
 	{
@@ -151,12 +151,12 @@ void Merge(int* f_mas, int* s_mas, int f_n, int s_n, int f_s, int s_s, int *res,
 		}
 	}
 }
-void Divede_Conquer(int* mas, int* f_mas, int* s_mas, int f_n, int s_n, int step, int*res, int r_s)
+void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n, int step, double*res, int r_s)
 {
-	int* f_counts = new int[step];
-	int** f_points = new int*[step];
-	int* s_counts = new int[step];
-	int** s_points = new int*[step];
+	double* f_counts = new double[step];
+	double** f_points = new double*[step];
+	double* s_counts = new double[step];
+	double** s_points = new double*[step];
 	int* dashs = new int[step];
 	int counter = 1;
 	bool flag = true;
@@ -168,9 +168,9 @@ void Divede_Conquer(int* mas, int* f_mas, int* s_mas, int f_n, int s_n, int step
 	for (int i = 1; i < step; i++)
 	{
 		int f_p = (f_n / step)*i;
-		int * f_pt = f_mas + f_p;
+		double * f_pt = f_mas + f_p;
 		int s_p;
-		int* s_pt = Search(s_mas, s_n, *f_pt, s_p);
+		double* s_pt = Search(s_mas, s_n, *f_pt, s_p);
 		if (s_pt != NULL)
 		{
 			f_counts[i - 1] = f_p - f_kol;
@@ -221,9 +221,9 @@ void Divede_Conquer(int* mas, int* f_mas, int* s_mas, int f_n, int s_n, int step
 		Merge(f_points[i], s_points[i], f_counts[i], s_counts[i], 0, 0, res, r_s + dashs[i]);
 	}
 }
-void Sort(int* mas)
+void Sort(double* mas)
 {
-	int* res_mas = new int[mas_size];
+	double* res_mas = new double[mas_size];
 	for (int i = 0; i < count_divene; i++)
 	{
 		ShellSort(mas_pointer[i], sizes_mas[i]);
@@ -256,11 +256,11 @@ int main()
 	errno_t err;
 	err = fopen_s(&fp, "input", "rb");
 	fread_s(&mas_size, sizeof(int), sizeof(int), 1, fp);
-	int * mas = new int[mas_size];
+	double * mas = new double[mas_size];
 	fread_s(mas, mas_size * sizeof(int), sizeof(int), mas_size, fp);
 	fclose(fp);
-	mas_pointer = new int*[count_divene];
-	sizes_mas = new int[count_divene];
+	mas_pointer = new double*[count_divene];
+	sizes_mas = new double[count_divene];
 	shifts = new int[count_divene];
 	rank = Rank(count_divene);
 	int shift = mas_size / count_divene;
@@ -278,7 +278,7 @@ int main()
 	end_time = clock();
 	err = fopen_s(&fp, "output", "wb");
 	fwrite(&mas_size, sizeof(int), 1, fp);
-	fwrite(mas, sizeof(int), mas_size, fp);
+	fwrite(mas, sizeof(double), mas_size, fp);
 	fclose(fp);
 	err = fopen_s(&fp, "time.txt", "w");
 	fprintf_s(fp, "Time %f \n", end_time - start_time);
