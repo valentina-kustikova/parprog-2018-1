@@ -17,7 +17,7 @@ void LineMatrixMultiply(double* A, double* B, double* C, int n)
 	{
 		for (int j = 0; j < n;j++)
 		{
-			C[i*n + j] = 0;
+			C[i*n + j] = 0.0;
 			for (int k = 0; k < n; k++)
 			{
 				C[i*n + j] += A[i*n + k] * B[k*n + j];
@@ -57,10 +57,10 @@ int main(int argc, char * argv[])
 		for (int j = 0; j < n; j++) {
 			cur[j] = distribution(generator);
 			A[i*n + j] = cur[j];
-		}
-		// записываем строку в бинарном виде в файл    
-		fwrite(cur, sizeof(*cur), n, stream);
+		} 
 	}
+	// записываем матрицу в бинарном виде в файл 
+	fwrite(A, sizeof(*A), n*n, stream);
 	// аналогично генерируем вторую матрицу   
 	for (int i = 0; i < n; i++)
 	{
@@ -68,9 +68,8 @@ int main(int argc, char * argv[])
 			cur[j] = distribution(generator);
 			B[i*n + j] = cur[j];
 		}
-		fwrite(cur, sizeof(*cur), n, stream);
 	}
-
+	fwrite(B, sizeof(*B), n*n, stream);
 	LineMatrixMultiply(A, B, C, n);
 	double time = 0.0;	// просто переменная, для корректной работы viewer'а, если захочется посмореть эталонный результат глазами.
 
@@ -79,8 +78,12 @@ int main(int argc, char * argv[])
 	fwrite(&n, sizeof(n), 1, answer);
 	fwrite(C, sizeof(*C), n*n, answer);
 
-
 	fclose(answer);
 	fclose(stream);
+
+	delete[] A;
+	delete[] B;
+	delete[] C;
+	delete[] cur;
 	return 0;
 }

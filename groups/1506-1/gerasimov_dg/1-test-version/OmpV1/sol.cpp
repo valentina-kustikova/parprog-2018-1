@@ -8,7 +8,7 @@ void LineMatrixMultiply(double* A, double* B, double* C, int n)
 	{
 		for (j = 0; j < n;j++)
 		{
-			C[i*n + j] = 0;
+			C[i*n + j] = 0.0;
 			for (k = 0; k < n; k++)
 			{
 				C[i*n + j] += A[i*n + k] * B[k*n + j];

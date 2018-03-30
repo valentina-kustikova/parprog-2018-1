@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
 {
 	setlocale(0, "RUS");
 	FILE *stream;	// файл входных данных
-	char* name = new char[20];	//имя файла
+	FILE *answer;	// файл выходных данных
+	char* name;		// имя файла
 	errno_t err;
 	if (argc > 1) {
 		name = argv[1];
@@ -32,8 +33,8 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 	}
-	freopen_s(&stream, "matr.out", "wb", stdout);
-	srand(time(0));
+	freopen_s(&answer, "matr.out", "wb", stdout);
+
 	int N;
 	double *A, *B, *C;
 	// считываем размер матрицы
@@ -58,5 +59,12 @@ int main(int argc, char *argv[])
 	fwrite(&N, sizeof(N), 1, stdout);
 	// запись результирующей матрицы
 	fwrite(C, sizeof(*C), N*N, stdout);
+
+	fclose(stream);
+	fclose(answer);
+	delete[] A;
+	delete[] B;
+	delete[] C;
+
 	return 0;
 }

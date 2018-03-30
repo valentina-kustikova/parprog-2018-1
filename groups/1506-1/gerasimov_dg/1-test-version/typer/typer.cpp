@@ -14,7 +14,7 @@ int main(int argc, char * argv[])
 {
 	setlocale(0, "RUS");
 	ifstream fin;
-	char* name = new char[20];
+	char* name;
 	if (argc > 1) {
 		name = argv[1];
 		cout << name << endl;
@@ -81,5 +81,7 @@ int main(int argc, char * argv[])
 
 	fin.close();
 	fclose(stream);
+	delete[] A;
+	delete[] B;
 	return 0;
 }

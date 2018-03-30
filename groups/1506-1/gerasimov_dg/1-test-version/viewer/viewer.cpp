@@ -11,14 +11,11 @@ using namespace std;
 int main(int argc, char * argv[])
 {
 	setlocale(0, "RUS");
-	ofstream fout;	// файл для записи в него данных
-	fout.open("matr.txt");
-
 	int N;
 	double *C;
 
 	FILE *stream;
-	char* name = new char[20];
+	char* name;
 	if (argc > 1) {
 		name = argv[1];
 		cout << name << endl;
@@ -33,7 +30,8 @@ int main(int argc, char * argv[])
 	else {
 		freopen_s(&stream, "matr.out", "rb", stdin);
 	}
-
+	ofstream fout;	// файл для записи в него данных
+	fout.open("matr.txt");
 	// считываем время выполнения
 	double time;
 	fread(&time, sizeof(time), 1, stdin);
@@ -70,5 +68,6 @@ int main(int argc, char * argv[])
 		fout << endl;
 	}
 	fout.close();
+	delete[] C;
 	return 0;
 }

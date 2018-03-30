@@ -14,12 +14,10 @@ int main(int argc, char * argv[])
 	FILE *bua;
 
 	if (argc > 1) {
-		char* matrin = new char[20];
-		matrin = argv[1];
-		char* matrout = new char[20];
-		matrout = argv[2];
-		char* answer = new char[20];
-		answer = argv[3];
+		char* matrin = argv[1];
+		char* matrout = argv[2];	
+		char* answer = argv[3];
+
 		cout << matrin << " " << matrout << " " << answer << endl;
 
 		err = fopen_s(&bui, matrin, "rb");
@@ -89,13 +87,10 @@ int main(int argc, char * argv[])
 	}
 	// Вычисляем ошибку, как квадрат нормы разности решений   
 	double diff = 0.0;
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < N*N; i++)
 	{
-		for (int j = 0; j < N; j++)
-		{
-			double t = double(ans[i*N + j] - res[i*N + j]);
-			diff += double(t * t);
-		}
+		double t = double(ans[i] - res[i]);
+		diff += double(t * t);
 	}
 	if (diff < 1e-5)
 	{
@@ -117,5 +112,8 @@ int main(int argc, char * argv[])
 	fclose(bui);
 	fclose(bua);
 	fout.close();
+
+	delete[] res;
+	delete[] ans;
 	return 0;
 }
