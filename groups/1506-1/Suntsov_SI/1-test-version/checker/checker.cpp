@@ -114,5 +114,7 @@ int main(int argc, char * argv[])
 	fclose(bui);
 	fclose(bua);
 	fout.close();
+	delete[] ans;
+	delete[] res;
 	return 0;
 }

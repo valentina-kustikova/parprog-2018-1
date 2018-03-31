@@ -81,6 +81,8 @@ int main(int argc, char * argv[])
 
 	fclose(answer);
 	fclose(inp);
+	delete[] A;
+	delete[] B;
+	delete[] C;
 	return 0;
 }
-

@@ -244,7 +244,7 @@ int main(int argc, char * argv[])
 		answerName = new char[str.length()];
 		String_to_Char(str, answerName);
 	}
-	freopen_s(&matr_in, fileName, "rb", stdin);
+	freopen_s(&matr_in, "matr.in", "rb", stdin);
 
 	fread(&realSize, sizeof(int), 1, stdin);
 	int N = 0;
@@ -268,9 +268,9 @@ int main(int argc, char * argv[])
 	for (int i = 0; i<N; i++) {
 		for (int j = 0; j<N; j++) {
 
-			A[i*N + j] = 0;
-			B[i*N + j] = 0;
-			C[i*N + j] = 0;
+			A[i*N + j] = 0.0;
+			B[i*N + j] = 0.0;
+			C[i*N + j] = 0.0;
 
 		}
 
@@ -312,15 +312,17 @@ int main(int argc, char * argv[])
 	for (int i = 0; i < realSize; i++) {
 		for (int j = 0; j < realSize; j++) {
 			C_new[i*realSize + j] = C[i*N + j];
-			cout << C_new[i*realSize + j] << " ";
+			//cout << C_new[i*realSize + j] << " ";
 		}
-		cout << endl;
+		//cout << endl;
 	}
 
 
-	freopen_s(&matr_in, "matr.out", "wb", stdout);
-	fwrite(&realSize, sizeof(realSize), 1, stdout);
-	fwrite(C_new, sizeof(*C_new), realSize*realSize, stdout);
+
+	FILE * file_out = fopen("matr.out", "wb");
+	fwrite(&realSize, sizeof(realSize), 1, file_out);
+	fwrite(C_new, sizeof(*C_new), realSize*realSize, file_out);
+
 
 	//freopen_s(&matr_out, "answer.ans", "wb", stdout);
 	////fwrite(&time, sizeof(time), 1, answer);
@@ -330,6 +332,10 @@ int main(int argc, char * argv[])
 
 	//fclose(&matr_out);
 	system("pause");
+	delete[] A;
+	delete[] B;
+	delete[] C;
+	delete[] C_new;
 	return 0;
 
 }
