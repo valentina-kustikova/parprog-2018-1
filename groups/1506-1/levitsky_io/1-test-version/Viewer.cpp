@@ -7,6 +7,13 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+
+	if (argc != 2)
+	{
+		cout << "Wrong quantity of arguments! Enter name of input file. " << endl;
+		return 0;
+	}
+
 	int size;
 	double time;
 	int* sortedmas;
@@ -25,5 +32,8 @@ int main(int argc, char* argv[])
 	for (int i = 0; i < size; i++)
 		fout << sortedmas[i] << " ";
 	fout.close();
+
+	delete[] sortedmas;
+
 	return 0;
 }

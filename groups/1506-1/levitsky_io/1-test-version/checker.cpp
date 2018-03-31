@@ -9,6 +9,13 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+
+	if (argc != 3)
+	{
+		cout << "Wrong quantity of arguments! Enter name of file with sorted mas then num of answer (same with num of test). " << endl;
+		return 0;
+	}
+
 	int size;
 	int size2;
 	double time;
@@ -21,7 +28,7 @@ int main(int argc, char* argv[])
 	//str = strcat(way, name);
 	//str2 = strcat(way, answ);
 
-	freopen(("tests\\", name), "rb", stdin);
+	freopen(name, "rb", stdin);
 	fread(&size, sizeof(size), 1, stdin);
 
 	int* sorted = new int[size];
@@ -29,7 +36,7 @@ int main(int argc, char* argv[])
 	fread(sorted, sizeof(sorted), size, stdin);
 	fclose(stdin);
 
-	freopen(("tests\\", answ), "rb", stdin);
+	freopen(answ, "rb", stdin);
 	fread(&size2, sizeof(size2), 1, stdin);
 	//fread(&time, sizeof(time), 1, stdin);
 	fread(mas, sizeof(mas), size, stdin);
@@ -57,4 +64,7 @@ int main(int argc, char* argv[])
 	fwrite(sorted, sizeof(sorted), size, stdout);
 	fclose(stdout);*/
 	//fwrite(mas, sizeof(*mas), size, stdout);
+
+	delete[] sorted;
+	delete[] mas;
 }
