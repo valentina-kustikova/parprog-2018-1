@@ -57,11 +57,19 @@ public:
 	}
 } checker_result;
 
-int main()
+int main(int argc, char* argv[])
 {
-	// Открываем файл входных данных, файл выходных данных и ответ участника
-	freopen("array.in", "rb", stdin);
-	freopen("array.out", "rb", stdout);
+	if (argc > 2) {
+		freopen(argv[1], "rb", stdin);
+		freopen(argv[2], "rb", stdout);
+	}
+	else {
+		if (argc > 0) {
+			// Открываем файл входных данных, файл выходных данных и ответ участника
+			freopen("array.in", "rb", stdin);
+			freopen("array.out", "rb", stdout);
+		}
+	}
 
 	int n;
 	// Считываем размерность 
@@ -73,9 +81,11 @@ int main()
 
 	// Считываем время работы программы участника и массив участника
 
+	long long res_time;
+	
 	fread(res, sizeof(*res), n, stdout);
-	/*fread(&res_time, sizeof(res_time), 1, stdout);*/
-	// Считываем время работы программы и массив жюри	
+	fread(&res_time, sizeof(res_time), 1, stdout);
+	// Считываем  массив 
 	fread(ans, sizeof(*ans), n, stdin);
 	sort(ans, ans + n);
 	// Вычисляем ошибку, как квадрат нормы разности решений
@@ -86,16 +96,19 @@ int main()
 	if (diff < 1e-6)
 	{
 		checker_result.write_message("AC. Numbers are equal.");
-		checker_result.write_verdict(verdict::AC);
+		checker_result.write_verdict(verdict::AC);		
 	}
 	else
 	{
 		checker_result.write_message("WA. Output is not correct.");
-		checker_result.write_verdict(verdict::WA);
+		checker_result.write_verdict(verdict::WA);		
 	}
 	// Записываем время в правильной размерности (интервалы по 100 нс = 10 ^ (-7) сек).
-	/*checker_result.write_time(res_time * 1e7);*/
+	
+	checker_result.write_time(res_time * 1e7);
 
+	delete[] ans;
+	delete[] res;
 	return 0;
 }
 

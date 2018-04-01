@@ -7,14 +7,6 @@
 #include <string>
 using namespace std;
 
-
-void show(int* a, int n) {
-	for (int i = 0; i < n; i++) {
-		cout << a[i] << "  ";
-	}
-	cout << endl;
-}
-
 void serializer(char* txt, char* bin) {
 
 	int n;
@@ -26,13 +18,14 @@ void serializer(char* txt, char* bin) {
 	for (int i = 0; i < n; i++) {
 		fin >> arr[i];
 	}
-
-	show(arr, n);
-
+	
 	freopen(bin, "wb", stdout);
 	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
 
+	fclose(stdout);
+
+	delete[] arr;
 }
 int main(int argc, char* argv[])
 {
@@ -42,7 +35,6 @@ int main(int argc, char* argv[])
 
 	char* txt = argv[1];
 	char* bin = argv[2];
-
 
 	serializer(txt, bin);
 

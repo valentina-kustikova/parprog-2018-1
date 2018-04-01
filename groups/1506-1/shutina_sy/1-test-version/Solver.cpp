@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <omp.h>
 using namespace std;
 
 void Auto_input(double* arr, int n) {
@@ -47,6 +48,7 @@ void Sort(double* array_in, double* array_out, int byteNum, int n) {
 		counter[mas[8 * i + byteNum]]++;
 	}
 }
+
 void Sort_Double(double* array_in, int n) {
 	double* array_out = new double[n];
 	Sort(array_in, array_out, 0, n);
@@ -57,13 +59,19 @@ void Sort_Double(double* array_in, int n) {
 	Sort(array_out, array_in, 5, n);
 	Sort(array_in, array_out, 6, n);
 	Sort(array_out, array_in, 7, n);
+	
 	delete[] array_out;
 }
 
-int main() {
-
-	freopen("20", "rb", stdin);
-	freopen("20.ans", "wb", stdout);
+int main(int argc, char* argv[]) {	
+	if (argc > 2) {
+		freopen(argv[1], "rb", stdin);
+		freopen(argv[2], "wb", stdout);
+	}
+	else {		
+		freopen("array.in", "rb", stdin);
+		freopen("array.out", "wb", stdout);		
+	}	
 
 	int n;
 	fread(&n, sizeof(n), 1, stdin);
@@ -71,16 +79,18 @@ int main() {
 	double* arr = new double[n];
 	fread(arr, sizeof(*arr), n, stdin);
 
-	double start_time = clock();
+	double start_time = omp_get_wtime();
 
-	Sort_Double(arr, n);
+	Sort_Double(arr, n);	
 
-	double end_time = clock();
+	double time = omp_get_wtime()-start_time;
 
-	double time = end_time - start_time;
-	fwrite(&n, sizeof(n), 1, stdout);
+	fwrite(&n, sizeof(n), 1, stdout);		
 	fwrite(arr, sizeof(*arr), n, stdout);
-	/*fwrite(&time, sizeof(time), 1, stdout);*/
+	fwrite(&time, sizeof(time), 1, stdout);
+
+	delete[] arr;
+
 	return 0;
 }
 
