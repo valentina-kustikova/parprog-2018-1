@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lab1_v1", "Lab1_v1\Lab1_v1.vcxproj", "{7E9FF1B3-6D3B-403F-A4E3-A6FE01D076B3}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Typer_v1", "Typer_v1\Typer_v1.vcxproj", "{19C05B9E-8966-4957-83ED-C205BDE9BEE9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer_v1", "Viewer_v1\Viewer_v1.vcxproj", "{72F18DD4-72D2-4D02-9B0C-99C155C75A79}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Checker_v2", "Checker_v2\Checker_v2.vcxproj", "{ED74A44A-DF67-434A-AAD6-722839BDF03B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,14 @@ Global
 		{72F18DD4-72D2-4D02-9B0C-99C155C75A79}.Release|x64.Build.0 = Release|x64
 		{72F18DD4-72D2-4D02-9B0C-99C155C75A79}.Release|x86.ActiveCfg = Release|Win32
 		{72F18DD4-72D2-4D02-9B0C-99C155C75A79}.Release|x86.Build.0 = Release|Win32
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Debug|x64.ActiveCfg = Debug|x64
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Debug|x64.Build.0 = Debug|x64
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Debug|x86.ActiveCfg = Debug|Win32
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Debug|x86.Build.0 = Debug|Win32
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Release|x64.ActiveCfg = Release|x64
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Release|x64.Build.0 = Release|x64
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Release|x86.ActiveCfg = Release|Win32
+		{ED74A44A-DF67-434A-AAD6-722839BDF03B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

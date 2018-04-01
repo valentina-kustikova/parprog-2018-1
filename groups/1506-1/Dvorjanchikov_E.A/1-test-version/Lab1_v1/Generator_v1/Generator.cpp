@@ -18,7 +18,14 @@ int main(int argc, char* argv[])
 	FILE* fp;
 	errno_t err;
 	srand(time(0));
-	err = fopen_s(&fp, "input", "wb");
+	if (argc == 4)
+	{
+		err = fopen_s(&fp, argv[3], "wb");
+	}
+	else
+	{
+		err = fopen_s(&fp, "input", "wb");
+	}
 	int k = atoi(argv[1]);
 	fwrite(&k, sizeof(int), 1, fp);
 	double * mas = new double[k];

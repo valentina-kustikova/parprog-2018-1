@@ -250,14 +250,21 @@ void Sort(double* mas)
 		}
 	}
 }
-int main()
+int main(int argc,char* argv[])
 {
 	FILE* fp;
 	errno_t err;
-	err = fopen_s(&fp, "input", "rb");
+	if (argc >= 2)
+	{
+		err = fopen_s(&fp, argv[1], "rb");
+	}
+	else
+	{
+		err = fopen_s(&fp, "input", "rb");
+	}
 	fread_s(&mas_size, sizeof(int), sizeof(int), 1, fp);
 	double * mas = new double[mas_size];
-	fread_s(mas, mas_size * sizeof(int), sizeof(int), mas_size, fp);
+	fread_s(mas, mas_size * sizeof(double), sizeof(double), mas_size, fp);
 	fclose(fp);
 	mas_pointer = new double*[count_divene];
 	sizes_mas = new double[count_divene];
@@ -276,7 +283,14 @@ int main()
 	start_time = clock();
 	Sort(mas);
 	end_time = clock();
-	err = fopen_s(&fp, "output", "wb");
+	if (argc == 3)
+	{
+		err = fopen_s(&fp, argv[2], "wb");
+	}
+	else
+	{
+		err = fopen_s(&fp, "output", "wb");
+	}
 	fwrite(&mas_size, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(double), mas_size, fp);
 	fclose(fp);
