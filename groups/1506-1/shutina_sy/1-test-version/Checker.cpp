@@ -43,8 +43,7 @@ public:
 		write_type(ext_cls::MESSAGE); int l = str.size(); fwrite(&l, sizeof(l), 1, bur);
 		fwrite(&str[0], sizeof(str[0]), l, bur);
 	}
-	// Сообщить тестирующей системе время работы программы участника,
-	// вычисленное с помощью before_code
+	// Сообщить тестирующей системе время работы программы участника,	
 	// x имеет размерность 100 нс = 10 ^ (-7) сек
 	void write_time(long long x)
 	{
@@ -55,7 +54,8 @@ public:
 	{
 		write_type(ext_cls::MEMORY); fwrite(&x, sizeof(x), 1, bur);
 	}
-} checker_result;
+} checker_result;
+
 
 int main(int argc, char* argv[])
 {
@@ -63,12 +63,10 @@ int main(int argc, char* argv[])
 		freopen(argv[1], "rb", stdin);
 		freopen(argv[2], "rb", stdout);
 	}
-	else {
-		if (argc > 0) {
-			// Открываем файл входных данных, файл выходных данных и ответ участника
-			freopen("array.in", "rb", stdin);
-			freopen("array.out", "rb", stdout);
-		}
+	else {		
+		// Открываем файл входных данных, файл выходных данных и ответ участника
+		freopen("array.in", "rb", stdin);
+		freopen("array.out", "rb", stdout);		
 	}
 
 	int n;

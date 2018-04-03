@@ -14,17 +14,13 @@ int main(int argc, char* argv[])
 {
 	int n;
 	int a, b;
-	if (argc > 4) {
-		a = atoi(argv[1]);
-		b = atoi(argv[2]);
-		n = n_tests[atoi(argv[3])];
-		freopen(argv[4], "wb", stdout);
+	if (argc > 2) {		
+		n = n_tests[atoi(argv[1])];
+		freopen(argv[2], "wb", stdout);
 	}
-	else {
-		if (argc > 3) {
-			a = atoi(argv[1]);
-			b = atoi(argv[2]);
-			n = n_tests[atoi(argv[3])];
+	else {		
+		if (argc > 1) {
+			n = n_tests[atoi(argv[1])];
 			freopen("array.in", "wb", stdout);
 		}
 	}	
@@ -35,8 +31,7 @@ int main(int argc, char* argv[])
 
 	srand((double)time(NULL));
 	for (int i = 0; i < n; i++) {
-		double r = (double) rand() / RAND_MAX;
-		mass[i] = a + (b - a)*r;
+		mass[i] = (double)(rand()%200)/10;
 	}
 	fwrite(mass, sizeof(*mass), n, stdout);
 
