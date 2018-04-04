@@ -8,7 +8,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 
-	if (argc != 2)
+	if (argc != 3)
 	{
 		cout << "Wrong quantity of arguments! Enter name of input file. " << endl;
 		return 0;
@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
 	double time;
 	int* sortedmas;
 	char* name = argv[1];
+	char* outname = argv[2];
 	freopen(("tests\\", name), "rb", stdin);
 	//fread(&time, sizeof(time), 1, stdin);
 	fread(&size, sizeof(size), 1, stdin);
@@ -26,7 +27,7 @@ int main(int argc, char* argv[])
 
 	fread(sortedmas, sizeof(*sortedmas), size, stdin);
 
-	ofstream fout("tests\\output.txt");
+	ofstream fout(("tests\\", outname));
 	//fout << time << endl;
 	fout << size << endl;
 	for (int i = 0; i < size; i++)

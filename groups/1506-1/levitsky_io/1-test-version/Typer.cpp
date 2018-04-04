@@ -8,18 +8,21 @@ using namespace std;
 
 void main(int argc, char* argv[])
 {
-	if (argc != 3)
-	{
-		cout << "Wrong quantity of arguments! Enter name of binary file then name of output file. " << endl;
-		return;
-	}
-
 	int size;
 	int* mas;
-	char* inputname = argv[1];
-	char* name = argv[2];
-	ifstream fin(inputname);
-	fin >> size;
+	char* inputname = "output.txt";
+	char* name = "output.out";
+
+	if (argc > 2)
+	{
+		//cout << "Wrong quantity of arguments! Enter name of binary file then name of output file. " << endl;
+		//return;
+		inputname = argv[1];
+		name = argv[2];
+	}
+
+		ifstream fin(inputname);
+		fin >> size;
 
 	mas = new int[size];
 

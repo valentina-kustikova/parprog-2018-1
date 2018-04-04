@@ -36,38 +36,27 @@ union BinaryInt
 
 void welcomeWords(int size)
 {
-	//cout << "\n \nLAB #3: MSD RADIX SORT FOR DOUBLE NUMBERS\n \n";
 	orderOfSorting = INCREASE;
-	//cout << "Size: " << size << endl;
-	//cin >> *size;
 }
 
-void initData(BinaryInt **dataArray, int size, int* mas)
+void initData(BinaryInt *&dataArray, int size, int* mas)
 {
-	*dataArray = new BinaryInt[size];
+	dataArray = new BinaryInt[size];
 	srand(time(NULL));
 	rand();
 	for (int i = 0; i < size; i++)
 	{
-		(*dataArray)[i] = BinaryInt(mas[i]);
+		dataArray[i] = BinaryInt(mas[i]);
 	}
 }
 
-void copyData(BinaryInt **src, BinaryInt **dest, int size)
+void copyData(BinaryInt *src, BinaryInt **dest, int size)
 {
 	*dest = new BinaryInt[size];
 	for (int i = 0; i < size; i++)
-		(*dest)[i] = BinaryInt((*src)[i].d);
+		(*dest)[i] = BinaryInt((src)[i].d);
 }
 
-void printArray(BinaryInt **array, int size)
-{
-	for (int i = 0; i < size - 1; i++)
-	{
-		cout << (*array)[i].d << " ";
-	}
-	cout << (*array)[size - 1].d << "\n";
-}
 
 void outputMessage(double time1, double time2, bool isRight)
 {
@@ -77,24 +66,24 @@ void outputMessage(double time1, double time2, bool isRight)
 		"Results are the same: " << isRight << "\n";
 }
 
-void RadixSort(queue<BinaryInt> *data, queue<BinaryInt> *sortedData, int numOfByte, int numOfBitInByte)
+void RadixSort(queue<BinaryInt> data, queue<BinaryInt> sortedData, int numOfByte, int numOfBitInByte)
 {
 	queue<BinaryInt> queueZero;
 	queue<BinaryInt> queueOne;
 
 	if (numOfByte != -1)
 	{
-		while ((*data).size() != 0)
+		while (data.size() != 0)
 		{
-			if (!(numOfBitInByte & (*data).front().c[numOfByte]))
+			if (!(numOfBitInByte & data.front().c[numOfByte]))
 			{
-				queueZero.push((*data).front());
-				(*data).pop();
+				queueZero.push(data.front());
+				data.pop();
 			}
 			else
 			{
-				queueOne.push((*data).front());
-				(*data).pop();
+				queueOne.push(data.front());
+				data.pop();
 			}
 		}
 		// recursive call must be outside of while loop above
@@ -104,18 +93,18 @@ void RadixSort(queue<BinaryInt> *data, queue<BinaryInt> *sortedData, int numOfBy
 		int numOfBitInByteCopy2 = numOfBitInByte;
 
 		if (queueZero.size() > 1)
-			RadixSort(&queueZero, sortedData, numOfByte, numOfBitInByte);
+			RadixSort(queueZero, sortedData, numOfByte, numOfBitInByte);
 		while (queueZero.size() != 0)
 		{
-			(*sortedData).push(queueZero.front());
+			sortedData.push(queueZero.front());
 			queueZero.pop();
 		}
 
 		if (queueOne.size() > 1)
-			RadixSort(&queueOne, sortedData, numOfByteCopy2, numOfBitInByteCopy2);
+			RadixSort(queueOne, sortedData, numOfByteCopy2, numOfBitInByteCopy2);
 		while (queueOne.size() != 0)
 		{
-			(*sortedData).push(queueOne.front());
+			sortedData.push(queueOne.front());
 			queueOne.pop();
 		}
 	}
@@ -160,33 +149,35 @@ void RadixSort(queue<BinaryInt> *data, queue<BinaryInt> *sortedData, int numOfBy
 //	return sortedArray;
 //}
 
-void setResult(queue<BinaryInt> *sortedData, BinaryInt **data)
+void setResult(queue<BinaryInt> sortedData, BinaryInt *&data)
 {
-	int count = (*sortedData).size();
+	int count = sortedData.size();
 	for (int i = 0; i < count; i++)
 	{
-		(*data)[i] = (*sortedData).front();
-		(*sortedData).pop();
+		data[i] = sortedData.front();
+		sortedData.pop();
 	}
 }
 
-bool checkResult(BinaryInt **nonParallel, BinaryInt **parallel, int size)
-{
-	for (int i = 0; i < size; i++)
-	{
-		if ((*nonParallel)[i].d != (*parallel)[i].d)
-			return false;
-	}
-	return true;
-}
 
 int main(int argc, char * argv[])
 {
 	//cout.precision(15);
 	int size;
-	int num_threads = 1;
-	char* input = argv[1];
-	char* output = argv[2];
+	char* input;
+	char* output;
+
+	if (argc > 2)
+	{
+		//int num_threads = 1;
+		input = argv[1];
+		output = argv[2];
+	}
+	else
+	{
+		cout << "Enter file for sorting and outupt file" << endl;
+		return 0;
+	}
 
 	/*if (argc > 2)
 	{
@@ -221,9 +212,9 @@ int main(int argc, char * argv[])
 	double timeOfNonParallel = 0;
 	double timeOfParallel = 0;
 	welcomeWords(size);
-	initData(&nonParallel, size, mas);
+	initData(nonParallel, size, mas);
 	//cout << "[TRACE] Data was initialized \n";
-	copyData(&nonParallel, &parallel, size);
+	copyData(nonParallel, &parallel, size);
 	//cout << "[TRACE] Data was copied \n";
 	//cout << "[INFO ] Size equals: " << size << "\n";
 
@@ -239,16 +230,16 @@ int main(int argc, char * argv[])
 		queueData.push(nonParallel[i]);
 	}
 	int u = 3; int o = 128;
-	RadixSort(&queueData, &sortedData, u, o);
+	RadixSort(queueData, sortedData, u, o);
 	//cout << "[TRACE] Array was sorted by non-parallel algorythm \n";
-	setResult(&sortedData, &nonParallel);
+	setResult(sortedData, nonParallel);
 
 	endTime = clock();
 	//cout << "[TRACE] End time of non-parallel algorythm: " << endTime << "\n";
 	timeOfNonParallel = endTime - startTime;
 	//cout << "[TRACE] Total time of non-parallel algorythm: " << timeOfNonParallel << " ms\n";
 
-	//printArray(&nonParallel, &size);
+	//printArray(nonParallel, &size);
 	for (int i = 0; i < size; i++)
 	{
 		sorted[i] = nonParallel[i].d;

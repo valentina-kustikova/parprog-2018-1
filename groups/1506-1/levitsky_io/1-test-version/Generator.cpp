@@ -11,30 +11,28 @@ int n_tests[] = {10, 20, 50, 100, 200, 500, 1000, 5000, 10000, 50000};
 
 int main (int argc, char* argv [])
 { 
-	if (argc != 3)
+	int size = 100;
+	
+	if (argc > 1)
 	{
-		cout << "Wrong quantity of arguments! Enter num of test then name of output file. " << endl;
-		return 0;
-	}
+		size = n_tests[atoi(argv[1])];
 
-	if (atoi(argv[1]) < 0)
-	{
-		cout << "Wrong num of test. " << endl;
-		return 0;
+		if (atoi(argv[1]) < 0)
+		{
+			cout << "Wrong num of test. " << endl;
+			return 0;
+		}
 	}
 
 	srand(time(NULL));
-	int size = n_tests[atoi(argv[1])];
-	char* name = argv[2];
 	int* mas = new int[size];
-
 	for (int i = 0; i < size; i++)
 	{
 		mas[i] = rand();
 	}
 
 
-	freopen(("tests\\", name), "wb", stdout);
+	freopen("arr.in", "wb", stdout);
 	fwrite(&size, sizeof(size), 1, stdout);
 	fwrite(mas, sizeof(*mas), size, stdout);
 	fclose(stdout);
@@ -47,4 +45,5 @@ int main (int argc, char* argv [])
 	//	fin << mas[i] << " ";
 	//fin.close();
 
+	return 0;
 }
