@@ -21,16 +21,17 @@ int main(int argc, char* argv[])
 		string NameTXT = argv[2];
 		BIN.open(NameBIN, ios::binary | ios::app);
 		TXT.open(NameTXT);
-
-		if (!BIN.is_open() || !TXT.is_open())
-			cout << "Do not open file" << endl;
-		else
-			Serializer(TXT, BIN);
 	}
 	else {
-		cout << "Invalid count of arguments" << endl;
-		return 1;
+		cout << "Invalid count of arguments command line" << endl;
+		BIN.open("data.bin", ios::binary);
+		TXT.open("data.txt");
 	}
+
+	if (!BIN.is_open() || !TXT.is_open())
+		cout << "Do not open file" << endl;
+	else
+		Serializer(TXT, BIN);
 
 	BIN.close();
 	TXT.close();

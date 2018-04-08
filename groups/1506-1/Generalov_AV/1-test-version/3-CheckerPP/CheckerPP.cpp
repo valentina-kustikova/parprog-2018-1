@@ -42,16 +42,18 @@ int main(int argc, char* argv[])
 		CheckRes.open(CheckResName, ios::binary, ios::trunc);
 		SeqRes.open(SeqResName, ios::binary);
 		RefRes.open(RefResName, ios::binary);
-
-		if (!CheckRes.is_open() || !SeqRes.is_open() || !RefRes.is_open())
-			cout << "Do not open file" << endl;
-		else
-			TakeCheckRes(CheckRes, SeqRes, RefRes);
 	}
 	else {
-		cout << "Invalid count of arguments" << endl;
-		return 1;
+		cout << "Invalid count of arguments command line" << endl;
+		CheckRes.open("CheckRes.dat", ios::binary);
+		SeqRes.open("SeqRes.ans", ios::binary);
+		RefRes.open("RefRes.ans", ios::binary);
 	}
+
+	if (!CheckRes.is_open() || !SeqRes.is_open() || !RefRes.is_open())
+		cout << "Do not open file" << endl;
+	else
+		TakeCheckRes(CheckRes, SeqRes, RefRes);
 
 	CheckRes.close();
 	SeqRes.close();
