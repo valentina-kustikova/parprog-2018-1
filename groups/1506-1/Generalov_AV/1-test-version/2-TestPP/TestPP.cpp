@@ -18,14 +18,14 @@ vector<string> TAN{ "tan(x)", "tan(x)^2", "tan(x)^3", "tan(x)^4", "tan(x)^5",
 vector<string> LOG{ "log(x)", "log(x)^2", "log(x)^3", "log(x)^4", "log(x)^5",
 "log(x)^6", "log(x)^7", "log(x)^8", "log(x)^9", "log(x)^15" };
 
-void GenerateFormula(string &s, int ÑomplexityTest) {
+void GenerateFormula(string &s, int ComplexityTest) {
 	int Fun = rand() % 4;
 	int NFun = rand() % 9;
 
 	switch (Fun)
 	{
 	case 0:
-		if (ÑomplexityTest == 2 && NFun > 5)
+		if (ComplexityTest == 2 && NFun > 5)
 			NFun = rand() % 4;
 		s += X[NFun];
 		break;
@@ -60,14 +60,14 @@ void GenerateOper(string &s) {
 	}
 }
 
-void GeneratorIntegral(ofstream &out, int ÑomplexityTest) {
+void GeneratorIntegral(ofstream &out, int ComplexityTest) {
 	Data d;
 	for (int i = 0; i < 3; i++) {
-		GenerateFormula(d.func, ÑomplexityTest);
+		GenerateFormula(d.func, ComplexityTest);
 		if (i < 2)
 			GenerateOper(d.func);
 	}
-	if (ÑomplexityTest == 2) {
+	if (ComplexityTest == 2) {
 		d.lb = 100 + rand() % 900;
 		d.ub = (d.lb + 5) + rand() % 1000;
 		d.nspl = 1000 + rand() % 10000;
