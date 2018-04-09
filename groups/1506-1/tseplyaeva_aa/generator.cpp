@@ -16,26 +16,35 @@ int n_tests[] = { 5, 10,50, 100, 500, 600, 900, 1000,1200, 1500,1700, 2000, 2500
 
 int main(int argc, char* argv[])
 {
-	freopen("array.in", "wb", stdout);
-
+	int n;
+	if (argc > 2){
+		n = n_tests[atoi(argv[1])];
+		freopen(argv[2], "wb", stdout);
+	}
+	else {
+		if (argc > 1){
+			n = n_tests[atoi(argv[1])];
+			freopen("array.in", "wb", stdout);
+		}
+	}
 	//	ofstream myarr("array.txt");
 
-	int n;
-	if (argc > 1) {
-		n = n_tests[atoi(argv[1])];
-	}
+	
 	//cout << n<<endl;
 	fwrite(&n, sizeof(n), 1, stdout);
 
-	int* mass = new int[n];
+	double* mass = new double[n];
 
-	srand((int)time(NULL));
+	srand((double)time(NULL));
 	for (int i = 0; i < n; i++) {
-		mass[i] = (int)(rand() % 2000);
-		//	myarr << mass[i];
+		mass[i] = (double)((rand() % 200)-100)/10;
+	//	cout << mass[i];
 	}
+	
 
 	fwrite(mass, sizeof(*mass), n, stdout);
+
+	delete[] mass;
 
 	return 0;
 }

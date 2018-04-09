@@ -6,6 +6,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
 
 #define ERROR_OPEN_FILE -3
 
@@ -15,14 +16,14 @@ using namespace std;
 
 
 
-void show(int* a, int n){
+void show(double* a, int n){
 	for (int i = 0; i < n; i++){
 		cout << a[i] << "  ";
 	}
 	cout << endl;
 }
 
-void shellsort(int*a, int n){
+void shellsort(double*a, int n){
 	vector<int> seq;
 	int k = 0;
 	int i = 0;
@@ -31,9 +32,10 @@ void shellsort(int*a, int n){
 	while (k == 0){
 		int p = 0;
 		int q = 0;
+		int powq = 1;
 		for (p = lvl; p >= 0; p--){
-			i = pow(2, p)*pow(3, q);
-			q++;
+			i = pow(2, p)*powq;
+			powq *= 3;
 			if (i <= (n / 2)){ seq.push_back(i); }
 			else{
 				k++;
@@ -45,7 +47,7 @@ void shellsort(int*a, int n){
 	int m = seq.size();
 	reverse(seq.begin(), seq.end());
 
-	int x;
+	double x;
 	int gap;
 	int j;
 	for (k = 0; k < m; k++) { // seq
@@ -62,22 +64,35 @@ void shellsort(int*a, int n){
 }
 
 
-int main(){
+int main(int argc, char* argv[]){
 
 	int n;
-	int* a;
-	// read from abinary file	 
-	FILE *in = fopen("array.in", "rb");
-	if (!in) {
-		return 0;
+	double* a;
+	FILE *in;
+	// read from abinary file	
+	if (argc > 2){
+		in = fopen(argv[1], "rb"); // array.in
+		if (!in) {
+			return 0;
+		}
+		freopen(argv[2], "wb", stdout); // sorted_array.in
+
 	}
+	else{
+		in = fopen("array.in", "rb"); // array.in
+		if (!in) {
+			return 0;
+		}
+		freopen("sorted_array.in", "wb", stdout); // sorted_array.in
+	}
+
 	//read length of array
 	fread(&n, sizeof(size_t), 1, in);
 	//initializing 
-	a = new int[n];
+	a = new double[n];
 	// read array
 	//fseek(in, 0, SEEK_SET);
-	fread(a, sizeof(int32_t), n, in);
+	fread(a, sizeof(double), n, in);
 	fclose(in);
 	////////////////////////////////////////////////////////
 	//	for (int i = 0; i < n; i++){
@@ -86,16 +101,21 @@ int main(){
 
 
 	//show(a, n);
+	double start = clock();
 
 	shellsort(a, n);
-	//show(a, n);
 
+	double end = clock();
+	//show(a, n);
+	double seconds = (end - start) / CLOCKS_PER_SEC / 1000;
+
+	// time at the end of file 
 	// file for a sorted array
 	freopen("sorted_array.in", "wb", stdout);
 	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(a, sizeof(*a), n, stdout);
+	fwrite(&seconds, sizeof(seconds), 1, stdout);
 
-
-
+	delete[] a;
 	return 0;
 }

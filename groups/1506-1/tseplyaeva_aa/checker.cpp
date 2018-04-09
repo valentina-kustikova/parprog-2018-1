@@ -7,7 +7,7 @@ using namespace std;
 
 int comp1(const void * a, const void * b)
 {
-	return (*(int*)a - *(int*)b);
+	return (*(double*)a - *(double*)b);
 }
 
 enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
@@ -51,58 +51,86 @@ public:
 	}
 } checker_result;
 
-void show(int* a, int n){
+void show(double* a, int n){
 	for (int i = 0; i < n; i++){
 		cout << a[i] << "  ";
 	}
 	cout << endl;
 }
 
-int check(int* a, int* b, int n){
-	int k = 0;
+int check(double* a, double* b, int n){
+
+	int ans = 0;
+	double k = 0.0;
 	for (int i = 0; i < n; i++){
-		if (a[i] != b[i]){
-			k++;
-			break;
+		k += (a[i] - b[i])*(a[i] - b[i]);
 		}
+	if (k < 1e-6){
+
+		ans = 0;
 	}
-	return k;
+	else{
+		ans = 1;
+	}
+
+	return ans;
 }
 
-int main(){
-
+int main(int argc, char* argv[]){
+	
 	int n;
-	int* sorted;
-	int* mixed;
-	// read from abinary file	 
-	FILE *in1 = fopen("sorted_array.in", "rb");
-	if (!in1) {
-		return 0;
+	double* sorted;
+	double* mixed;
+	FILE *in1;
+	FILE *in2;
+
+	if (argc > 2){
+		// read from abinary file	 
+		in1 = fopen(argv[1], "rb"); // sorted_array.in
+		if (!in1) {
+			return 0;
+		}
+		in2 = fopen(argv[2], "rb");//array.in
+		if (!in2) {
+			return 0;
+		}
 	}
+	else{
+		in1 = fopen("sorted_array.in", "rb"); // sorted_array.in
+		if (!in1) {
+			return 0;
+		}
+
+		in2 = fopen("array.in", "rb");//array.in
+		if (!in2) {
+			return 0;
+		}
+
+	}
+
+
+
 	//read length of array
 	fread(&n, sizeof(size_t), 1, in1);
 	//initializing 
-	sorted = new int[n];
+	sorted = new double[n];
 	// read array
 	//	fseek(in1, 0 + sizeof(int), SEEK_SET);
-	fread(sorted, sizeof(int), n, in1);
+	fread(sorted, sizeof(double), n, in1);
 	fclose(in1);
 	//-----------------------------------------------------------------------------
 	// read from abinary file	 
-	FILE *in2 = fopen("array.in", "rb");
-	if (!in2) {
-		return 0;
-	}
+	
 	//read length of array
 	fread(&n, sizeof(size_t), 1, in2);
 	//initializing 
-	mixed = new int[n];
+	mixed = new double[n];
 	// read array
 	//fseek(in2, 0+sizeof(int), SEEK_SET);
-	fread(mixed, sizeof(int), n, in2);
+	fread(mixed, sizeof(double), n, in2);
 	fclose(in2);
 	//-----------------------------------------------------------------------------
-	qsort(mixed, n, sizeof(int), comp1);
+	qsort(mixed, n, sizeof(double), comp1);
 
 	//show(sorted, n);
 	//show(mixed, n);
@@ -113,10 +141,12 @@ int main(){
 		checker_result.write_verdict(verdict::AC);
 	}
 	else{
+
 		checker_result.write_message("WA. Output is not correct.");
 		checker_result.write_verdict(verdict::WA);
 	}
 
-
+	delete[] sorted;
+	delete[] mixed;
 	return 0;
 }

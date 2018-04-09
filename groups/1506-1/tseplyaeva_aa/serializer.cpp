@@ -4,7 +4,7 @@
 using namespace std;
 
 
-void show(int* a, int n){
+void show(double* a, int n){
 	for (int i = 0; i < n; i++){
 		cout << a[i] << "  ";
 	}
@@ -17,7 +17,7 @@ void serializer(char* txt, char* bin) {
 		ifstream fin(txt);
 		fin >> n;
 
-		int* arr = new int[n];
+		double* arr = new double[n];
 
 		for (int i = 0; i < n; i++){
 			fin >> arr[i];
@@ -29,6 +29,7 @@ void serializer(char* txt, char* bin) {
 		fwrite(&n, sizeof(n), 1, stdout);
 		fwrite(arr, sizeof(*arr), n, stdout);
 
+		delete[] arr;
 }
 int main(int argc, char* argv[])
 {
@@ -42,5 +43,6 @@ int main(int argc, char* argv[])
 
 	serializer(txt, bin);
 
+	
 	return 0;
 }
