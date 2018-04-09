@@ -15,8 +15,6 @@ void main(int argc, char* argv[])
 
 	if (argc > 2)
 	{
-		//cout << "Wrong quantity of arguments! Enter name of binary file then name of output file. " << endl;
-		//return;
 		inputname = argv[1];
 		name = argv[2];
 	}
@@ -32,7 +30,7 @@ void main(int argc, char* argv[])
 	}
 	fin.close();
 
-	freopen(("tests\\", name), "wb", stdout);
+	freopen(name, "wb", stdout);
 
 	fwrite(&size, sizeof(size), 1, stdout);
 	fwrite(mas, sizeof(*mas), size, stdout);

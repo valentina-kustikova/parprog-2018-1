@@ -19,16 +19,14 @@ int main(int argc, char* argv[])
 	int* sortedmas;
 	char* name = argv[1];
 	char* outname = argv[2];
-	freopen(("tests\\", name), "rb", stdin);
-	//fread(&time, sizeof(time), 1, stdin);
+	freopen(name, "rb", stdin);
 	fread(&size, sizeof(size), 1, stdin);
 
 	sortedmas = new int[size];
 
 	fread(sortedmas, sizeof(*sortedmas), size, stdin);
 
-	ofstream fout(("tests\\", outname));
-	//fout << time << endl;
+	ofstream fout(outname);
 	fout << size << endl;
 	for (int i = 0; i < size; i++)
 		fout << sortedmas[i] << " ";
