@@ -214,10 +214,7 @@ void Parallel(char* file_in, char* file_out, int num_th)
 	fwrite(&size_nonzero_C, sizeof(size_nonzero_C), 1, stdout);
 	fwrite(C.Value, sizeof(*C.Value), size_nonzero_C, stdout);
 	fwrite(C.Col, sizeof(*C.Col), size_nonzero_C, stdout);
-	fwrite(C.Row_Index, sizeof(*C.Row_Index), N + 1, stdout);
-
-	std::cout << "3" << std::endl;
-		fwrite(&time, sizeof(time), 1, stdout);
+	fwrite(C.Row_Index, sizeof(*C.Row_Index), N + 1, stdout);	fwrite(&time, sizeof(time), 1, stdout);
 
 	fclose(matr_res);
 
