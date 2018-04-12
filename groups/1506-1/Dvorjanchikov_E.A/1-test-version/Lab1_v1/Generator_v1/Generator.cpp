@@ -15,6 +15,10 @@ double comparedown(const double *a, const double *b)
 }
 int main(int argc, char* argv[])
 {
+	if (argc == 1)
+	{
+		return 2;
+	}
 	FILE* fp;
 	errno_t err;
 	srand(time(0));
@@ -35,9 +39,14 @@ int main(int argc, char* argv[])
 	{
 		mas[i] = distribution(generator);
 	}
-	if (atoi(argv[2]) == 2)
+	k = 1;
+	if (argc >= 3)
+	{
+		k = atoi(argv[2]);
+	}
+	if (k == 2)
 		std::qsort(mas, k, sizeof(double), (int(*) (const void *, const void *))compareup);
-	if (atoi(argv[2]) == 3)
+	if (k == 3)
 		std::qsort(mas, k, sizeof(double), (int(*) (const void *, const void *))comparedown);
 	fwrite(mas, sizeof(double), k, fp);
 	delete mas;

@@ -5,23 +5,22 @@
 #include <algorithm>
 #define eps 0.00001
 using namespace std;
-// Используется для взаимодействия с тестирующей системой
-////////////////////////////////////////////////////////////////////////////////////////////
 /*
-// Checker может устанавливать вот эти три вердикта:
-AC = Accepted = Решение выдаёт корректный результат на данном тесте
-WA = Wrong Answer = Решение выдаёт некорректный результат на данном тесте
-PE = Presentation Error = Ошибка формата выходных данных
-// Остальные вердикты checker не может устанавливать
-NO = No verdict = Вердикт отсутствует
-CE = Compilation Error = Ошибка компиляции
-ML = Memory Limit Exceeded = Превышено ограничение по памяти
-TL = Time Limit Exceeded = Превышено ограничение по времени работы
-RE = Runtime Error = Ошибка времени исполнения программы
-IL = Idle Limit Exceeded = Превышено время простоя (бездействия) программы
-DE = Deadly Error = Ошибка тестирующей системы
+// Checker can set these three verdicts:
+AC = Accepted = gives a correct answer to this test
+WA = Wrong Answer = gives wrong answer to this test
+PE = Presentation Error
+// Other verdicts checker can not set
+NO = No verdict
+CE = Compilation Error
+ML = Memory Limit Exceeded
+TL = Time Limit Exceeded
+RE = Runtime Error
+IL = Idle Limit Exceeded
+DE = Deadly Error = error of testing system 
 */
-enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };class result
+enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
+class result
 {
 private:
 	FILE * bur;
@@ -44,15 +43,11 @@ public:
 	{
 		fwrite(&t, sizeof(t), 1, bur);
 	}
-	// Сообщить тестирующей системе, что решение получило один из вердиктов verdict
 	void write_verdict(verdict v)
 	{
 		write_type(ext_cls::VERDICT);
 		fwrite(&v, sizeof(v), 1, bur);
 	}
-	// Написать сообщение от checker'a пользователю.
-	// Например, что решение верное, или неверное.
-	// Использовать только латинские буквы и знаки препинания
 	void write_message(string str)
 	{
 		write_type(ext_cls::MESSAGE);
@@ -60,29 +55,43 @@ public:
 		fwrite(&l, sizeof(l), 1, bur);
 		fwrite(&str[0], sizeof(str[0]), l, bur);
 	}
-	// Сообщить тестирующей системе время работы программы участника,
-	// вычисленное с помощью before_code
-	// x имеет размерность 100 нс = 10 ^ (-7) сек
 	void write_time(long long x)
 	{
 		write_type(ext_cls::TIME);
 		fwrite(&x, sizeof(x), 1, bur);
 	}
-	// Сообщить тестирующей системе, память затребованную программой участника
 	void write_memory(unsigned long long x)
 	{
 		write_type(ext_cls::MEMORY);
 		fwrite(&x, sizeof(x), 1, bur);
 	}
-} checker_result;int compare(const int *a, const int *b)
+} checker_result;
+
+int compare(const int *a, const int *b)
 {
 	return *a - *b;
 }
 
 int main(int argc, char * argv[])
 {
-	FILE *bui = fopen("input", "rb");
-	FILE * buo = fopen("output", "rb");
+	FILE *bui;
+	FILE * buo;
+	if (argc >= 2)
+	{
+		bui = fopen(argv[1], "rb");
+	}
+	else
+	{
+		bui = fopen("input", "rb");
+	}
+	if (argc == 3)
+	{
+		buo = fopen(argv[2], "rb");
+	}
+	else
+	{
+		buo = fopen("output", "rb");
+	}
 	int size;
 	fread(&size, sizeof(int), 1, bui);
 	double *arr = new double[size];
@@ -114,6 +123,8 @@ int main(int argc, char * argv[])
 		checker_result.write_message("WA. Array isn't sorted corrently.");
 		checker_result.write_verdict(verdict::WA);
 	}
+	delete(arr);
+	delete(res_arr);
 	fclose(buo);
 	fclose(bui);
 	return 0;

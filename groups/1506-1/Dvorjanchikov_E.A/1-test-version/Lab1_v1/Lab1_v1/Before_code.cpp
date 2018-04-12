@@ -1,16 +1,6 @@
 #include <iostream>
 #include <ctime>
 int arr[9] = { 1,4,10,23,57,132,301,701,1750 };
-int count_divene = 1;
-int mas_size;
-int shift;
-double** mas_pointer;
-int* shifts;
-double* sizes_mas;
-int rank;
-int pointer_k;
-float start_time;
-float end_time;
 int Rank(int tmp)
 {
 	int res = 0;
@@ -221,7 +211,7 @@ void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n,
 		Merge(f_points[i], s_points[i], f_counts[i], s_counts[i], 0, 0, res, r_s + dashs[i]);
 	}
 }
-void Sort(double* mas)
+void Sort(double* mas,int mas_size,double** mas_pointer,double* sizes_mas,int count_divene,int pointer_k,int *shifts)
 {
 	double* res_mas = new double[mas_size];
 	for (int i = 0; i < count_divene; i++)
@@ -254,6 +244,16 @@ int main(int argc,char* argv[])
 {
 	FILE* fp;
 	errno_t err;
+	int count_divene = 1;
+	int mas_size;
+	int shift;
+	double** mas_pointer;
+	int* shifts;
+	double* sizes_mas;
+	int rank;
+	int pointer_k =0;
+	float start_time;
+	float end_time;
 	if (argc >= 2)
 	{
 		err = fopen_s(&fp, argv[1], "rb");
@@ -270,7 +270,7 @@ int main(int argc,char* argv[])
 	sizes_mas = new double[count_divene];
 	shifts = new int[count_divene];
 	rank = Rank(count_divene);
-	int shift = mas_size / count_divene;
+	shift = mas_size / count_divene;
 	for (int i = 0; i < count_divene; i++)
 	{
 		mas_pointer[i] = mas + i * shift;
@@ -281,7 +281,7 @@ int main(int argc,char* argv[])
 	}
 	sizes_mas[count_divene - 1] = mas_size - shift * (count_divene - 1);
 	start_time = clock();
-	Sort(mas);
+	Sort(mas,mas_size,mas_pointer,sizes_mas,count_divene,pointer_k,shifts);
 	end_time = clock();
 	if (argc == 3)
 	{
@@ -297,5 +297,6 @@ int main(int argc,char* argv[])
 	err = fopen_s(&fp, "time.txt", "w");
 	fprintf_s(fp, "Time %f \n", end_time - start_time);
 	fclose(fp);
+	delete(mas);
 	return 0;
 }
