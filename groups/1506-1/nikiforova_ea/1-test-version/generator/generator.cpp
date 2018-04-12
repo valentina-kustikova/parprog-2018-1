@@ -2,6 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "sol.h"
+#include <ctime>
 #include <iostream>
 #include <fstream>
 
@@ -30,24 +31,65 @@ bool typer(Mat pic, string buf)
 	}
 	else return false;
 }
+Mat generatepic(int a, int b)
+{
+	
+	Mat pic = Mat::zeros(300,300, CV_8UC1);
+	for (int i=0;i<pic.rows;i++)
+		for (int j=0;j<pic.cols;j++)
+		{
+			pic.at<uchar>(i, j) = a+rand() % (b-a);
+		}
+	return pic;
+}
+Mat generatepicCIRCLE(int a, int b)
+{
 
+	Mat pic = Mat::zeros(300, 300, CV_8UC1);
+	int n = a + rand() % (b - a);
+	for (int i = 0; i < pic.rows; ++i)
+		for (int j = 0; j < pic.cols; ++j)
+			pic.at<uchar>(i, j) = n;
+	int x = 0;
+	int y = 0;
+	for (int i = 0;i < 10;i++)
+	{
+		x = rand() % 300;
+		y = rand() % 300;
+		//pic.at<uchar>(i, j) = a + rand() % (b - a);
+		circle(pic, cvPoint(x, y), 30, a + rand() % (b - a), -1, 8, 0);
+	}
+	return pic;
+}
+void clamp(int a, int b)
+{
+	if (b < a) swap(a,b);
+	if (a < 0) a = 0;
+	if (b > 255) b = 255;
+}
 int main(int argc, char* argv[])
 {
-	int numtest = atoi(argv[1]);
+	    srand(time(0));
+		int numtest = atoi(argv[1]);
+		string inputf = argv[2];            //имя входного файла (формат не надо, директорию тоже)
+		string outpf = argv[3];				//имя выходного файла (формат не надо, директорию тоже, такое имя будет у выходной картинки)
+		int min = stoi(argv[4]);				//границы для генерации изображения
+		int max = stoi(argv[5]);
+		clamp(min, max);
 		Mat input;
-		string a = "C:\\test\\";
-		string b = "C:\\test2\\";
-
-		input = imread(a + to_string(numtest) + ".jpg", IMREAD_GRAYSCALE);
+		string a = "test\\";
+		string b = "test2\\";
+		imwrite(a + inputf + ".jpg", generatepic(min, max));		//генерируем картинку и пишем ее
+		input = imread(a + inputf + ".jpg", IMREAD_GRAYSCALE);      //читаем картинку (нуавдруг)
 		Mat output = Mat::zeros(input.size(), CV_8UC1);
-		linears(input, output);
-		//в последствии заменим на работу параллельной версии
+		linears(input, output);                             //в последствии заменим на работу параллельной версии
+		imwrite(a + "res_" + inputf + ".jpg", output);					//пишем рез
 		//пишу исходник 
 		string place = b + to_string(numtest);
 		typer(input, place);
 		//пишу результат
-		place = b + to_string(numtest) + ".ans";
+		place = b + outpf + ".ans";
 		typer(output, place);
-	
+
 	return 0;
 }

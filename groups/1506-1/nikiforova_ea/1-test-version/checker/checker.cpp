@@ -41,8 +41,8 @@ public:
 private:
 	ofstream result_checker;
 public:
-	enum class params_ { NO = 1, VERDICT, MESSAGE, TIME, MEMORY };
-	void write_type(params_ param)
+	enum class ext_cls { NO = 1, VERDICT, MESSAGE, TIME, MEMORY };
+	void write_type(ext_cls param)
 	{
 		result_checker << static_cast<int>(param) << endl;
 	}
@@ -93,17 +93,21 @@ bool compareres(Mat fir, Mat sec)
 }
 int main(int argc, char* argv[])
 {
-	int numtest = atoi(argv[1]);
-	string dir= "C:\\test2\\";
-	string filename = dir + to_string(numtest);
+	int numtest = atoi(argv[1]);		//номер теста
+	string inputf = argv[2];            //имя входного файла (формат не надо, директорию тоже)
+	string outpf = argv[3];				//имя выходного файла (формат не надо, директорию тоже, такое имя будет у выходной картинки)
+	string dir= "test2\\";
+
+	string filename = dir + inputf;
 	Result checker(dir);
 	Mat basic;
 	viewer(filename, basic);
 	//imwrite("C:\\test2\\result1.jpg", basic);
 	Mat aftertest;
+	filename = dir + outpf;
 	viewer(filename + ".ans", aftertest);
 	//imwrite("C:\\test2\\result2.jpg",aftertest);
-	Mat ideal = Mat::zeros(basic.size(), CV_8UC1);
+	Mat ideal = Mat::zeros(basic.size(), CV_8UC1);		
 	linears(basic, ideal);          
 	if (compareres(aftertest, ideal)==false)
 	{
