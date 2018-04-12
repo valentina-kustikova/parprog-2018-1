@@ -5,10 +5,10 @@ void Serialize(char* file_bin)
 {
 	FILE *matr_in, *matr_out;
 	int N = 1, Nz = 3;
-	
-	fopen_s(&matr_in,"matr.txt", "r");
-	
-	fscanf_s(matr_in,"%d",&N);
+
+	fopen_s(&matr_in, "matr.txt", "r");
+
+	fscanf_s(matr_in, "%d", &N);
 	fscanf_s(matr_in, "%d", &Nz);
 
 	// принимаем 2 разреженные матрицы 
@@ -33,11 +33,11 @@ void Serialize(char* file_bin)
 		for (int i = 0; i < N + 1; i++)
 			fscanf_s(matr_in, "%d ", &index[j][i]);
 	}
-	
+
 	fclose(matr_in);
 
 	freopen_s(&matr_out, file_bin, "wb", stdout);
-	
+
 	fwrite(&N, sizeof(N), 1, stdout);
 	fwrite(&Nz, sizeof(Nz), 1, stdout);
 
@@ -47,7 +47,7 @@ void Serialize(char* file_bin)
 		fwrite(collumns[i], sizeof(**collumns), size_nonzero, stdout);
 		fwrite(index[i], sizeof(**index), N + 1, stdout);
 	}
-	
+
 	fclose(matr_out);
 
 	for (int i = 0; i < 2; i++)
@@ -56,7 +56,7 @@ void Serialize(char* file_bin)
 		delete[] collumns[i];
 		delete[] index[i];
 	}
-			
+
 }
 
 int main(int argc, char* argv[])

@@ -77,6 +77,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>C:\Program Files\Intel\MKL\10.2.2.025\ia32\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files\Intel\MKL\10.2.2.025\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\Intel\MKL\10.2.2.025\ia32\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -125,6 +128,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libguide40.lib;libiomp5md.lib;libiomp5mt.lib;mkl_blacs_dll.lib;mkl_blacs_intelmpi.lib;mkl_blacs_mpich2.lib;mkl_blas95.lib;mkl_cdft_core.lib;mkl_cdft_core_dll.lib;mkl_core.lib;mkl_core_dll.lib;mkl_intel_s.lib;mkl_intel_s_dll.lib;mkl_intel_thread.lib;mkl_intel_thread_dll.lib;mkl_lapack95.lib;mkl_pgi_thread.lib;mkl_pgi_thread_dll.lib;mkl_scalapack_core.lib;mkl_scalapack_core_dll.lib;mkl_sequential.lib;mkl_sequential_dll.lib;mkl_solver.lib;mkl_solver_sequential.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions> /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,7 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Standard.cpp" />
+    <ClCompile Include="Reference.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

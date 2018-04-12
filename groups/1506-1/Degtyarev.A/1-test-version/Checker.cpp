@@ -1,4 +1,5 @@
 #include <iostream>
+#include "mkl_spblas.h"
 
 struct crsMatrix
 {
@@ -89,88 +90,155 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void Copying_dense(double* matr, crsMatrix A, int size)
+int SparseDiff(crsMatrix A, crsMatrix B,double& diff)
 {
-	int i1, i2;
-	for (int i = 0; i < size; i++)
+
+	int Size = A.Size;
+	// Будем вычислять C = A - B, используя MKL
+	// Структуры данных в стиле MKL
+
+	double *c = 0; // Значения
+	int *jc = 0; // Номера столбцов (нумерация с единицы)
+	int *ic; // Индексы первых элементов строк
+			 // (нумерация с единицы)
+			 // Настроим параметры для вызова функции MKL
+			 // Переиндексируем матрицы A и B с единицы
+	int i, j;
+	for (i = 0; i < A.Size_Z; i++)
+		A.Col[i]++;
+	for (i = 0; i < B.Size_Z; i++)
+		B.Col[i]++;
+	for (j = 0; j <= A.Size; j++)
 	{
-		i1 = A.Row_Index[i];
-		i2 = A.Row_Index[i + 1] - 1;
-		for (int j = i1; j <= i2; j++)
-			matr[i*size + A.Col[j]] = A.Value[j];
+		A.Row_Index[j]++;
+		B.Row_Index[j]++;
 	}
+	// Используется функция, вычисляющая C = A + beta*op(B)
+	char trans = 'N'; 
+
+	int request;
+	
+	int sort = 0;
+	// beta = -1 -> C = A + (-1.0) * B;
+
+	double beta = -1.0;
+
+	int nzmax = -1;
+
+	// Служебная информация
+	int info;
+	// Выделим память для индекса в матрице C
+	ic = new int[Size + 1];
+	// Сосчитаем количество ненулевых элементов в матрице C
+	request = 1;
+
+	std::cout << "5" << std::endl;
+	mkl_dcsradd(&trans, &request, &sort, &Size, &Size,
+		A.Value, A.Col, A.Row_Index, &beta,
+		B.Value, B.Col, B.Row_Index,
+		c, jc, ic, &nzmax, &info);
+	std::cout << "6" << std::endl;
+	int nzc = ic[Size] - 1;
+	c = new double[nzc];
+	jc = new int[nzc];
+	// Сосчитаем C = A - B
+	request = 2;
+	mkl_dcsradd(&trans, &request, &sort, &Size, &Size,
+		A.Value, A.Col, A.Row_Index, &beta,
+		B.Value, B.Col, B.Row_Index,
+		c, jc, ic,
+		&nzmax, &info);
+
+	// Сосчитаем max|Cij|
+	diff = 0.0;
+	for (i = 0; i < nzc; i++)
+	{
+		double var = fabs(c[i]);
+		if (var > diff)
+		{
+			diff = var;
+			return 0;
+		}
+			
+	}
+
+	// Приведем к исходному виду матрицы A и B
+	for (i = 0; i < A.Size_Z; i++)
+		A.Col[i]--;
+	for (i = 0; i < B.Size_Z; i++)
+		B.Col[i]--;
+	for (j = 0; j <= Size; j++)
+	{
+		A.Row_Index[j]--;
+		B.Row_Index[j]--;
+	}
+	// Освободим память
+	delete[] c;
+	delete[] ic;
+	delete[] jc;
+
+	return 1;
 }
 
-double* ReadStandartMult(char* file)
+
+void ReadStandartMult(char* file, crsMatrix& C)
 {
 	FILE* matr;
 	int N = 1;
+	int non_zero = 1;
 
 	freopen_s(&matr, file, "rb", stdin);
 	fread(&N, sizeof(N), 1, stdin);
+	fread(&non_zero, sizeof(N), 1, stdin);
 
-	double* ans = new double[N*N];
-	for (int i = 0; i < N; i++)
-		ans[i] = 0;
-	fread(ans, sizeof(*ans), N*N, stdin);
-	
+
+	InitMatr(N, non_zero, C);
+
+	fread(C.Value, sizeof(*C.Value), non_zero, stdin);
+	fread(C.Col, sizeof(*C.Col), non_zero, stdin);
+	fread(C.Row_Index, sizeof(*C.Row_Index), N + 1, stdin);
 	fclose(matr);
 
-	return ans;
 }
 
-double* ReadParticipantMult(char* file, int &size, double &time)
+
+
+void ReadParticipantMult(char* file, crsMatrix& C, double &time)
 {
 	FILE* matr;
-	int N = 1, Nz = 1;
-	crsMatrix C;
+	int N = 1;
+	int non_zero = 1;
 
 	freopen_s(&matr, file, "rb", stdin);
 	fread(&N, sizeof(N), 1, stdin);
-	fread(&Nz, sizeof(Nz), 1, stdin);
-	int size_nonzero = Nz;
-	size = N;
-	double* res = new double[N*N];
-	for (int i = 0; i < N*N; i++)
-		res[i] = 0;
+	fread(&non_zero, sizeof(N), 1, stdin);
 
-	InitMatr(N, size_nonzero, C);
+	InitMatr(N, non_zero, C);
 
-
-	fread(C.Value, sizeof(*C.Value), size_nonzero, stdin);
-	fread(C.Col, sizeof(*C.Col), size_nonzero, stdin);
+	fread(C.Value, sizeof(*C.Value), non_zero, stdin);
+	fread(C.Col, sizeof(*C.Col), non_zero, stdin);
 	fread(C.Row_Index, sizeof(*C.Row_Index), N + 1, stdin);
-	fread(&time, sizeof(time), 1, stdin);
+	fread(&time, sizeof(N), 1, stdin);
+
 	fclose(matr);
 
-	Copying_dense(res,C,N);
-	FreeMatr(C);
-
-	return res;
 }
 
 int Checker(char* file_p, char* file_s, double& time)
 {
-	int N;
+	crsMatrix C1, C2;
+	double diff = 0.0;
 
-	double* ans;
-	double* res;
+	ReadParticipantMult(file_p, C1, time);
+	ReadStandartMult(file_s,C2);
 
-	res = ReadParticipantMult(file_p,N,time);
-	ans = ReadStandartMult(file_s);
+	SparseDiff(C1,C2, diff);
+	if (diff > 0)
+		return 0;
 
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			if (ans[i*N + j] - res[i*N + j] != 0)
-				return 0;
-		}
-	}
 
-	delete[] ans;
-	delete[] res;
-
+	FreeMatr(C1);
+	FreeMatr(C2);
 	return 1;
 }
 

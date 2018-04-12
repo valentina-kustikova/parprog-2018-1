@@ -1,7 +1,10 @@
 #include <iostream>
 #include <ctime>
 
-// умножение плотных матриц
+#include "mkl_spblas.h"
+
+
+
 
 struct crsMatrix
 {
@@ -29,41 +32,91 @@ void FreeMatr(crsMatrix &matr)
 	delete[] matr.Row_Index;
 }
 
-double* MultiplicationDenseMatrix(double* M_1, double* M_2, int Size)
+void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C, double& time)
 {
-	double* M_Rez = new double[Size * Size];
+	int Size = A.Size;
 
-	for (int i = 0; i < Size; i++)
-		for (int j = 0; j < Size; j++)
-		{
-			M_Rez[i * Size + j] = 0;
-			for (int k = 0; k < Size; k++)
-				M_Rez[i*Size + j] += M_1[i*Size + k] * M_2[k * Size + j];
-		}
+	// Настроим параметры для вызова функции MKL
+	// Переиндексируем матрицы A и B с единицы
 
-	return M_Rez;
-}
-
-// перевод из разреженной в плотную
-void Copying_dense(double* matr, crsMatrix A, int size)
-{
-	int i1, i2;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < A.Size_Z; i++)
+		A.Col[i]++;
+	for (int i = 0; i < B.Size_Z; i++)
+		B.Col[i]++;
+	for (int j = 0; j <= Size; j++)
 	{
-		i1 = A.Row_Index[i];
-		i2 = A.Row_Index[i + 1] - 1;
-		for (int j = i1; j <= i2; j++)
-			matr[i*size + A.Col[j]] = A.Value[j];
+		A.Row_Index[j]++;
+		B.Row_Index[j]++;
 	}
+	std::cout << "4" << std::endl;
+	// Используется функция, вычисляющая C = op(A) * B говорит о том, op(A) = A – не нужно транспонировать A
+	char trans = 'N'; 
+
+	// Если мы не знаем, сколько памяти необходимо
+	// для хранения результата, необходимо:
+	// 1) выделить память для массива индексов строк ic:
+	// "Кол-во строк+1" элементов;
+	// 2) вызвать функцию с параметром request = 1 –
+	// в массиве ic будет заполнен последний элемент
+	// 3) выделить память для массивов c и jc 
+	// (кол-во элементов = ic[Кол-во строк]-1)
+	// 4) вызвать функцию с параметром request = 2
+
+	int request;
+	// Еще один нетривиальный момент: есть возможность
+	// настроить, нужно ли упорядочивать матрицы A, B и C.
+	// У нас предполагается, что все матрицы упорядочены,
+	// следовательно, выбираем вариант "No-No-Yes", который
+	// соответствует любому значению, кроме целых чисел
+	// от 1 до 7 включительно
+	int sort = 8;
+
+	// Количество ненулевых элементов.
+	// Используется только если request = 0
+	int nzmax = -1;
+
+	// Служебная информация
+	int info;
+	clock_t start = clock();
+	// Выделим память для индекса в матрице C
+	C.Row_Index = new int[Size + 1];
+	// Сосчитаем количество ненулевых элементов в матрице C	request = 1;
+	C.Value = 0;
+	C.Col = 0;
+
+	std::cout << "5" << std::endl;
+
+	mkl_dcsrmultcsr(&trans,&request,&sort,&Size, &Size, &Size,
+		A.Value,A.Col,A.Row_Index, B.Value, B.Col, B.Row_Index, 
+		C.Value, C.Col, C.Row_Index,&nzmax,&info);
+
+	std::cout << "6" << std::endl;
+	int nzc = C.Row_Index[Size] - 1;
+	C.Value = new double[nzc];
+	C.Col = new int[nzc];
+
+	// Сосчитаем C = A * B
+	request = 2;
+	mkl_dcsrmultcsr(&trans, &request, &sort, &Size, &Size, &Size,
+		A.Value, A.Col, A.Row_Index, B.Value, B.Col, B.Row_Index,
+		C.Value, C.Col, C.Row_Index,&nzmax, &info);
+	C.Size = Size;
+	C.Size_Z = nzc;
+
+	clock_t finish = clock();
+
 }
 
-void SequenceDenseMatrix(char* file_in, char* file_out)
+
+
+
+void SequenceSparseMult(char* file_in, char* file_out, double &time)
 {
 	FILE* matr_in, *matr_res;
+	
 	int N = 0, Nz = 0;
-	crsMatrix A, B;
+	crsMatrix A, B,C;
 
-	clock_t start = clock();
 
 	freopen_s(&matr_in, file_in, "rb", stdin);
 	
@@ -72,7 +125,7 @@ void SequenceDenseMatrix(char* file_in, char* file_out)
 
 	int size_nonzero = N * Nz;
 
-
+	std::cout << "2" << std::endl;
 	InitMatr(N, size_nonzero, A);
 	InitMatr(N, size_nonzero, B);
 
@@ -86,40 +139,36 @@ void SequenceDenseMatrix(char* file_in, char* file_out)
 
 	fclose(matr_in);
 
-	double* res;
-	double* M_1 = new double[N*N];
-	double* M_2 = new double[N*N];
+	std::cout << "3" << std::endl;
+	SparseMKLMult(A,B,C,time);
 
-	for (int i = 0; i < N*N; i++)
-		M_1[i] = M_2[i] = 0;
-
-	Copying_dense(M_1,A,N);
-	Copying_dense(M_2,B,N);
-
-	res = MultiplicationDenseMatrix(M_1,M_2,N);
-
+	
+	size_nonzero = C.Size_Z;
 
 	freopen_s(&matr_res, file_out, "wb", stdout);
 	fwrite(&N, sizeof(N), 1, stdout);
-	fwrite(res, sizeof(*res), N*N, stdout);
+	fwrite(&size_nonzero, sizeof(size_nonzero), 1, stdout);
+	fwrite(C.Value, sizeof(*C.Value), size_nonzero, stdout);
+	fwrite(C.Col, sizeof(*C.Col), size_nonzero, stdout);
+	fwrite(C.Row_Index, sizeof(*C.Row_Index), N + 1, stdout);
+
 	fclose(matr_res);
 
 	FreeMatr(A);
 	FreeMatr(B);
-
-	delete[] res;
-	delete[] M_1;
-	delete[] M_2;
+	FreeMatr(C);
+	
 }
 
 int main(int argc, char* argv[])
 {
+	double time;
 	if (argc != 3)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
 		return 0;
 	}
-
-	SequenceDenseMatrix(argv[1], argv[2]);
+	std::cout << "1" << std::endl;
+	SequenceSparseMult(argv[1], argv[2], time);
 	return 0;
 }

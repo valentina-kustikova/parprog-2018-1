@@ -92,50 +92,48 @@ crsMatrix Generate_CRS(int size, int cntInRow, crsMatrix& matr)
 // 1,10,100,100,100,1000,500,250,1000,
 
 
+
+
 int main(int argc, char* argv[])
 {
 	FILE *matr;
 	int N = 2, Nz = 1;
 
-	if (argc != 3)
+	if (argc != 4)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
 		return 0;
 	}
+	char* f = argv[1];
+	N = atoi(argv[2]);
+	Nz = atoi(argv[3]);
 
-	N = atoi(argv[1]);
-	Nz = atoi(argv[2]);
-	int size_nonzero = N * Nz;
+
 	if ((N < Nz) || (N <= 0) || (Nz <= 0) || (N == 1))
 	{
 		std::cout << "Incorrect arguments of main\n" << std::endl;
 		return 0;
 	}
 
+	int size_nonzero = N * Nz;
+
 	crsMatrix A, B;
 
 	A = Generate_CRS(N, Nz,A);	B = Generate_CRS(N, Nz,B);
 
-	fopen_s(&matr,"matr.txt","w");
-	fprintf(matr,"%d \n", N);
-	fprintf(matr, "%d \n", Nz);
+	freopen_s(&matr, f, "wb", stdout);
 
-	for (int i = 0; i < size_nonzero; i++)
-		fprintf(matr, "%lf ", A.Value[i]);
-	fprintf(matr, "\n");
-	for (int i = 0; i < size_nonzero; i++)
-		fprintf(matr, "%d ", A.Col[i]);
-	fprintf(matr, "\n");
-	for (int i = 0; i < N + 1; i++)
-		fprintf(matr, "%d ", A.Row_Index[i]);
-	fprintf(matr, "\n");	for (int i = 0; i < size_nonzero; i++)
-		fprintf(matr, "%lf ", B.Value[i]);
-	fprintf(matr, "\n");
-	for (int i = 0; i < size_nonzero; i++)
-		fprintf(matr, "%d ", B.Col[i]);
-	fprintf(matr, "\n");
-	for (int i = 0; i < N + 1; i++)
-		fprintf(matr, "%d ", B.Row_Index[i]);	fclose(matr);
+	fwrite(&N, sizeof(N), 1, stdout);
+	fwrite(&Nz, sizeof(Nz), 1, stdout);
+	
+	fwrite(A.Value, sizeof(*A.Value), size_nonzero, stdout);
+	fwrite(A.Col, sizeof(*A.Col), size_nonzero, stdout);
+	fwrite(A.Row_Index, sizeof(*A.Row_Index), N + 1, stdout);
+	
+	fwrite(B.Value, sizeof(*B.Value), size_nonzero, stdout);
+	fwrite(B.Col, sizeof(*B.Col), size_nonzero, stdout);
+	fwrite(B.Row_Index, sizeof(*B.Row_Index), N + 1, stdout);
+		fclose(matr);
 
 	FreeMatr(A);
 	FreeMatr(B);
