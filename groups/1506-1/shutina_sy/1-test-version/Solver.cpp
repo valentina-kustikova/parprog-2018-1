@@ -1,5 +1,6 @@
 // Shutina_14.cpp: определяет точку входа для консольного приложения.
 //
+//Shutina_14.cpp: определяет точку входа для консольного приложения.
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -9,69 +10,128 @@
 #include <omp.h>
 using namespace std;
 
-void Auto_input(double* arr, int n) {
-	srand((double)time(NULL));
-	for (int i = 0; i < n; i++) {
-		arr[i] = (double)(rand() % 20001) / 100;
+// Функция radixPass принимает в качестве параметров
+// номер байта num_byte,
+// число элементов n, 
+// исходный массив source, 
+// массив dest, куда будут записываться числа, отсортированные по байту num_byte
+// массив счетчиков count, соответствующий текущему проходу.
+
+void radixPass(int num_byte, long n, double *source, double *dest, int *count) {
+	// временные переменные
+	double *sp;
+	int s, c, i, *cp;
+	unsigned char *bp;
+
+	// шаг 3: кол-во элементов <i
+	s = 0; 	// временная переменная, хранящая сумму на данный момент
+	cp = count;
+	for (i = 256; i > 0; --i, ++cp) {
+		c = *cp;
+		*cp = s;
+		s += c;
+	}
+
+	// шаг 4: окончательная растановка
+	bp = (unsigned char *)source + num_byte;
+	sp = source;
+	for (i = n; i > 0; --i, bp += sizeof(double), ++sp) {
+		cp = count + *bp;
+		dest[*cp] = *sp;
+		++(*cp);
 	}
 }
 
-void Keyboard_input(double* arr, int n) {
-	cout << "Enter of the array: " << endl;
-	for (int i = 0; i < n; i++) {
-		cin >> arr[i];
+// Функция для последнего прохода при поразрядной сортировке чисел с плавающей точкой
+void floatRadixLastPass(int num_byte, int n, double *source, double *dest, int *count) {
+	double *sp;
+	int s, c, i, *cp;
+	unsigned char *bp;
+
+	int numNeg = 0; // количество отрицательных чисел
+	for (i = 128; i<256; i++)
+		numNeg += count[i];
+
+	// первые 128 элементов count относятся к положительным числам.
+	// отсчитываем номер первого числа, начиная от numNeg 
+	s = numNeg;
+	cp = count;
+	for (i = 0; i < 128; ++i, ++cp) {
+		c = *cp;
+		*cp = s;
+		s += c;
+	}
+
+	// изменения, касающиеся обратного расположения отрицательных чисел.
+	s = count[255] = 0;                // отрицательные числа располагаются от начала массива
+	cp = count + 254;
+	for (i = 254; i >= 128; --i, --cp) {
+		*cp += s;
+		s = *cp;
+	}
+
+	bp = (unsigned char *)source + num_byte;
+	sp = source;
+	for (i = n; i > 0; --i, bp += sizeof(double), ++sp) {
+		cp = count + *bp;
+		if (*bp < 128)
+			dest[(*cp)++] = *sp;
+		else
+			dest[--(*cp)] = *sp;
 	}
 }
 
-void Sort(double* array_in, double* array_out, int byteNum, int n) {
-	unsigned char* mas = (unsigned char*)array_in;
-	int counter[256];
-	int tem;
-	memset(counter, 0, sizeof(int) * 256);
-	for (int i = 0; i<n; i++)
-		counter[mas[8 * i + byteNum]]++;
-	int j = 0;
-	for (; j<256; j++) {
-		if (counter[j] != 0)
-			break;
-	}
-	tem = counter[j];
-	counter[j] = 0;
-	j++;
-	for (; j<256; j++) {
-		int b = counter[j];
-		counter[j] = tem;
-		tem += b;
-	}
-	for (int i = 0; i<n; i++) {
-		array_out[counter[mas[8 * i + byteNum]]] = array_in[i];
-		counter[mas[8 * i + byteNum]]++;
+// Создать счетчики.
+// data-сортируемый массив, counters-массив для счетчиков, N-число элементов в data
+void createCounters(double *data, int *counters, int n) {
+	// i-й массив count расположен, начиная с адреса counters+256*i
+	memset(counters, 0, 256 * sizeof(double) * sizeof(int));
+
+	unsigned char *bp = (unsigned char*)data;
+	unsigned char *dataEnd = (unsigned char*)(data + n);
+	int i;
+
+	while (bp != dataEnd) {
+		// увеличиваем количество байт со значением *bp
+		// i - текущий массив счетчиков
+		for (i = 0; i<sizeof(double); i++)
+			counters[256 * i + *bp++]++;
 	}
 }
 
-void Sort_Double(double* array_in, int n) {
-	double* array_out = new double[n];
-	Sort(array_in, array_out, 0, n);
-	Sort(array_out, array_in, 1, n);
-	Sort(array_in, array_out, 2, n);
-	Sort(array_out, array_in, 3, n);
-	Sort(array_in, array_out, 4, n);
-	Sort(array_out, array_in, 5, n);
-	Sort(array_in, array_out, 6, n);
-	Sort(array_out, array_in, 7, n);
-	
-	delete[] array_out;
+// поразрядная сортировка чисел с плавающей точкой
+void floatRadixSort(double* &in, int n) {
+	double *out = new double[n];
+	unsigned char i;
+
+	int *counters = new int[sizeof(double) * 256], *count;
+	createCounters(in, counters, n);
+
+	for (i = 0; i<sizeof(double) - 1; i++) {
+		count = counters + 256 * i; // count - массив счетчиков для i-го разряда
+
+		if (count[0] == n) continue; //**
+
+		radixPass(i, n, in, out, count);
+		swap(in, out);
+	}
+	count = counters + 256 * i;
+	floatRadixLastPass(i, n, in, out, count);
+
+	delete in;
+	in = out;
+	delete counters;
 }
 
-int main(int argc, char* argv[]) {	
+int main(int argc, char* argv[]) {
 	if (argc > 2) {
 		freopen(argv[1], "rb", stdin);
 		freopen(argv[2], "wb", stdout);
 	}
-	else {		
+	else {
 		freopen("array.in", "rb", stdin);
-		freopen("array.out", "wb", stdout);		
-	}	
+		freopen("array.out", "wb", stdout);
+	}
 
 	int n;
 	fread(&n, sizeof(n), 1, stdin);
@@ -81,11 +141,11 @@ int main(int argc, char* argv[]) {
 
 	double start_time = omp_get_wtime();
 
-	Sort_Double(arr, n);	
+	floatRadixSort(arr, n);
 
-	double time = omp_get_wtime()-start_time;
+	double time = omp_get_wtime() - start_time;
 
-	fwrite(&n, sizeof(n), 1, stdout);		
+	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
 	fwrite(&time, sizeof(time), 1, stdout);
 
@@ -93,4 +153,6 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+
 

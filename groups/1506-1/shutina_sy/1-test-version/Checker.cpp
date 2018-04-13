@@ -26,33 +26,33 @@ public:
 	enum ext_cls { NO = 1, VERDICT, MESSAGE, TIME, MEMORY };
 	result(bool read = false)
 	{
-		if (read) bur = fopen("result.txt", "r"); else bur = fopen("result.txt", "w");
+		if (read) bur = fopen("result.txt", "rb"); else bur = fopen("result.txt", "wb");
 	}
 	~result() { fclose(bur); }
-	void write_type(ext_cls t) { fwrite(&t, sizeof(t), 1, bur); }
+	void write_type(ext_cls t) { fprintf(bur,"%d ",t); }
 	// —ообщить тестирующей системе, что решение получило один из вердиктов verdict
 	void write_verdict(verdict v)
 	{
-		write_type(ext_cls::VERDICT); fwrite(&v, sizeof(v), 1, bur);
+		write_type(ext_cls::VERDICT); fprintf(bur,"%d ",v);
 	}
 	// Ќаписать сообщение от checker'a пользователю.
 	// Ќапример, что решение верное, или неверное.
 	// »спользовать только латинские буквы и знаки препинани€
 	void write_message(string str)
 	{
-		write_type(ext_cls::MESSAGE); int l = str.size(); fwrite(&l, sizeof(l), 1, bur);
+		write_type(ext_cls::MESSAGE); int l = str.size(); fprintf(bur, "%d ", l);
 		fwrite(&str[0], sizeof(str[0]), l, bur);
 	}
 	// —ообщить тестирующей системе врем€ работы программы участника,	
 	// x имеет размерность 100 нс = 10 ^ (-7) сек
-	void write_time(long long x)
+	void write_time(double x)
 	{
-		write_type(ext_cls::TIME); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::TIME); fprintf(bur, "%f ", x);
 	}
 	// —ообщить тестирующей системе, пам€ть затребованную программой участника
 	void write_memory(unsigned long long x)
 	{
-		write_type(ext_cls::MEMORY); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::MEMORY); fprintf(bur, "%f ", x);
 	}
 } checker_result;
 
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
 	// —читываем врем€ работы программы участника и массив участника
 
-	long long res_time;
+	double res_time;
 	
 	fread(res, sizeof(*res), n, stdout);
 	fread(&res_time, sizeof(res_time), 1, stdout);

@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 {
 	int n;
 	int a, b;
+	double t= 0;
 	if (argc > 2) {		
 		n = n_tests[atoi(argv[1])];
 		freopen(argv[2], "wb", stdout);
@@ -31,10 +32,10 @@ int main(int argc, char* argv[])
 
 	srand((double)time(NULL));
 	for (int i = 0; i < n; i++) {
-		mass[i] = (double)(rand()%200)/10;
+		mass[i] = (double)(rand() % 20001)/100-100;
 	}
 	fwrite(mass, sizeof(*mass), n, stdout);
-
+	fwrite(&t, sizeof(t), 1, stdout);
 	delete[] mass;
 
 	return 0;
