@@ -16,14 +16,22 @@ using namespace std;
 
 
 
-void show(double* a, int n){
-	for (int i = 0; i < n; i++){
+void show(double* a, int st, int n){
+	for (int i = st; i < n; i++){
 		cout << a[i] << "  ";
 	}
 	cout << endl;
 }
 
-void shellsort(double*a, int n){
+void shellsort(double*a, int st, int n){
+
+	int size_b = n - st;
+	double* b = new double[size_b];
+
+	for (int i = 0; i < size_b; i++){
+		b[i] = a[i + st];
+	}
+
 	vector<int> seq;
 	int k = 0;
 	int i = 0;
@@ -47,19 +55,28 @@ void shellsort(double*a, int n){
 	int m = seq.size();
 	reverse(seq.begin(), seq.end());
 
+	//show(b, 0, size_b);
+
 	double x;
 	int gap;
 	int j;
 	for (k = 0; k < m; k++) { // seq
 		gap = seq[k];
-		for (int i = gap; i < n; ++i) {
-			x = a[i];
-			for (j = i - gap; (x < a[j]) && (j >= 0); j = j - gap)
-				a[j + gap] = a[j];
-			a[j + gap] = x;
-			//show(a,n);
+		for (int i = gap; i < size_b; ++i) {
+			x = b[i];
+			for (j = i - gap; (x < b[j]) && (j >= 0); j = j - gap)
+				b[j + gap] = b[j];
+			b[j + gap] = x;
+
 		}
 	}
+
+	for (int i = 0; i < size_b; i++){
+		a[i + st] = b[i];
+	}
+
+	delete[] b;
+	//show(b, 0, size_b);
 
 }
 
@@ -103,7 +120,7 @@ int main(int argc, char* argv[]){
 	//show(a, n);
 	double start = clock();
 
-	shellsort(a, n);
+	shellsort(a,0, n);
 
 	double end = clock();
 	//show(a, n);

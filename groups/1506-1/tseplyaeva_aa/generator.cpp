@@ -41,8 +41,9 @@ int main(int argc, char* argv[])
 	//	cout << mass[i];
 	}
 	
-
+	double m = 0;
 	fwrite(mass, sizeof(*mass), n, stdout);
+	fwrite(&m, sizeof(double), 1, stdout);
 
 	delete[] mass;
 

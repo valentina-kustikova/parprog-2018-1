@@ -8,10 +8,8 @@ using namespace std;
 
 //bin txt
 
-void deserializer(char* txt, char* bin, char* time) {
+void deserializer(char* txt, char* bin) {
 	
-
-
 	freopen(bin, "rb", stdin);
 	int n;
 	// —читываем размерность 
@@ -19,12 +17,13 @@ void deserializer(char* txt, char* bin, char* time) {
 	double* arr = new double[n];
 	fread(arr, sizeof(*arr), n, stdin);
 
-	int m = (int)time;
+	double time;
+	fread(&time, sizeof(time), 1, stdin);
 
-	double ti;
-	if (m != 0){
-		fread(&ti, sizeof(ti), 1, stdin);
-	}
+	//double ti;
+	//if (m != 0){
+	//	fread(&ti, sizeof(ti), 1, stdin);
+	//}
 	
 	//FILE *file;
 	//if ((file = fopen(txt, "w")) == NULL) {
@@ -42,9 +41,9 @@ void deserializer(char* txt, char* bin, char* time) {
 	for (int i = 0; i < n; i++){
 		out << arr[i] <<"  ";
 	}
-	if (m != 0){
-		out << ti;
-	}
+	out << time;
+	
+
 	out.close();
 	delete[] arr;
 
@@ -52,17 +51,14 @@ void deserializer(char* txt, char* bin, char* time) {
 
 int main(int argc, char* argv[])
 {
-	if (argc < 4) {
+	if (argc < 3) {
 		return 1;
 	}
 
 	char* bin = argv[1];
 	char* txt = argv[2];
-	char* time = argv[3];
-
-
-
-	deserializer(txt, bin, time);
+	
+	deserializer(txt, bin);
 
 
 	return 0;

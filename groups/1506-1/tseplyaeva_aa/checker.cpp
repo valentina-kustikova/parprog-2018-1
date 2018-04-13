@@ -7,7 +7,14 @@ using namespace std;
 
 int comp1(const void * a, const void * b)
 {
-	return (*(double*)a - *(double*)b);
+	int res;
+	if (*(double*)a < *(double*)b)
+		res = -1;
+	else if (*(double*)a - *(double*)b < 1e-5)
+		res = 0;
+	else
+		res = 1;
+	return res;
 }
 
 enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
@@ -18,37 +25,46 @@ private:
 	FILE * bur;
 public:
 	enum ext_cls { NO = 1, VERDICT, MESSAGE, TIME, MEMORY };
+
 	result(bool read = false)
 	{
-		if (read) bur = fopen("result.txt", "r"); else bur = fopen("result.txt", "w");
+		if (read) bur = fopen("result.txt", "rb"); else bur = fopen("result.txt", "wb");
 	}
 	~result() { fclose(bur); }
-	void write_type(ext_cls t) { fwrite(&t, sizeof(t), 1, bur); }
+
+	void write_type(ext_cls t) { 
+		fprintf(bur, "%d ",t);
+	}
 	// —ообщить тестирующей системе, что решение получило один из вердиктов verdict
 	void write_verdict(verdict v)
 	{
-		write_type(ext_cls::VERDICT); fwrite(&v, sizeof(v), 1, bur);
+		write_type(ext_cls::VERDICT); fprintf(bur, "%d ", v);
 	}
+
 	// Ќаписать сообщение от checker'a пользователю.
 	// Ќапример, что решение верное, или неверное.
 	// »спользовать только латинские буквы и знаки препинани€
 	void write_message(string str)
 	{
-		write_type(ext_cls::MESSAGE); int l = str.size(); fwrite(&l, sizeof(l), 1, bur);
+		write_type(ext_cls::MESSAGE); int l = str.size(); fprintf(bur, "%d ", l);
 		fwrite(&str[0], sizeof(str[0]), l, bur);
 	}
+
 	// —ообщить тестирующей системе врем€ работы программы участника,
 	// вычисленное с помощью before_code
 	// x имеет размерность 100 нс = 10 ^ (-7) сек
+
 	void write_time(long long x)
 	{
-		write_type(ext_cls::TIME); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::TIME); fprintf(bur, "%d ", x);
 	}
 	// —ообщить тестирующей системе, пам€ть затребованную программой участника
+
 	void write_memory(unsigned long long x)
 	{
-		write_type(ext_cls::MEMORY); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::MEMORY); fprintf(bur, "%d ", x);
 	}
+
 } checker_result;
 
 void show(double* a, int n){
@@ -111,18 +127,20 @@ int main(int argc, char* argv[]){
 
 
 	//read length of array
-	fread(&n, sizeof(size_t), 1, in1);
+	fread(&n, sizeof(int), 1, in1);
 	//initializing 
 	sorted = new double[n];
 	// read array
 	//	fseek(in1, 0 + sizeof(int), SEEK_SET);
 	fread(sorted, sizeof(double), n, in1);
+	double time_res = 0;
+	fread(&time_res, sizeof(double), 1, in1);
 	fclose(in1);
 	//-----------------------------------------------------------------------------
 	// read from abinary file	 
 	
 	//read length of array
-	fread(&n, sizeof(size_t), 1, in2);
+	fread(&n, sizeof(int), 1, in2);
 	//initializing 
 	mixed = new double[n];
 	// read array
@@ -145,6 +163,8 @@ int main(int argc, char* argv[]){
 		checker_result.write_message("WA. Output is not correct.");
 		checker_result.write_verdict(verdict::WA);
 	}
+
+	checker_result.write_time(time_res*1e7);
 
 	delete[] sorted;
 	delete[] mixed;
