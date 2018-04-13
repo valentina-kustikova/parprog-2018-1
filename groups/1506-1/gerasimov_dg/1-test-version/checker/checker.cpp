@@ -37,24 +37,25 @@ public:
 	{
 		if (read)
 		{
-			fopen_s(&bur, "result.txt", "r");
+			fopen_s(&bur, "result.txt", "rb");
+
 		}
 		else
 		{
-			fopen_s(&bur, "result.txt", "w");
+			fopen_s(&bur, "result.txt", "wb");
 		}
 	}
 	~result() { fclose(bur); }
 	void write_type(ext_cls t)
 	{
-		fwrite(&t, sizeof(t), 1, bur);
+		fprintf(bur, "%d ", t);
 	}
 
 	// Сообщить тестирующей системе, что решение получило один из вердиктов verdict   
 	void write_verdict(verdict v)
 	{
 		write_type(ext_cls::VERDICT);
-		fwrite(&v, sizeof(v), 1, bur);
+		fprintf(bur, "%d ", v);
 	}
 
 	// Написать сообщение от checker'a пользователю.    
@@ -64,8 +65,8 @@ public:
 	{
 		write_type(ext_cls::MESSAGE);
 		int l = str.size();
-		fwrite(&l, sizeof(l), 1, bur);
-		fwrite(&str[0], sizeof(str[0]), l, bur);
+		fprintf(bur, "%d ", l);
+		fprintf(bur, "%s ", &str[0]);
 	}
 
 	// Сообщить тестирующей системе время работы программы участника,   
@@ -74,14 +75,14 @@ public:
 	void write_time(long long x)
 	{
 		write_type(ext_cls::TIME);
-		fwrite(&x, sizeof(x), 1, bur);
+		fprintf(bur, "%d ", x);
 	}
 
 	// Сообщить тестирующей системе, память затребованную программой участника   
 	void write_memory(unsigned long long x)
 	{
 		write_type(ext_cls::MEMORY);
-		fwrite(&x, sizeof(x), 1, bur);
+		fprintf(bur, "%d ", x);
 	}
 } checker_result;
 //////////////////////////////////////////////////////////////////////////////////////////// 
