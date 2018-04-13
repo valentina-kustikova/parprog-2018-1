@@ -12,12 +12,6 @@
 
 using namespace std;
 
-int procSize;
-int procRank;
-
-enum sortingType { INCREASE };
-
-sortingType orderOfSorting;
 
 union BinaryInt
 {
@@ -34,10 +28,6 @@ union BinaryInt
 	}
 };
 
-void welcomeWords(int size)
-{
-	orderOfSorting = INCREASE;
-}
 
 void initData(BinaryInt *&dataArray, int size, int* mas)
 {
@@ -50,14 +40,6 @@ void initData(BinaryInt *&dataArray, int size, int* mas)
 	}
 }
 
-
-void outputMessage(double time1, double time2, bool isRight)
-{
-	cout << "\n--- RESULTS ---\n\nTime of non-parallel algorythm: " << time1 <<
-		" ms\nTime of parallel algorythm:     " << time2 << " ms\n" <<
-		"Speedup: " << time1 / time2 << "\n" <<
-		"Results are the same: " << isRight << "\n";
-}
 
 void RadixSort(queue<BinaryInt> &data, queue<BinaryInt> &sortedData, int numOfByte, int numOfBitInByte)
 {
@@ -144,7 +126,6 @@ int main(int argc, char * argv[])
 	double endTime = 0;
 	double timeOfNonParallel = 0;
 	double timeOfParallel = 0;
-	welcomeWords(size);
 	initData(nonParallel, size, mas);
 
 
@@ -157,6 +138,7 @@ int main(int argc, char * argv[])
 		queueData.push(nonParallel[i]);
 	}
 	int u = 3; int o = 128;
+
 	RadixSort(queueData, sortedData, u, o);
 	setResult(sortedData, nonParallel);
 
