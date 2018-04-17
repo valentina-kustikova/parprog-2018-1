@@ -4,6 +4,7 @@
 #include <ctime>
 #include <algorithm>
 #include <fstream>
+#include "bitset"
 
 using namespace std;
 
@@ -34,9 +35,18 @@ int main (int argc, char* argv [])
 
 	for (int i = 0; i < size; i++)
 	{
-		mas[i] = rand();
+		mas[i] = (rand()-16000);
 		sorted[i] = mas[i];
 	}
+
+	//int a = 13;
+	//int b = -13;
+	//cout << a << endl;
+	//cout << b << endl;
+	//bitset<32> bitset = a;
+	//cout << bitset << endl;
+	//bitset = b;
+	//cout << bitset << endl;
 
 	sort(sorted, sorted + size);
 
@@ -51,6 +61,7 @@ int main (int argc, char* argv [])
 	fclose(stdout);
 
 	delete[] mas;
+	delete[] sorted;
 
 	return 0;
 }

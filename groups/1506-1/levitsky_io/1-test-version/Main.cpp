@@ -8,6 +8,7 @@
 #include <ctime>
 #include <queue>
 #include <omp.h>
+#include "bitset"
 
 
 using namespace std;
@@ -16,7 +17,7 @@ using namespace std;
 union BinaryInt
 {
 	int d;
-	unsigned char c[sizeof(double)];
+	unsigned char c[sizeof(int)];
 
 	BinaryInt()
 	{
@@ -45,20 +46,39 @@ void RadixSort(queue<BinaryInt> &data, queue<BinaryInt> &sortedData, int numOfBy
 {
 	queue<BinaryInt> queueZero;
 	queue<BinaryInt> queueOne;
+	queue<BinaryInt> MqueueZero;
+	queue<BinaryInt> MqueueOne;
+
 
 	if (numOfByte != -1)
 	{
 		while (data.size() != 0)
 		{
-			if (!(numOfBitInByte & data.front().c[numOfByte]))
+			if (data.front().d < 0)
 			{
-				queueZero.push(data.front());
-				data.pop();
+				if (!(numOfBitInByte & data.front().c[numOfByte]))
+				{
+					MqueueOne.push(data.front());
+					data.pop();
+				}
+				else
+				{
+					MqueueZero.push(data.front());
+					data.pop();
+				}
 			}
 			else
 			{
-				queueOne.push(data.front());
-				data.pop();
+				if (!(numOfBitInByte & data.front().c[numOfByte]))
+				{
+					queueZero.push(data.front());
+					data.pop();
+				}
+				else
+				{
+					queueOne.push(data.front());
+					data.pop();
+				}
 			}
 		}
 		// recursive call must be outside of while loop above
@@ -66,6 +86,23 @@ void RadixSort(queue<BinaryInt> &data, queue<BinaryInt> &sortedData, int numOfBy
 		numOfBitInByte = numOfBitInByte == 1 ? numOfBitInByte = 128 : numOfBitInByte = numOfBitInByte / 2;
 		int numOfByteCopy2 = numOfByte;
 		int numOfBitInByteCopy2 = numOfBitInByte;
+
+		if (MqueueOne.size() > 1)
+			RadixSort(MqueueOne, sortedData, numOfByteCopy2, numOfBitInByteCopy2);
+		while (MqueueOne.size() != 0)
+		{
+			sortedData.push(MqueueOne.front());
+			MqueueOne.pop();
+		}
+
+		if (MqueueZero.size() > 1)
+			RadixSort(MqueueZero, sortedData, numOfByte, numOfBitInByte);
+		while (MqueueZero.size() != 0)
+		{
+			sortedData.push(MqueueZero.front());
+			MqueueZero.pop();
+		}
+		//////////////
 
 		if (queueZero.size() > 1)
 			RadixSort(queueZero, sortedData, numOfByte, numOfBitInByte);
@@ -92,6 +129,7 @@ void setResult(queue<BinaryInt> sortedData, BinaryInt *data)
 	for (int i = 0; i < count; i++)
 	{
 		data[i] = sortedData.front();
+		cout << data[i].d << " ";
 		sortedData.pop();
 	}
 }
@@ -110,10 +148,10 @@ int main(int argc, char * argv[])
 	}
 
 	freopen(input, "rb", stdin);
-	fread(&size, sizeof(size), 1, stdin);
+	fread(&size, sizeof(int), 1, stdin);
 	int* mas = new int[size];
 	int* sorted = new int[size];
-	fread(mas, sizeof(mas), size, stdin);
+	fread(mas, sizeof(int), size, stdin);
 	fclose(stdin);
 
 
@@ -149,6 +187,9 @@ int main(int argc, char * argv[])
 	{
 		sorted[i] = nonParallel[i].d;
 	}
+
+	cout << "---" << timeOfNonParallel << "---" << endl;
+
 	freopen(output, "wb", stdout);
 	fwrite(&size, sizeof(size), 1, stdout);
 	fwrite(sorted, sizeof(*sorted), size, stdout);
