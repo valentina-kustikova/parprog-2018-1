@@ -2,11 +2,10 @@
 #include <climits>
 #include <vector>
 
-bool Dijkstra(int** GR, int st, int n, int* res)
+bool Dijkstra(int* GR, int st, int n, int* res)
 {
     bool success = true;
     int distance[n], count, index, i, u, m = st + 1;
-    std::vector <int> result;
     bool visited[n];
     for (i = 0; i < n; i++)
     {
@@ -25,8 +24,8 @@ bool Dijkstra(int** GR, int st, int n, int* res)
         u = index;
         visited[u] = true;
         for (i = 0; i < n; i++)
-            if (!visited[i] && GR[u][i] && distance[u] != INT_MAX && distance[u] + GR[u][i] < distance[i])
-                distance[i] = distance[u] + GR[u][i];
+            if (!visited[i] && GR[u * n + i] && distance[u] != INT_MAX && distance[u] + GR[u * n + i] < distance[i])
+                distance[i] = distance[u] + GR[u * n + i];
     }
     for (i = 0; i < n; i++){
         res[i] = distance[i];
