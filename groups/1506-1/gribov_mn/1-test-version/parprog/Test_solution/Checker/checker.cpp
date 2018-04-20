@@ -84,6 +84,8 @@ int main()
 	}
 
 	checker_result.write_time(res_time * 1e7);
+	delete ans;
+	delete res;
 
 	fclose(bua); 
 	fclose(buo);

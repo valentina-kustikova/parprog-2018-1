@@ -4,7 +4,7 @@
 class CPoint
 {
 private:
-	int determ(CPoint q, CPoint w)
+	int determ(const CPoint &q, const CPoint &w) const
 	{
 		return (q.x * w.y - w.x * q.y);
 	}
@@ -12,47 +12,47 @@ public:
 	int x;
 	int y;
 
-	bool operator <(CPoint &temp)
+	bool operator <(const CPoint &temp) const
 	{
 		if ((determ(*this, temp) > 0) || ((determ(*this, temp) == 0) && (x * x + y * y < temp.x * temp.x + temp.y * temp.y)))
 			return true;
 		return false;
 	}
 
-	bool operator >(CPoint &temp)
+	bool operator >(const CPoint &temp)
 	{
 		if (temp < *this)
 			return true;
 		return false;
 	}
 
-	bool operator !=(CPoint &temp)
+	bool operator !=(const CPoint &temp) const
 	{
 		return !(temp == *this);
 	}
 
-	bool operator ==(CPoint &temp)
+	bool operator ==(const CPoint &temp) const
 	{
 		if ((x == temp.x) && (y == temp.y))
 			return true;
 		return false;
 	}
 
-	CPoint& operator=(CPoint &temp)
+	CPoint& operator=(const CPoint &temp) 
 	{
 		x = temp.x;
 		y = temp.y;
 		return *this;
 	}
 
-	bool operator <=(CPoint &temp)
+	bool operator <=(const CPoint &temp) const
 	{
 		if ((determ(*this, temp) > 0) || ((determ(*this, temp) == 0) && (x * x + y * y <= temp.x * temp.x + temp.y * temp.y)))
 			return true;
 		return false;
 	}
 
-	bool operator >=(CPoint &temp)
+	bool operator >=(const CPoint &temp) const
 	{
 		if (temp <= *this)
 			return true;
@@ -69,7 +69,7 @@ public:
 		y = _y;
 	}
 
-	CPoint(CPoint &point)
+	CPoint(const CPoint &point) 
 	{
 		x = point.x;
 		y = point.y;

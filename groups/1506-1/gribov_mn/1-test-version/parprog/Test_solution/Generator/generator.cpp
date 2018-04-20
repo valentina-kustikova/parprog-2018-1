@@ -20,11 +20,12 @@ int main(int argc, char * argv[])
 	fwrite(&n, sizeof(n), 1, stdout);
 
 	int *cur = new int[2];
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < 2*n; i++)
 	{
 		cur[0] = distribution(generator);
-		cur[1] = distribution(generator);
-		fwrite(cur, sizeof(*cur), n, stdout);
+		cur[1] = distribution(generator);		
+		fwrite(cur, sizeof(*cur), 2, stdout);
 	}
+	delete cur;
 	return 0;
 }
