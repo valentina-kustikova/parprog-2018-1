@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include <omp.h>
 
 #define ERROR_OPEN_FILE -3
 
@@ -118,13 +119,13 @@ int main(int argc, char* argv[]){
 
 
 	//show(a, n);
-	double start = clock();
+	double start = omp_get_wtime();
 
 	shellsort(a,0, n);
 
-	double end = clock();
+	double end = omp_get_wtime();
 	//show(a, n);
-	double seconds = (end - start) / CLOCKS_PER_SEC / 1000;
+	double seconds = end - start;
 
 	// time at the end of file 
 	// file for a sorted array

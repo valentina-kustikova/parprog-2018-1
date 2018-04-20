@@ -1,8 +1,15 @@
 #include <omp.h>
 #include <string>
-#include <vector>
 #include <iostream>
 #include <conio.h>
+#include <stdlib.h>
+#include <vector>
+#include <algorithm>
+#include <fstream>
+#include <stdio.h>
+#include <stdint.h>
+
+
 
 using namespace std;
 
@@ -64,13 +71,130 @@ void shellsort(double*a, int st, int n){
 	for (int i = 0; i < size_b; i++){
 		 a[i + st]=b[i];
 	}
+	
+}
 
 
+//merging two parts from left to rigth
+void simple_merge(double* a, int left, int rigth){
+	vector<double> abc;
+
+	for (int i = left; i < rigth; i++){
+		abc.push_back(a[i]);
+	}
+
+	//	cout << abc.size()<<"  ";
+	//cout << left << rigth<<"   ";
+	//show(a, left, rigth);
+	vector<double> one;
+	vector<double> two;
+
+	//for (int i = left; i < rigth/2+left; i++){
+	//	one.push_back(a[i]);
+	//}
+
+	for (int i = 0; i < abc.size() / 2; i++){
+		one.push_back(a[i + left]);
+	}
+
+	for (int i = abc.size() / 2; i < abc.size(); i++){
+		two.push_back(a[i + left]);
+	}
+
+	/*	cout << "one" << endl;
+	for (int i = 0; i < one.size(); i++){
+	cout << one[i]<<"  ";
+	}
+	cout << endl;
+	cout << "two" ;
+
+	for (int i = 0; i < two.size(); i++){
+	cout << two[i] << "  ";
+	}
+	cout << endl;*/
+
+	abc.clear();
+	unsigned left_it = 0, right_it = 0;
+
+	while (left_it < one.size() && right_it < two.size())
+	{
+		if (one[left_it] < two[right_it])
+		{
+			abc.push_back(one[left_it]);
+			left_it++;
+		}
+		else
+		{
+			abc.push_back(two[right_it]);
+			right_it++;
+		}
+	}
+
+	while (left_it < one.size())
+	{
+		abc.push_back(one[left_it]);
+		left_it++;
+	}
+
+	while (right_it < two.size())
+	{
+		abc.push_back(two[right_it]);
+		right_it++;
+	}
+
+	//	for (int i = 0; i < abc.size(); i++){
+	//	cout << abc[i];
+	//}
+
+	for (int i = 0; i < abc.size(); i++){
+		a[i + left] = abc[i];
+	}
+
+	//cout << "result is:" << endl;
+	//show(a, left, rigth);
+	one.clear(); two.clear(); abc.clear();
+}
+
+void merge(double* a, int n, int parts, int thread_count1){
+
+	int glob_parts = parts / 2;
+	int left, rigth, midl, midr;
+
+	omp_set_num_threads(thread_count1);
+
+#pragma omp parallel for schedule(static) shared(a, glob_parts,n ) \
+  private(left, rigth, mir, midl)
+
+	//sorting by parts
+	for (int i = 0; i < thread_count1; ++i) {
+
+		left = i *(n / glob_parts);
+		if (i == (thread_count1 - 1)) {
+
+			rigth = n;
+		}
+		else{
+
+			rigth = left + (n / glob_parts);
+		}
 
 
-	//show(b, 0, size_b);
+		//cout << "glob parts " << glob_parts <<endl;
+		//cout << "TC:  " << thread_count1 << " parts: " << parts;
+		//cout << endl;
+		//cout << left << " " << rigth << " ";
+		//cout << endl;
+		//show(a, left, rigth);
+		simple_merge(a, left, rigth);
+		//cout << endl;
+		//cout << endl;
+
+	}
+
+
 
 }
+
 
 
 
@@ -83,8 +207,8 @@ void OmpShellSort(double* a, int n, int thread_count) {
 #pragma omp parallel for schedule(static) shared(parts, n) \
   private(left, rigth)
 
-	//sorting
-	for (int i = 0; i < thread_count ; ++i) {
+	//sorting by parts
+	for (int i = 0; i < thread_count; ++i) {
 
 		left = i * parts;
 		if (i == (thread_count - 1)) {
@@ -95,42 +219,97 @@ void OmpShellSort(double* a, int n, int thread_count) {
 			rigth = left + parts;
 		}
 
-		cout << left << rigth << endl;
+	//	cout << left << rigth << endl;
 		shellsort(a, left, rigth);
-		show(a, left, rigth);
-		cout << endl;
+	//	show(a, left, rigth);
+	//	cout << endl;
 	}
+
+
+
+	//amount of arrys parts to merge
+	parts = thread_count;
+
+	int m = (int)(round((double)log(thread_count) / log(2.0))); //thread level depth
+
+	// go through levels
+	for (int i = 0; i < m; i++){
+		thread_count /= 2;
+
+	//	cout << "parts: " << parts;
+	//	cout << "TC: " << thread_count << "    " << endl;
+		merge(a, n, parts, thread_count);
+
+		parts /= 2;
+	};
 
 
 }
 
 
 
-int main(){
-	int n = 12;
+
+
+int main(int argc, char* argv[]){
+
+	int n;
 	double* a;
-	a = new double[n];
-
-	//for (int i = 0; i < n; i++){
-	//	a[i] = (double) (rand() % 100) /10;
-		//a[i] = (double)(rand() % 100);
-		//}
-
-	for (int i = 0; i < n; i++){
-		a[i] = n- i;
+	FILE *in;
+	int thread_count = 0;
+	// read from abinary file	
+	if (argc > 3){
+		in = fopen(argv[1], "rb"); // array.in
+		if (!in) {
+			return 0;
+		}
+		freopen(argv[2], "wb", stdout); // OMPsorted_array.in
+		thread_count = atoi(argv[3]);
+	}
+	else{
+		in = fopen("array.in", "rb"); // array.in
+		if (!in) {
+			return 0;
+		}
+		freopen("OMPsorted_array.in", "wb", stdout); // OMPsorted_array.in
+		thread_count = 2;
 	}
 
-	 show(a, 0, n);
-
-	 //shellsort(a, 3, 8 );
-
-	 //show(a, 0, n);
-
-	OmpShellSort(a, n, 4);
+	
+	//cout << "TC =" << thread_count;
+	
 
 
-	show(a, 0, n);
+	//read length of array
+	fread(&n, sizeof(size_t), 1, in);
+	//initializing 
+	a = new double[n];
+	// read array
+	//fseek(in, 0, SEEK_SET);
+	fread(a, sizeof(double), n, in);
+	fclose(in);
+	//////////////////////////////////////////////////////
+	//	for (int i = 0; i < n; i++){
+	//		a[i] = rand() % 50;
+	//	}
 
-	_getch();
+
+	//show(a, 0, n);
+	double start = omp_get_wtime();
+
+	OmpShellSort(a, n, thread_count);
+
+	double end = omp_get_wtime();
+	//show(a, 0, n);
+	double seconds = (end - start);
+
+	// time at the end of file 
+	// file for a sorted array
+	freopen("OMPsorted_array.in", "wb", stdout);
+	fwrite(&n, sizeof(n), 1, stdout);
+	fwrite(a, sizeof(*a), n, stdout);
+	fwrite(&seconds, sizeof(seconds), 1, stdout);
+	
+
+	delete[] a;
 	return 0;
 }
