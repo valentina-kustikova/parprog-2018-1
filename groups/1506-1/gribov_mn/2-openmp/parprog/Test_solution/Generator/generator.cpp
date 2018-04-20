@@ -10,7 +10,11 @@ int n_tests[] = { 10, 50, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000, 5000,
 
 int main(int argc, char * argv[])
 {
-	freopen("matr.in", "wb", stdout);
+	char* filein;
+	
+		filein = argv[1];
+	freopen(filein, "wb", stdout);
+	//freopen("matr.in", "wb", stdout);
 	default_random_engine generator(chrono::system_clock::now().time_since_epoch().count());
 	uniform_real_distribution <double> distribution(-1e3, 1e3);
 

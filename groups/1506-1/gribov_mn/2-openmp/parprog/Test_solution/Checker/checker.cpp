@@ -50,12 +50,20 @@ public:
 	}
 } checker_result;
 
-int main()
+int main(int argc, char * argv[])
 {
-	FILE * bui = fopen("matr.in", "rb"); 
-	FILE * buo = fopen("matr.out", "rb"); 
-	FILE * bua = fopen("answer.txt", "rb");
-
+	char* filein = argv[1];
+	char* fileout = argv[2];
+	char* fileans = argv[3];
+	
+	FILE * bui = fopen(filein, "rb");
+	FILE * buo = fopen(fileout, "rb");
+	FILE * bua = fopen(fileans, "rb");
+	
+	/*FILE * bui = fopen("matr.in", "rb");
+	FILE * buo = fopen("matr.out", "rb");
+	FILE * bua = fopen("answer.txt", "rb");*/
+	
 	int n;
 	fread(&n, sizeof(n), 1, bui);
 
