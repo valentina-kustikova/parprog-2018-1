@@ -40,7 +40,7 @@ void floatRadixLastPass(int num_byte, int n, double *source, double *dest, int *
 	unsigned char *bp;
 
 	int numNeg = 0; // количество отрицательных чисел
-	for (i = 128; i < 256; i++)
+	for (i = 128; i<256; i++)
 		numNeg += count[i];
 
 	// первые 128 элементов count относятся к положительным числам.
@@ -85,7 +85,7 @@ void createCounters(double *data, int *counters, int n) {
 	while (bp != dataEnd) {
 		// увеличиваем количество байт со значением *bp
 		// i - текущий массив счетчиков
-		for (i = 0; i < sizeof(double); i++)
+		for (i = 0; i<sizeof(double); i++)
 			counters[256 * i + *bp++]++;
 	}
 }
@@ -98,7 +98,7 @@ void doubleRadixSort(double* in, int n) {
 	int *counters = new int[sizeof(double) * 256], *count;
 	createCounters(in, counters, n);
 
-	for (i = 0; i < sizeof(double) - 1; i++) {
+	for (i = 0; i<sizeof(double) - 1; i++) {
 		count = counters + 256 * i; // count - массив счетчиков для i-го разряда
 
 		if (count[0] == n) continue; //**
@@ -111,26 +111,101 @@ void doubleRadixSort(double* in, int n) {
 
 	delete in;
 	in = out;
-	delete counters;
+	delete[] counters;
+}
+
+
+void MergeAndSort(const std::vector<double> vec1, const std::vector<double> vec2, double* mas)
+{
+	int i = 0, j = 0;
+	int size1 = vec1.size(), size2 = vec2.size();
+
+	while (i < size1 && j < size2) {
+		mas[i + j] = vec1[i];
+		mas[i + j + 1] = vec2[j];
+		++i; ++j;
+
+	}
+
+	while (i < size1) {
+		mas[size2 + i] = vec1[i];
+		i++;
+
+	}
+	while (j < size2) {
+		mas[size1 + j] = vec2[j];
+		j++;
+
+	}
+
+	i = 1;
+	while (i < size1 + size2 - 1) {
+		if (mas[i] > mas[i + 1]) {
+			j = mas[i];
+			mas[i] = mas[i + 1];
+			mas[i + 1] = j;
+
+		}
+		++i;
+
+	}
+}
+enum elemType {
+	EVEN,
+	ODD
+
+};
+
+
+void SelectElements(elemType type, const double* arr1, double size1, const double* arr2, double size2, std::vector<double>& result) {
+	int i, j;
+	if (type == EVEN) i = 0, j = 0;
+	else i = 1, j = 1;
+	result.reserve(size1 + size2);
+	while (i < size1 && j < size2) {
+		if (arr1[i] <= arr2[j])
+		{
+			result.push_back(arr1[i]);
+			i += 2;
+		}
+		else
+		{
+			result.push_back(arr2[j]);
+			j += 2;
+		}
+
+	}
+	if (i >= size1)
+		while (j < size2) {
+			result.push_back(arr2[j]);
+			j += 2;
+
+		}
+	else
+		while (i < size1) {
+			result.push_back(arr1[i]);
+			i += 2;
+
+		}
+
 }
 
 int main(int argc, char* argv[]) {
 	int nThreads;
 
 	if (argc > 3) {
-		nThreads = atoi(argv[1]);
-		freopen(argv[2], "rb", stdin);
-		freopen(argv[3], "wb", stdout);
+		freopen(argv[1], "rb", stdin);
+		freopen(argv[2], "wb", stdout);
+		nThreads = atoi(argv[3]);
 	}
 	else {
 		if (argc > 1) {
-			nThreads = atoi(argv[1]);
+			nThreads = atoi(argv[1]);			
 			freopen("array.in", "rb", stdin);
-			freopen("array.out", "wb", stdout);
+			/*freopen("array.out", "wb", stdout);			*/
 		}
 		else return 1;
 	}
-	omp_set_num_threads(nThreads);
 	int n;
 	fread(&n, sizeof(n), 1, stdin);
 
@@ -138,37 +213,63 @@ int main(int argc, char* argv[]) {
 	fread(arr, sizeof(*arr), n, stdin);
 
 	double start_time = omp_get_wtime();
-
 	int step;
-	std::vector<double>* tempArray = new std::vector<double>[nThreads];
-	int *shift = new int[nThreads], *chunk = new int[nThreads];
-
-#pragma omp parallel shared(arr, step, shift, chunk, tempArray) 
+	std::vector<double>* temp = new std::vector<double>[nThreads];
+	int *shift = new int[nThreads];
+	memset(shift, 0, nThreads);
+	int *count = new int[nThreads];
+	memset(count, 0, nThreads);
+	
+#pragma omp parallel  shared(arr, step, shift, count, temp) num_threads(nThreads)
 	{
-		int tid = 0, thread_index = 0;
-		tid = omp_get_thread_num();//возвращает номер потока
+		int tid, index;
+		tid = omp_get_thread_num();
 
 		shift[tid] = tid*(n / nThreads);
-		chunk[tid] = (tid == nThreads - 1) ? n - tid * (n / nThreads) : n / nThreads;
-		doubleRadixSort(arr + shift[tid], chunk[tid]);
-		printf("%d ", arr[0]);
+		count[tid] = (tid == nThreads - 1) ? n - tid * (n / nThreads) : n / nThreads;
+		doubleRadixSort(arr + shift[tid], count[tid]);
 #pragma omp barrier
 
+		step = 1;
+		while (step < nThreads) {
+			cout << "step " << step << endl;
+			index = (int)pow(2, step - 1);			
+			if (tid % (index * 2) == 0) {				
+				SelectElements(EVEN, arr + shift[tid], count[tid], arr + shift[tid + index], count[tid + index], temp[tid]);
+			}
+			else if (tid % index == 0) {
+				SelectElements(ODD, arr + shift[tid], count[tid], arr + shift[tid - index], count[tid - index], temp[tid]);
+			}
 
+#pragma omp barrier
+			if (tid % (index * 2) == 0) {
+				MergeAndSort(temp[tid], temp[tid + index], arr + shift[tid]);
+				count[tid] += count[tid + index];
+				temp[tid].clear(); temp[tid].shrink_to_fit();
+				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();
+				
+			}
+#pragma omp single
+			{
+				step *= 2;
+			}
+#pragma omp barrier
+		}
 	}
-
-	delete[] tempArray;
-	delete[] chunk;
-	delete[] shift;
-
 	double time = omp_get_wtime() - start_time;
-
-	fwrite(&n, sizeof(n), 1, stdout);
+	for (int i = 0; i < n; i++) {
+		cout << arr[i] << endl;
+	}
+	/*fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
-	fwrite(&time, sizeof(time), 1, stdout);
+	fwrite(&time, sizeof(time), 1, stdout);*/
 
+	delete[] temp;
+	delete[] count;
+	delete[] shift;
 	delete[] arr;
 
 	return 0;
 }
+
 
