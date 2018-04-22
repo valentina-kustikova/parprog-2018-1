@@ -1,4 +1,4 @@
-п»ї#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <cstdlib>
 #include <ctime>
@@ -9,13 +9,13 @@
 using namespace std;
 
 void radixPass(int num_byte, long n, double *source, double *dest, int *count) {
-	// РІСЂРµРјРµРЅРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ
+	// временные переменные
 	double *sp;
 	int s, c, i, *cp;
 	unsigned char *bp;
 
-	// С€Р°Рі 3: РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ <i
-	s = 0; 	// РІСЂРµРјРµРЅРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ, С…СЂР°РЅСЏС‰Р°СЏ СЃСѓРјРјСѓ РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚
+	// шаг 3: кол-во элементов <i
+	s = 0; 	// временная переменная, хранящая сумму на данный момент
 	cp = count;
 	for (i = 256; i > 0; --i, ++cp) {
 		c = *cp;
@@ -23,7 +23,7 @@ void radixPass(int num_byte, long n, double *source, double *dest, int *count) {
 		s += c;
 	}
 
-	// С€Р°Рі 4: РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅР°СЏ СЂР°СЃС‚Р°РЅРѕРІРєР°
+	// шаг 4: окончательная растановка
 	bp = (unsigned char *)source + num_byte;
 	sp = source;
 	for (i = n; i > 0; --i, bp += sizeof(double), ++sp) {
@@ -33,18 +33,18 @@ void radixPass(int num_byte, long n, double *source, double *dest, int *count) {
 	}
 }
 
-// Р¤СѓРЅРєС†РёСЏ РґР»СЏ РїРѕСЃР»РµРґРЅРµРіРѕ РїСЂРѕС…РѕРґР° РїСЂРё РїРѕСЂР°Р·СЂСЏРґРЅРѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРµ С‡РёСЃРµР» СЃ РїР»Р°РІР°СЋС‰РµР№ С‚РѕС‡РєРѕР№
+// Функция для последнего прохода при поразрядной сортировке чисел с плавающей точкой
 void floatRadixLastPass(int num_byte, int n, double *source, double *dest, int *count) {
 	double *sp;
 	int s, c, i, *cp;
 	unsigned char *bp;
 
-	int numNeg = 0; // РєРѕР»РёС‡РµСЃС‚РІРѕ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹С… С‡РёСЃРµР»
-	for (i = 128; i<256; i++)
+	int numNeg = 0; // количество отрицательных чисел
+	for (i = 128; i < 256; i++)
 		numNeg += count[i];
 
-	// РїРµСЂРІС‹Рµ 128 СЌР»РµРјРµРЅС‚РѕРІ count РѕС‚РЅРѕСЃСЏС‚СЃСЏ Рє РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рј С‡РёСЃР»Р°Рј.
-	// РѕС‚СЃС‡РёС‚С‹РІР°РµРј РЅРѕРјРµСЂ РїРµСЂРІРѕРіРѕ С‡РёСЃР»Р°, РЅР°С‡РёРЅР°СЏ РѕС‚ numNeg 
+	// первые 128 элементов count относятся к положительным числам.
+	// отсчитываем номер первого числа, начиная от numNeg 
 	s = numNeg;
 	cp = count;
 	for (i = 0; i < 128; ++i, ++cp) {
@@ -53,8 +53,8 @@ void floatRadixLastPass(int num_byte, int n, double *source, double *dest, int *
 		s += c;
 	}
 
-	// РёР·РјРµРЅРµРЅРёСЏ, РєР°СЃР°СЋС‰РёРµСЃСЏ РѕР±СЂР°С‚РЅРѕРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹С… С‡РёСЃРµР».
-	s = count[255] = 0;                // РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ С‡РёСЃР»Р° СЂР°СЃРїРѕР»Р°РіР°СЋС‚СЃСЏ РѕС‚ РЅР°С‡Р°Р»Р° РјР°СЃСЃРёРІР°
+	// изменения, касающиеся обратного расположения отрицательных чисел.
+	s = count[255] = 0;                // отрицательные числа располагаются от начала массива
 	cp = count + 254;
 	for (i = 254; i >= 128; --i, --cp) {
 		*cp += s;
@@ -72,10 +72,10 @@ void floatRadixLastPass(int num_byte, int n, double *source, double *dest, int *
 	}
 }
 
-// РЎРѕР·РґР°С‚СЊ СЃС‡РµС‚С‡РёРєРё.
-// data-СЃРѕСЂС‚РёСЂСѓРµРјС‹Р№ РјР°СЃСЃРёРІ, counters-РјР°СЃСЃРёРІ РґР»СЏ СЃС‡РµС‚С‡РёРєРѕРІ, N-С‡РёСЃР»Рѕ СЌР»РµРјРµРЅС‚РѕРІ РІ data
+// Создать счетчики.
+// data-сортируемый массив, counters-массив для счетчиков, N-число элементов в data
 void createCounters(double *data, int *counters, int n) {
-	// i-Р№ РјР°СЃСЃРёРІ count СЂР°СЃРїРѕР»РѕР¶РµРЅ, РЅР°С‡РёРЅР°СЏ СЃ Р°РґСЂРµСЃР° counters+256*i
+	// i-й массив count расположен, начиная с адреса counters+256*i
 	memset(counters, 0, 256 * sizeof(double) * sizeof(int));
 
 	unsigned char *bp = (unsigned char*)data;
@@ -83,14 +83,14 @@ void createCounters(double *data, int *counters, int n) {
 	int i;
 
 	while (bp != dataEnd) {
-		// СѓРІРµР»РёС‡РёРІР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚ СЃРѕ Р·РЅР°С‡РµРЅРёРµРј *bp
-		// i - С‚РµРєСѓС‰РёР№ РјР°СЃСЃРёРІ СЃС‡РµС‚С‡РёРєРѕРІ
-		for (i = 0; i<sizeof(double); i++)
+		// увеличиваем количество байт со значением *bp
+		// i - текущий массив счетчиков
+		for (i = 0; i < sizeof(double); i++)
 			counters[256 * i + *bp++]++;
 	}
 }
 
-// РїРѕСЂР°Р·СЂСЏРґРЅР°СЏ СЃРѕСЂС‚РёСЂРѕРІРєР° С‡РёСЃРµР» СЃ РїР»Р°РІР°СЋС‰РµР№ С‚РѕС‡РєРѕР№
+// поразрядная сортировка чисел с плавающей точкой
 void doubleRadixSort(double* in, int n) {
 	double *out = new double[n];
 	unsigned char i;
@@ -98,8 +98,8 @@ void doubleRadixSort(double* in, int n) {
 	int *counters = new int[sizeof(double) * 256], *count;
 	createCounters(in, counters, n);
 
-	for (i = 0; i<sizeof(double) - 1; i++) {
-		count = counters + 256 * i; // count - РјР°СЃСЃРёРІ СЃС‡РµС‚С‡РёРєРѕРІ РґР»СЏ i-РіРѕ СЂР°Р·СЂСЏРґР°
+	for (i = 0; i < sizeof(double) - 1; i++) {
+		count = counters + 256 * i; // count - массив счетчиков для i-го разряда
 
 		if (count[0] == n) continue; //**
 
@@ -157,7 +157,7 @@ enum elemType {
 };
 
 
-void SelectElements(elemType type, const double* arr1, double size1, const double* arr2, double size2, std::vector<double>& result) {
+void SelectElements(elemType type, const double* arr1, int size1, const double* arr2, int size2, std::vector<double>& result) {
 	int i, j;
 	if (type == EVEN) i = 0, j = 0;
 	else i = 1, j = 1;
@@ -187,7 +187,6 @@ void SelectElements(elemType type, const double* arr1, double size1, const doubl
 			i += 2;
 
 		}
-
 }
 
 int main(int argc, char* argv[]) {
@@ -200,9 +199,9 @@ int main(int argc, char* argv[]) {
 	}
 	else {
 		if (argc > 1) {
-			nThreads = atoi(argv[1]);			
+			nThreads = atoi(argv[1]);
 			freopen("array.in", "rb", stdin);
-			freopen("array.out", "wb", stdout);			
+			freopen("array.out", "wb", stdout);
 		}
 		else return 1;
 	}
@@ -216,10 +215,10 @@ int main(int argc, char* argv[]) {
 	int step;
 	std::vector<double>* temp = new std::vector<double>[nThreads];
 	int *shift = new int[nThreads];
-	memset(shift, 0, nThreads);
+	memset(shift, 0, nThreads * 4);
 	int *count = new int[nThreads];
-	memset(count, 0, nThreads);
-	
+	memset(count, 0, nThreads * 4);
+
 #pragma omp parallel  shared(arr, step, shift, count, temp) num_threads(nThreads)
 	{
 		int tid, index;
@@ -231,10 +230,9 @@ int main(int argc, char* argv[]) {
 #pragma omp barrier
 
 		step = 1;
-		while (step < nThreads) {
-			cout << "step " << step << endl;
-			index = (int)pow(2, step - 1);			
-			if (tid % (index * 2) == 0) {				
+		while (step <= log(nThreads) / log(2.0)) {
+			index = (int)pow(2, step - 1);
+			if (tid % (index * 2) == 0) {
 				SelectElements(EVEN, arr + shift[tid], count[tid], arr + shift[tid + index], count[tid + index], temp[tid]);
 			}
 			else if (tid % index == 0) {
@@ -247,16 +245,17 @@ int main(int argc, char* argv[]) {
 				count[tid] += count[tid + index];
 				temp[tid].clear(); temp[tid].shrink_to_fit();
 				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();
-				
+
 			}
 #pragma omp single
 			{
-				step *= 2;
+				step++;
 			}
-#pragma omp barrier
+
 		}
 	}
 	double time = omp_get_wtime() - start_time;
+
 	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
 	fwrite(&time, sizeof(time), 1, stdout);
