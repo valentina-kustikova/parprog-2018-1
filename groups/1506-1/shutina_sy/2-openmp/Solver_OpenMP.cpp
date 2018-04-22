@@ -202,7 +202,7 @@ int main(int argc, char* argv[]) {
 		if (argc > 1) {
 			nThreads = atoi(argv[1]);			
 			freopen("array.in", "rb", stdin);
-			/*freopen("array.out", "wb", stdout);			*/
+			freopen("array.out", "wb", stdout);			
 		}
 		else return 1;
 	}
@@ -257,12 +257,9 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	double time = omp_get_wtime() - start_time;
-	for (int i = 0; i < n; i++) {
-		cout << arr[i] << endl;
-	}
-	/*fwrite(&n, sizeof(n), 1, stdout);
+	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
-	fwrite(&time, sizeof(time), 1, stdout);*/
+	fwrite(&time, sizeof(time), 1, stdout);
 
 	delete[] temp;
 	delete[] count;
