@@ -141,14 +141,14 @@ void MergeAndSort(const std::vector<double> vec1, const std::vector<double> vec2
 	i = 1;
 	while (i < size1 + size2 - 1) {
 		if (mas[i] > mas[i + 1]) {
-			j = mas[i];
+			double k = mas[i];			
 			mas[i] = mas[i + 1];
-			mas[i + 1] = j;
+			mas[i + 1] = k;
 
 		}
 		++i;
 
-	}
+	}	
 }
 enum elemType {
 	EVEN,
@@ -186,7 +186,7 @@ void SelectElements(elemType type, const double* arr1, int size1, const double* 
 			result.push_back(arr1[i]);
 			i += 2;
 
-		}
+		}	
 }
 
 int main(int argc, char* argv[]) {
@@ -210,7 +210,7 @@ int main(int argc, char* argv[]) {
 
 	double* arr = new double[n];
 	fread(arr, sizeof(*arr), n, stdin);
-
+	
 	double start_time = omp_get_wtime();
 	int step;
 	std::vector<double>* temp = new std::vector<double>[nThreads];
@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
 
 		shift[tid] = tid*(n / nThreads);
 		count[tid] = (tid == nThreads - 1) ? n - tid * (n / nThreads) : n / nThreads;
-		doubleRadixSort(arr + shift[tid], count[tid]);
+		doubleRadixSort(arr + shift[tid], count[tid]);		
 #pragma omp barrier
 
 		step = 1;
@@ -234,9 +234,11 @@ int main(int argc, char* argv[]) {
 			index = (int)pow(2, step - 1);
 			if (tid % (index * 2) == 0) {
 				SelectElements(EVEN, arr + shift[tid], count[tid], arr + shift[tid + index], count[tid + index], temp[tid]);
+				
 			}
 			else if (tid % index == 0) {
 				SelectElements(ODD, arr + shift[tid], count[tid], arr + shift[tid - index], count[tid - index], temp[tid]);
+				
 			}
 
 #pragma omp barrier
@@ -244,8 +246,7 @@ int main(int argc, char* argv[]) {
 				MergeAndSort(temp[tid], temp[tid + index], arr + shift[tid]);
 				count[tid] += count[tid + index];
 				temp[tid].clear(); temp[tid].shrink_to_fit();
-				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();
-
+				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();				
 			}
 #pragma omp single
 			{
@@ -255,7 +256,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	double time = omp_get_wtime() - start_time;
-
+	
 	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
 	fwrite(&time, sizeof(time), 1, stdout);
