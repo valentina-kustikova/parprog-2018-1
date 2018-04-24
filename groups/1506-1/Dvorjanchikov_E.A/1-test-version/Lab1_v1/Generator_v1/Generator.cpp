@@ -30,7 +30,15 @@ int main(int argc, char* argv[])
 	{
 		err = fopen_s(&fp, "input", "wb");
 	}
-	int k = atoi(argv[1]);
+	int k;
+	if (argc >= 2)
+	{
+		k = atoi(argv[1]);
+	}
+	else
+	{
+		k = 1000;
+	}
 	fwrite(&k, sizeof(int), 1, fp);
 	double * mas = new double[k];
 	default_random_engine generator(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count()));
@@ -39,14 +47,14 @@ int main(int argc, char* argv[])
 	{
 		mas[i] = distribution(generator);
 	}
-	k = 1;
+	int type = 1;
 	if (argc >= 3)
 	{
-		k = atoi(argv[2]);
+		type = atoi(argv[2]);
 	}
-	if (k == 2)
+	if (type == 2)
 		std::qsort(mas, k, sizeof(double), (int(*) (const void *, const void *))compareup);
-	if (k == 3)
+	if (type == 3)
 		std::qsort(mas, k, sizeof(double), (int(*) (const void *, const void *))comparedown);
 	fwrite(mas, sizeof(double), k, fp);
 	delete mas;

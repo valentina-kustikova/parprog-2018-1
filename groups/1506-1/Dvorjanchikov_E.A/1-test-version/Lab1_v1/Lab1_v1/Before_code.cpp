@@ -87,7 +87,7 @@ double* Search(double* mas, int n, double tmp, int& size)
 	{
 		mid--;
 	}
-	while ((mid != 0) && (mas[mid - 1] == mas[mid]))
+	while ((mid != 0) && (mid != n-1) && (mas[mid - 1] == mas[mid]))
 	{
 		mid--;
 	}
@@ -244,7 +244,7 @@ int main(int argc,char* argv[])
 {
 	FILE* fp;
 	errno_t err;
-	int count_divene = 1;
+	int count_divene = 4;
 	int mas_size;
 	int shift;
 	double** mas_pointer;
@@ -298,5 +298,7 @@ int main(int argc,char* argv[])
 	fprintf_s(fp, "Time %f \n", end_time - start_time);
 	fclose(fp);
 	delete(mas);
+	delete(mas_pointer);
+	delete(sizes_mas);
 	return 0;
 }

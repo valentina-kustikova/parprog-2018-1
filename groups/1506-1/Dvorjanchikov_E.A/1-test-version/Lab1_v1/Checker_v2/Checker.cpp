@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#define eps 0.00001
+#define eps 0.0001
 using namespace std;
 /*
 // Checker can set these three verdicts:
@@ -99,8 +99,8 @@ int main(int argc, char * argv[])
 	sort(arr, arr+size);
 	int res_size;
 	fread(&res_size, sizeof(int), 1, buo);
-	double *res_arr = new double[size];
-	fread(res_arr, sizeof(double), size, buo);
+	double *res_arr = new double[res_size];
+	fread(res_arr, sizeof(double), res_size, buo);
 	bool flag = false;
 	double time;
 	int cur = 0;
