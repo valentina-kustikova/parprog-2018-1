@@ -211,6 +211,10 @@ void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n,
 	{
 		Merge(f_points[i], s_points[i], f_counts[i], s_counts[i], 0, 0, res, r_s + dashs[i]);
 	}
+	delete(f_counts);
+	delete(f_points);
+	delete(s_counts);
+	delete(s_points);
 }
 void Sort(double* mas, int mas_size, double** mas_pointer, double* sizes_mas, int count_divene, int pointer_k, int *shifts)
 {
@@ -245,6 +249,7 @@ void Sort(double* mas, int mas_size, double** mas_pointer, double* sizes_mas, in
 			mas_pointer[i] = mas + shifts[i];
 		}
 	}
+	delete(res_mas);
 }
 int main(int argc, char* argv[])
 {

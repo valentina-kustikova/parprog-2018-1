@@ -19,6 +19,7 @@ int main()
 	fwrite(&k, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(int), k, fp);
 	fclose(fp);
+	delete(mas);
 	return 0;
 }
 
