@@ -189,6 +189,54 @@ void SelectElements(elemType type, const double* arr1, int size1, const double* 
 		}	
 }
 
+void Sort_Parallel_OpenMP(int nThreads, int n, double* arr) {
+	int step;
+	std::vector<double>* temp = new std::vector<double>[nThreads];
+	int *shift = new int[nThreads];
+	memset(shift, 0, nThreads * 4);
+	int *count = new int[nThreads];
+	memset(count, 0, nThreads * 4);
+#pragma omp parallel  shared(arr, step, shift, count, temp) num_threads(nThreads)
+	{
+		int tid, index;
+		tid = omp_get_thread_num();
+
+		shift[tid] = tid*(n / nThreads);
+		count[tid] = (tid == nThreads - 1) ? n - tid * (n / nThreads) : n / nThreads;
+		doubleRadixSort(arr + shift[tid], count[tid]);
+#pragma omp barrier
+
+		step = 1;
+		while (step <= log(nThreads) / log(2.0)) {
+			index = (int)pow(2, step - 1);
+			if (tid % (index * 2) == 0) {
+				SelectElements(EVEN, arr + shift[tid], count[tid], arr + shift[tid + index], count[tid + index], temp[tid]);
+
+			}
+			else if (tid % index == 0) {
+				SelectElements(ODD, arr + shift[tid], count[tid], arr + shift[tid - index], count[tid - index], temp[tid]);
+
+			}
+
+#pragma omp barrier
+			if (tid % (index * 2) == 0) {
+				MergeAndSort(temp[tid], temp[tid + index], arr + shift[tid]);
+				count[tid] += count[tid + index];
+				temp[tid].clear(); temp[tid].shrink_to_fit();
+				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();
+			}
+#pragma omp single
+			{
+				step++;
+			}
+
+		}
+	}
+	delete[] temp;
+	delete[] count;
+	delete[] shift;
+}
+
 int main(int argc, char* argv[]) {
 	int nThreads;
 
@@ -211,59 +259,14 @@ int main(int argc, char* argv[]) {
 	double* arr = new double[n];
 	fread(arr, sizeof(*arr), n, stdin);
 	
-	double start_time = omp_get_wtime();
-	int step;
-	std::vector<double>* temp = new std::vector<double>[nThreads];
-	int *shift = new int[nThreads];
-	memset(shift, 0, nThreads * 4);
-	int *count = new int[nThreads];
-	memset(count, 0, nThreads * 4);
-
-#pragma omp parallel  shared(arr, step, shift, count, temp) num_threads(nThreads)
-	{
-		int tid, index;
-		tid = omp_get_thread_num();
-
-		shift[tid] = tid*(n / nThreads);
-		count[tid] = (tid == nThreads - 1) ? n - tid * (n / nThreads) : n / nThreads;
-		doubleRadixSort(arr + shift[tid], count[tid]);		
-#pragma omp barrier
-
-		step = 1;
-		while (step <= log(nThreads) / log(2.0)) {
-			index = (int)pow(2, step - 1);
-			if (tid % (index * 2) == 0) {
-				SelectElements(EVEN, arr + shift[tid], count[tid], arr + shift[tid + index], count[tid + index], temp[tid]);
-				
-			}
-			else if (tid % index == 0) {
-				SelectElements(ODD, arr + shift[tid], count[tid], arr + shift[tid - index], count[tid - index], temp[tid]);
-				
-			}
-
-#pragma omp barrier
-			if (tid % (index * 2) == 0) {
-				MergeAndSort(temp[tid], temp[tid + index], arr + shift[tid]);
-				count[tid] += count[tid + index];
-				temp[tid].clear(); temp[tid].shrink_to_fit();
-				temp[tid + index].clear(); temp[tid + index].shrink_to_fit();				
-			}
-#pragma omp single
-			{
-				step++;
-			}
-
-		}
-	}
+	double start_time = omp_get_wtime();	
+	Sort_Parallel_OpenMP(nThreads,n,arr);
 	double time = omp_get_wtime() - start_time;
 	
 	fwrite(&n, sizeof(n), 1, stdout);
 	fwrite(arr, sizeof(*arr), n, stdout);
 	fwrite(&time, sizeof(time), 1, stdout);
-
-	delete[] temp;
-	delete[] count;
-	delete[] shift;
+	
 	delete[] arr;
 
 	return 0;
