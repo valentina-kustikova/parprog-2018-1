@@ -6,7 +6,7 @@ void Deserialize(char* file_txt)
 {
 	FILE *file_in, *file_out;
 	int N = 2 , Nz = 1;
-	freopen_s(&file_in, "matr.bin", "rb", stdin);
+	freopen_s(&file_in, "matr.in", "rb", stdin);
 
 	fread(&N, sizeof(N), 1, stdin);
 	fread(&Nz, sizeof(Nz), 1, stdin);
@@ -30,8 +30,8 @@ void Deserialize(char* file_txt)
 		fread(collumns[i], sizeof(**collumns), size_nonzero, stdin);
 		fread(index[i], sizeof(**index), N + 1, stdin);
 	}
-
 	fclose(file_in);
+
 
 	fopen_s(&file_out, file_txt, "w");
 
@@ -48,10 +48,9 @@ void Deserialize(char* file_txt)
 		fprintf(file_out, "\n");
 		for (int i = 0; i < N + 1; i++)
 			fprintf(file_out, "%d ", index[j][i]);
+		fprintf(file_out, "\n");
 	}
-
 	fclose(file_out);
-
 	for (int i = 0; i < 2; i++)
 	{
 		delete[] values[i];
@@ -117,15 +116,24 @@ void Deserialize(char* file_bin, char* file_txt)
 
 int main(int argc, char* argv[])
 {
+	char* f1;
+	char* f2;
+
 	if (argc < 2 || argc > 3)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
-		return 0;
+		std::cout << "The default values are used:\n  matr.in -> matr.txt" << std::endl;
+		f1 = "matr.txt";
+		f2 = "";
 	}
-	char* f1 = argv[1];
-	char* f2 = argv[2];
+	else
+	{
+		f1 = argv[1];
+		f2 = argv[2];
+	}
 
-	if (f2)
+
+	if (f2 != "")
 		Deserialize(f1, f2);
 	else
 		Deserialize(f1);

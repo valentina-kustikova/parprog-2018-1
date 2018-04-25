@@ -98,21 +98,32 @@ int main(int argc, char* argv[])
 {
 	FILE *matr;
 	int N = 2, Nz = 1;
+	char* f;
 
 	if (argc != 4)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
-		return 0;
+		std::cout << "The default values are used: N = 10 Nz = 1\n" << std::endl;
+		
+		f = "matr.in";
+		N = 10;
+		Nz = 1;
 	}
-	char* f = argv[1];
-	N = atoi(argv[2]);
-	Nz = atoi(argv[3]);
-
+	else
+	{
+		f = argv[1];
+		N = atoi(argv[2]);
+		Nz = atoi(argv[3]);
+	}
 
 	if ((N < Nz) || (N <= 0) || (Nz <= 0) || (N == 1))
 	{
 		std::cout << "Incorrect arguments of main\n" << std::endl;
-		return 0;
+		std::cout << "The default values are used: N = 10 Nz = 1\n" << std::endl;
+
+		f = "matr.in";
+		N = 10;
+		Nz = 1;
 	}
 
 	int size_nonzero = N * Nz;

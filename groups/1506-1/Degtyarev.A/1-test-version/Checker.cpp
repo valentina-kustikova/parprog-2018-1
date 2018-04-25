@@ -56,12 +56,16 @@ public:
 		if (read) fopen_s(&bur,"result.txt", "r"); else fopen_s(&bur, "result.txt", "w");
 	}
 	~result() { fclose(bur); }
-	void write_type(ext_cls t) { fwrite(&t, sizeof(t), 1, bur); }
+ 	void write_type(ext_cls t)
+	{ 
+		fprintf(bur,"%d", t);
+	}	
 
 	// —ообщить тестирующей системе, что решение получило один из вердиктов verdict
 	void write_verdict(verdict v)
 	{
-		write_type(ext_cls::VERDICT); fwrite(&v, sizeof(v), 1, bur);
+		write_type(ext_cls::VERDICT); 
+		fprintf(bur, "%d", v);
 	}
 
 	// Ќаписать сообщение от checker'a пользователю.
@@ -70,8 +74,11 @@ public:
 
 	void write_message(std::string str)
 	{
-		write_type(ext_cls::MESSAGE); int l = str.size(); fwrite(&l, sizeof(l), 1, bur);
-		fwrite(&str[0], sizeof(str[0]), l, bur);
+		write_type(ext_cls::MESSAGE); 
+		int l = str.size();
+		fprintf(bur, "%d", l);
+
+		fprintf(bur, "%s", str);
 	}
 
 	// —ообщить тестирующей системе врем€ работы программы участника,
@@ -79,12 +86,15 @@ public:
 	// x имеет размерность 100 нс = 10 ^ (-7) сек
 	void write_time(long long x)
 	{
-		write_type(ext_cls::TIME); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::TIME); 
+		fprintf(bur, "%d", x);
+	
 	}
 	// —ообщить тестирующей системе, пам€ть затребованную программой участника
 	void write_memory(unsigned long long x)
 	{
-		write_type(ext_cls::MEMORY); fwrite(&x, sizeof(x), 1, bur);
+		write_type(ext_cls::MEMORY); 
+		fprintf(bur, "%d", x);
 	}
 } checker_result;
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,15 +142,15 @@ int SparseDiff(crsMatrix A, crsMatrix B,double& diff)
 	// —осчитаем количество ненулевых элементов в матрице C
 	request = 1;
 
-	std::cout << "5" << std::endl;
 	mkl_dcsradd(&trans, &request, &sort, &Size, &Size,
 		A.Value, A.Col, A.Row_Index, &beta,
 		B.Value, B.Col, B.Row_Index,
 		c, jc, ic, &nzmax, &info);
-	std::cout << "6" << std::endl;
+
 	int nzc = ic[Size] - 1;
 	c = new double[nzc];
 	jc = new int[nzc];
+
 	// —осчитаем C = A - B
 	request = 2;
 	mkl_dcsradd(&trans, &request, &sort, &Size, &Size,
@@ -176,7 +186,6 @@ int SparseDiff(crsMatrix A, crsMatrix B,double& diff)
 	delete[] c;
 	delete[] ic;
 	delete[] jc;
-
 	return 1;
 }
 
@@ -200,8 +209,6 @@ void ReadStandartMult(char* file, crsMatrix& C)
 	fclose(matr);
 
 }
-
-
 
 void ReadParticipantMult(char* file, crsMatrix& C, double &time)
 {
@@ -236,35 +243,51 @@ int Checker(char* file_p, char* file_s, double& time)
 	if (diff > 0)
 		return 0;
 
-
 	FreeMatr(C1);
 	FreeMatr(C2);
+
 	return 1;
 }
 
 
 int main(int argc, char* argv[])
 {
+	char* f1;
+	char* f2;
 	double res_time;
 	if (argc != 3)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
-		checker_result.write_message("PE. Presentation Error.");
+		checker_result.write_message("PE. Presentation Error.\n");
 		checker_result.write_verdict(verdict::PE);
-		return 0;
-	}
-	
-	if (Checker(argv[1], argv[2], res_time))
-	{
-		checker_result.write_message("AC. Numbers are equal.");
-		checker_result.write_verdict(verdict::AC);		std::cout << "GOOD" << std::endl;
+		std::cout << "The default values are used:\n  matr.ans & matr.stand" << std::endl;
+
+		f1 = "matr.ans";
+		f2 = "matr.stand";
 	}
 	else
 	{
-		checker_result.write_message("WA. Output is not correct.");
-		checker_result.write_verdict(verdict::WA);		std::cout << "BAD" << std::endl;	}
+		f1 = argv[1];
+		f2 = argv[2];
+	}
+
+	if (Checker(f1, f2, res_time))
+	{
+		checker_result.write_message("AC. Numbers are equal.\n");
+		checker_result.write_verdict(verdict::AC);
+		std::cout << "GOOD" << std::endl;
+
+	}
+	else
+	{
+		checker_result.write_message("WA. Output is not correct.\n");
+		checker_result.write_verdict(verdict::WA);
+		std::cout << "BAD" << std::endl;
+	}
 
 	// «аписываем врем€ в правильной размерности (интервалы по 100 нс = 10 ^ (-7) сек).
-	checker_result.write_time(res_time);
+
+	long long time = res_time * 1e7;
+	checker_result.write_time(time);
 	return 0; 
 }

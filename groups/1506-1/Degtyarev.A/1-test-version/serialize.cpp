@@ -61,13 +61,17 @@ void Serialize(char* file_bin)
 
 int main(int argc, char* argv[])
 {
+	char* f2;
+
 	if (argc != 2)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
-		return 0;
+		std::cout << "The default values are used:\n  matr.txt -> matr.in" << std::endl;
+		f2 = "matr.in";
 	}
+	else
+		f2 = argv[1];
 
-	char* f2 = argv[1];
 	Serialize(f2);
 
 	return 0;

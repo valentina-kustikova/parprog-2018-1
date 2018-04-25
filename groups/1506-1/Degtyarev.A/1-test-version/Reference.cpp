@@ -32,7 +32,7 @@ void FreeMatr(crsMatrix &matr)
 	delete[] matr.Row_Index;
 }
 
-void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C, double& time)
+void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C)
 {
 	int Size = A.Size;
 
@@ -48,7 +48,7 @@ void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C, double& time)
 		A.Row_Index[j]++;
 		B.Row_Index[j]++;
 	}
-	std::cout << "4" << std::endl;
+
 	// Используется функция, вычисляющая C = op(A) * B говорит о том, op(A) = A – не нужно транспонировать A
 	char trans = 'N'; 
 
@@ -77,20 +77,18 @@ void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C, double& time)
 
 	// Служебная информация
 	int info;
-	clock_t start = clock();
+
 	// Выделим память для индекса в матрице C
 	C.Row_Index = new int[Size + 1];
-	// Сосчитаем количество ненулевых элементов в матрице C	request = 1;
+	// Сосчитаем количество ненулевых элементов в матрице C
+	request = 1;
 	C.Value = 0;
 	C.Col = 0;
-
-	std::cout << "5" << std::endl;
 
 	mkl_dcsrmultcsr(&trans,&request,&sort,&Size, &Size, &Size,
 		A.Value,A.Col,A.Row_Index, B.Value, B.Col, B.Row_Index, 
 		C.Value, C.Col, C.Row_Index,&nzmax,&info);
 
-	std::cout << "6" << std::endl;
 	int nzc = C.Row_Index[Size] - 1;
 	C.Value = new double[nzc];
 	C.Col = new int[nzc];
@@ -103,14 +101,16 @@ void SparseMKLMult(crsMatrix A, crsMatrix B, crsMatrix& C, double& time)
 	C.Size = Size;
 	C.Size_Z = nzc;
 
-	clock_t finish = clock();
-
+  for (int i = 0; i < C.Size_Z; i++)
+    C.Col[i]--;
+  for (int j = 0; j <= Size; j++)
+    C.Row_Index[j]--;
 }
 
 
 
 
-void SequenceSparseMult(char* file_in, char* file_out, double &time)
+void SequenceSparseMult(char* file_in, char* file_out)
 {
 	FILE* matr_in, *matr_res;
 	
@@ -125,7 +125,6 @@ void SequenceSparseMult(char* file_in, char* file_out, double &time)
 
 	int size_nonzero = N * Nz;
 
-	std::cout << "2" << std::endl;
 	InitMatr(N, size_nonzero, A);
 	InitMatr(N, size_nonzero, B);
 
@@ -139,10 +138,8 @@ void SequenceSparseMult(char* file_in, char* file_out, double &time)
 
 	fclose(matr_in);
 
-	std::cout << "3" << std::endl;
-	SparseMKLMult(A,B,C,time);
+	SparseMKLMult(A,B,C);
 
-	
 	size_nonzero = C.Size_Z;
 
 	freopen_s(&matr_res, file_out, "wb", stdout);
@@ -163,12 +160,24 @@ void SequenceSparseMult(char* file_in, char* file_out, double &time)
 int main(int argc, char* argv[])
 {
 	double time;
+	char* f1;
+	char* f2;
+
+
 	if (argc != 3)
 	{
 		std::cout << "Invalid input parameters\n" << std::endl;
-		return 0;
+		std::cout << "The default values are used:\n  matr.in -> matr.stand" << std::endl;
+
+		f1 = "matr.in";
+		f2 = "matr.stand";
 	}
-	std::cout << "1" << std::endl;
-	SequenceSparseMult(argv[1], argv[2], time);
+	else
+	{
+		f1 = argv[1];
+		f2 = argv[2];
+	}
+
+	SequenceSparseMult(f1, f2);
 	return 0;
 }
