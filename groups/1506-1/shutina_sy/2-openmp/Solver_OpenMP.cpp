@@ -241,9 +241,9 @@ int main(int argc, char* argv[]) {
 	int nThreads;
 
 	if (argc > 3) {
-		freopen(argv[1], "rb", stdin);
-		freopen(argv[2], "wb", stdout);
-		nThreads = atoi(argv[3]);
+		nThreads = atoi(argv[1]);
+		freopen(argv[2], "rb", stdin);
+		freopen(argv[3], "wb", stdout);		
 	}
 	else {
 		if (argc > 1) {
