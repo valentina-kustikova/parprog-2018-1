@@ -11,7 +11,7 @@
 #include <chrono>
 #include <fstream>
 #include <string>
-
+#include <omp.h>
 using namespace std;
 
 /*
@@ -64,7 +64,7 @@ int Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
 	int HalfSize = N / 2;
 	int newSize = N / 2;
 
-	if (N <= 2)
+	if (N <= 32)
 	{
 		MUL(MatrixA, MatrixB, MatrixC, N);
 	}
@@ -252,7 +252,7 @@ int main(int argc, char * argv[])
 
 	N = (int)(log2(realSize));
 	int k = pow(2, N);
-	if (realSize == k) { N = realSize; ; }
+	if (realSize == k) { N = realSize; }
 	else
 	{
 		N++;
@@ -298,9 +298,10 @@ int main(int argc, char * argv[])
 	}
 
 	//cout << endl;
-
+	double time = omp_get_wtime();
 	Strassen(N, A, B, C);
-
+	time = omp_get_wtime() - time;
+	cout << time;
 	/*for (int i = 0; i < N; i++) {
 	for (int j = 0; j < N; j++) {
 	cout << C[i*N + j] << " ";
@@ -320,6 +321,7 @@ int main(int argc, char * argv[])
 
 
 	FILE * file_out = fopen("matr.out", "wb");
+	fwrite(&time, sizeof(time), 1, file_out);
 	fwrite(&realSize, sizeof(realSize), 1, file_out);
 	fwrite(C_new, sizeof(*C_new), realSize*realSize, file_out);
 
@@ -329,8 +331,8 @@ int main(int argc, char * argv[])
 	//fwrite(&realSize, sizeof(realSize), 1, matr_out);
 	//fwrite(C_new, sizeof(*C_new), realSize*realSize, matr_out);
 
-
-	//fclose(&matr_out);
+	fclose(matr_in);
+	fclose(matr_out);
 	system("pause");
 	delete[] A;
 	delete[] B;
@@ -339,3 +341,4 @@ int main(int argc, char * argv[])
 	return 0;
 
 }
+

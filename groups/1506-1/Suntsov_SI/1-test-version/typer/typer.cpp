@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
 		}
 	}
 	FILE *in;
-	freopen_s(&in, "mat.in", "wb", stdout);
+	freopen_s(&in, "matr.in", "wb", stdout);
 
 
 	fwrite(&N, sizeof(N), 1, stdout);

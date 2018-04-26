@@ -30,9 +30,9 @@ int main(int argc, char * argv[])
 		freopen_s(&in, "matr.out", "rb", stdin);
 	}
 
-	double time;
-	fread(&time, sizeof(time), 1, stdin);
-	cout << time << endl;
+	//double time;
+	//fread(&time, sizeof(time), 1, stdin);
+	//cout << time << endl;
 	fread(&N, sizeof(N), 1, stdin);
 	cout << N << endl;
 	cout << fixed << setprecision(4);
@@ -61,5 +61,6 @@ int main(int argc, char * argv[])
 		fout << endl;
 	}
 	fout.close();
+	fclose(in);
 	return 0;
 }

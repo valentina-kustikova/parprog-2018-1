@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 #include <omp.h>
+#include <cstring>
 using namespace std;
 
 #define CHUNK_SIZE 10
@@ -61,7 +62,7 @@ void Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
 	int HalfSize = N / 2;
 	int newSize = N / 2;
 
-	if (N <= 2)
+	if (N <= 32)
 	{
 		MUL(MatrixA, MatrixB, MatrixC, N);
 	}
@@ -122,8 +123,8 @@ void Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
 #pragma omp parallel
 		{
 #pragma omp for private(i,j) schedule(static, CHUNK_SIZE) 
-			for (int i = 0; i < N / 2; i++)
-				for (int j = 0; j < N / 2; j++)
+			for (i = 0; i < N / 2; i++)
+				for (j = 0; j < N / 2; j++)
 				{
 					A11[j + i*N / 2] = MatrixA[j + i*N];
 					A12[j + i*N / 2] = MatrixA[i*N + (j + N / 2)];
@@ -216,8 +217,8 @@ void Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
 			}
 
 #pragma omp for private(i,j) schedule(static, CHUNK_SIZE) 
-			for (int i = 0; i < HalfSize; i++)
-				for (int j = 0; j < HalfSize; j++)
+			for (i = 0; i < HalfSize; i++)
+				for (j = 0; j < HalfSize; j++)
 				{
 					MatrixC[i*N + j] = C11[i*HalfSize + j];
 					MatrixC[i*N + (j + N / 2)] = C12[i*HalfSize + j];
@@ -251,10 +252,17 @@ int main(int argc, char * argv[])
 	FILE *matr_in, *matr_out;
 
 	char* fileName = "matr.in";
-	char* answerName = "matr.out";
+	char* answerName = "answer.ans";
 	int realSize = 0; //считываем из файла
 	int num_th;
-	num_th = atoi(argv[1]);
+	if (argc>1)
+	{
+		num_th = atoi(argv[1]);
+	}
+	else
+	{
+		num_th = 1;
+	}
 	omp_set_num_threads(num_th);
 
 
@@ -262,7 +270,7 @@ int main(int argc, char * argv[])
 		fileName = argv[2];
 		string str = string(argv[2]) + string(".out");
 		answerName = new char[str.length()];
-		String_to_Char(str, answerName);
+		answerName = (char*)str.c_str();
 	}
 	freopen_s(&matr_in, "matr.in", "rb", stdin);
 
@@ -317,15 +325,14 @@ int main(int argc, char * argv[])
 	}
 
 	//cout << endl;
-
+	double time = omp_get_wtime();
 #pragma omp parallel 
 	{
-#pragma omp single
-		{
-			Strassen(N, A, B, C);
-		}
-	}
 
+		Strassen(N, A, B, C);
+	}
+	time = omp_get_wtime() - time;
+	cout << time;
 
 	/*for (int i = 0; i < N; i++) {
 	for (int j = 0; j < N; j++) {
@@ -345,7 +352,8 @@ int main(int argc, char * argv[])
 
 
 
-	FILE * file_out = fopen("matr.out", "wb");
+	FILE * file_out = fopen("answer.ans", "wb");
+	fwrite(&time, sizeof(time), 1, file_out);
 	fwrite(&realSize, sizeof(realSize), 1, file_out);
 	fwrite(C_new, sizeof(*C_new), realSize*realSize, file_out);
 
@@ -356,7 +364,8 @@ int main(int argc, char * argv[])
 	//fwrite(C_new, sizeof(*C_new), realSize*realSize, matr_out);
 
 
-	//fclose(&matr_out);
+	fclose(matr_out);
+	fclose(matr_in);
 	system("pause");
 	delete[] A;
 	delete[] B;

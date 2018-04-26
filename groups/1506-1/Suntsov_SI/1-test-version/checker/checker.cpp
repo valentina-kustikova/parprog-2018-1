@@ -135,7 +135,7 @@ int main(int argc, char * argv[])
 	double res_time = 0;
 
 	// считываем время выполнения программы и результирующую матрицу
-	//fread(&res_time, sizeof(res_time), 1, buo);
+	fread(&res_time, sizeof(res_time), 1, buo);
 	int n;
 	fread(&n, sizeof(n), 1, buo);
 	fread(res, sizeof(*res), N*N, buo);
@@ -143,13 +143,15 @@ int main(int argc, char * argv[])
 	//cout << n << endl;
 
 	// считываем время выполнения и результирующую матрицу из эталонного файла
-	//fread(&ans_time, sizeof(res_time), 1, bua);
+	fread(&ans_time, sizeof(res_time), 1, bua);
 	fread(&n, sizeof(n), 1, bua);
 	fread(ans, sizeof(*ans), N*N, bua);
 	//cout << ans_time << endl;
 	cout << n << endl;
 	cout << fixed << setprecision(4);
 	if (N < 11) {
+		cout << ans_time << " " << res_time << endl;
+
 		for (int i = 0; i < N; i++)
 		{
 			for (int j = 0; j < N; j++)
