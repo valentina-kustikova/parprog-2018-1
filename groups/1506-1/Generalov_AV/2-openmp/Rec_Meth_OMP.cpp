@@ -1,6 +1,6 @@
-#include "../1-test-version/1-Rec_Met_PP/solution.h"
-#include "../1-test-version/1-Rec_Met_PP/dataStruct.h"
-#include "../1-test-version/1-Rec_Met_PP/resultStruct.h"
+#include "../include/solution.h"
+#include "../include/dataStruct.h"
+#include "../include/resultStruct.h"
 #include <omp.h>
 #include <iostream>
 #include <istream>

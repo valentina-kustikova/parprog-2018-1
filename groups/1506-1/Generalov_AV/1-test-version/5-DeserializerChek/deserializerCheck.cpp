@@ -1,4 +1,4 @@
-#include "checkerStruct.h"
+#include "../../include/checkerStruct.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -9,7 +9,7 @@ void Deserializer(ifstream& in, ofstream& out) {
 	while (1) {
 		d.Read(in);
 		if (in.eof()) break;
-		else
+		else 
 			d.Write(out);
 	}
 }

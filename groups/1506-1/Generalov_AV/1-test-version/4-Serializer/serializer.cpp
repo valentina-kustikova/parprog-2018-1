@@ -1,4 +1,4 @@
-#include "dataStruct.h"
+#include "../../include/dataStruct.h"
 #include <string>
 #include <fstream>
 #include <iostream>

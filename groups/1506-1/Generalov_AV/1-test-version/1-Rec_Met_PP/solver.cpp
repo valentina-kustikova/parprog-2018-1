@@ -1,6 +1,6 @@
-#include "solution.h"
-#include "dataStruct.h"
-#include "resultStruct.h"
+#include "../../include/solution.h"
+#include "../../include/dataStruct.h"
+#include "../../include/resultStruct.h"
 #include <string>
 #include <iostream>
 #include <istream>
@@ -8,7 +8,7 @@
 #include <chrono>
 using namespace std;
 
-void TakeRes(ifstream& in, ostream& out) {
+void TakeRes(ifstream& in, ofstream& out) {
 	Data d;
 	ResultOut r;
 	double res = 0.0;

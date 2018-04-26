@@ -40,12 +40,10 @@ public:
 
 	void Read(istream& in) {
 
-		size_t len = 0;                         // Переменная для длины
-		in.read((char*)&len, sizeof(len));  // Чтение длины записанной строки
-											/*if (len == 0)
-											return;*/
-		char * buf = new char[len];         // Выделение буфера для чтения
-		in.read(buf, len);                   // Чтение (с нулевым байтом)
+		size_t len = 0;                         
+		in.read((char*)&len, sizeof(len));  
+		char * buf = new char[len];         
+		in.read(buf, len);                   
 		func = buf;
 		in.read((char*)&lb, sizeof(lb));
 		in.read((char*)&ub, sizeof(ub));

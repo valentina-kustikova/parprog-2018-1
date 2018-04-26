@@ -4,6 +4,8 @@
 #include <fstream>
 using namespace std;
 
+enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
+
 struct checkerOut {
 	string Res;
 
@@ -13,13 +15,12 @@ public:
 	}
 
 	void Write(ostream& os) {
-		size_t len = Res.length() + 1;
-		os.write((char*)&len, sizeof(len));
-		os.write((char*)Res.c_str(), len);
+		os.write((char*)Res.c_str(), Res.length() + 1);
 	}
 
-	void Read(istream& in) {
+	void Read(ifstream& in) {
 		size_t len = 0;
+		in.read((char*)&len, sizeof(len));
 		char * buf = new char[len];
 		in.read(buf, len);
 		Res = buf;
