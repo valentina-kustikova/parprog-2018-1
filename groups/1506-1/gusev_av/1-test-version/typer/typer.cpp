@@ -1,33 +1,29 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <vector>
+#include <fstream>
 int main(int argc, char* argv[])
 {
 	if (argc != 3)
 	{
-		std::cout << "'please, enter typer [input.bin] [output.bin] '" << std::endl;
+		std::cout << "'please, enter typer [input.txt] [output.bin] '" << std::endl;
 		return 1;
 	}
-	FILE *in, *out;
-	in = fopen(argv[1], "rt");
-	out = fopen(argv[2], "wb");
-	char* num = new char[20];
-	std::vector<int> vec;
-	size_t size = 0;
-	double time;
 
-	if (in != nullptr)
-	{
-		while (fgets(num, 20, in) != nullptr)
-			vec.push_back(atoi(num));
-		size = vec.size();
-		fwrite(&time, sizeof(double), 1, out);
-			fwrite(&size, sizeof(int), 1, out);
-		for (int i = 0; i < size; i++)
-			fwrite(&vec[i], sizeof(int), 1, out);
-	}
-	fclose(in);
-	fclose(out);
-	delete[] num;
+	freopen(argv[1], "rt", stdin);
+	freopen(argv[2], "wb", stdout);
+	double time;
+	int size;
+	std::ifstream fin(argv[1]);
+	fin >> time;
+	fin >> size; 
+	double* arr = new double[size];
+	for (int i = 0; i < size; i++)
+		fin >> arr[i];
+	fwrite(&time, sizeof(double), 1, stdout);
+	fwrite(&size, sizeof(int), 1, stdout);
+		fwrite(arr, sizeof(*arr), size, stdout);
+	delete[] arr;
+	fclose(stdin);
+	fclose(stdout);
 	return 0;
 }

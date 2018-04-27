@@ -15,14 +15,16 @@ int main(int argc, char * argv[])
 	}
 	int n = n_tests[atoi(argv[1])];
 	freopen(argv[2], "wb", stdout);
-	default_random_engine generator(static_cast<unsigned int>(chrono::system_clock::now().time_since_epoch().count()));
-	uniform_int_distribution <int> distribution(-10000, 10000);
+	default_random_engine generator((chrono::system_clock::now().time_since_epoch().count()));
+	uniform_real_distribution <double> distribution(-1e4, 1e4);
 	fwrite(&n, sizeof(n), 1, stdout);
-	int * cur = new int[n];
+	double * cur = new double[n];
 	for(int i = 0; i < n; i++) {
 		cur[i] = distribution(generator);
 	}
 	fwrite(cur, sizeof(*cur), n, stdout);
+	fclose(stdout);
+	delete cur;
 	return 0;
 }
 

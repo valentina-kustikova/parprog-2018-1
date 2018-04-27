@@ -17,8 +17,16 @@ void QuickSort(double* arr, int size)
 			right--;
 		}
 	} while (left <= right);
-	if (right > 0)
-		QuickSort(arr, right + 1);
-	if (left < size)
-		QuickSort(&arr[left], size - left);
+#pragma omp parallel
+	{
+#pragma omp sections nowait
+		{
+#pragma omp section
+			if (right > 0)
+				QuickSort(arr, right + 1);
+#pragma omp section
+			if (left < size)
+				QuickSort(&arr[left], size - left);
+		}
+	}
 }
