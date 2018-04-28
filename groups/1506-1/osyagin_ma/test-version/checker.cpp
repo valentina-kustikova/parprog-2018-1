@@ -13,11 +13,8 @@ class result
 		ofstream bur;
 	public:
 
-		result (bool read = false){
-			if (read) 
-				bur.open("result.txt");
-			else 
-				bur.open("result.txt"); 
+		result ( string str){ 
+				bur.open(str); 
 		}
 
 		~result() { bur.close(); }
@@ -32,22 +29,27 @@ class result
 		void write_memory(unsigned long long x){ 
 			bur << x; 
 		}
-} checker_result;
+};
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
 int main (int argc, char* argv[]){
-	 char * name1;
+	char * name1;
     char * name2;
-    if (argc != 3){
+    char * name3;
+    if (argc != 4){
         name1 = "tests/1perfect.ans";
         name2 = "tests/1.out";
+        name3 = "result1.txt";
     }else{
         name1 = argv[1];
         name2 = argv[2];
+        name3 = argv[3];
     }
-	std::ifstream in1(name1, std::ios::binary); //perfect
-	std::ifstream in2(name2, std::ios::binary); //result 	
+    cout << name1 << " " << name2<< " " << name3 <<endl;
+    result checker_result(name3); 
+	ifstream in1(name1, std::ios::binary); //perfect
+	ifstream in2(name2, std::ios::binary); //result 	
 	bool success1,success2;
 	int AC = -1;
     double time1, time2;
@@ -55,6 +57,9 @@ int main (int argc, char* argv[]){
     int VNum1, VNum2;
     in1.read((char*)&success1, sizeof(success1));
     in2.read((char*)&success2, sizeof(success2));
+
+    cout << success1 << " " << success2 << " " << endl;
+
     if(success1 != success2){ 
     	checker_result.write_message("WA. Output is not correct.");
     }else{
