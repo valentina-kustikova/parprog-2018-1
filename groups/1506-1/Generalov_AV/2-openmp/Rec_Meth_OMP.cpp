@@ -8,59 +8,59 @@
 
 using namespace std;
 
-
 void TakeRes(ifstream& in, ostream& out, int NumThreads) {
 	Data d;
 	ResultOut r;
 	double res = 0.0;
 	d.Read(in);
-	omp_set_num_threads(omp_get_max_threads());
+	string Func = d.func;
+	double lowBound = d.lb;
+	double uppBound = d.ub;
+	double numSplit = d.nspl;
+
 	double start = omp_get_wtime();
-#pragma omp parallel 
-	{			
+#pragma omp parallel shared(res, NumThreads, Func, lowBound, uppBound, numSplit) num_threads(NumThreads)
+	{
 		int NumberOfThread = omp_get_num_threads();
 		int tID = omp_get_thread_num();
+		double step = (d.ub - d.lb) / (double)NumThreads;
 
-		double step = (d.ub - d.lb) / NumberOfThread;
-
-		double loc_lb = d.lb + step * tID;
+		double loc_lb = d.lb + step * (double)tID;
 		double loc_ub = loc_lb + step;
 
-		double loc_res = 0;
-		loc_res = Rect_Meth_(loc_lb, loc_ub, d.nspl / NumThreads, d.func);
-#pragma omp critical
-		{
-			res += loc_res;
-		}
-#pragma omp barrier
+		res += Rect_Meth_(loc_lb, loc_ub, d.nspl / (double)NumThreads, d.func);
 	}
 	double finishTime = omp_get_wtime();
 
 	r.result = res;
 	r.time = finishTime - start;
+
 	r.Write(out);	
 }
 
 int main(int argc, char* argv[]) {
 	ofstream Res;		//Write
 	ifstream Test;		//Read
+	int NumThreads = 0;
 	if (argc == 4) {
 		string ResName = argv[1];
 		string TestName = argv[2];
-		int NumThreads = 4;
+		NumThreads = atoi(argv[3]);
 
 		Res.open(ResName, ios::binary | ios::trunc);
-		Test.open(TestName, ios::binary);
-
-		if (!Res.is_open() || !Test.is_open())
-			cout << "Do no open file" << endl;
-		else
-			TakeRes(Test, Res, NumThreads);
+		Test.open(TestName, ios::binary);		
 	}
 	else {
-		cout << "Invalid count of arguments" << endl;
-		return 1;
+		cout << "Invalid count of arguments command line" << endl;
+		Res.open("res.ans", ios::binary, ios::trunc);
+		Test.open("data.dat", ios::binary);
+		NumThreads = 4;
 	}
+
+	if (!Res.is_open() || !Test.is_open())
+		cout << "Do no open file" << endl;
+	else
+		TakeRes(Test, Res, NumThreads);
 
 	Res.close();
 	Test.close();	

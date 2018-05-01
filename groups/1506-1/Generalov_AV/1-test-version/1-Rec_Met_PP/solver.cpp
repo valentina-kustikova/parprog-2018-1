@@ -5,7 +5,7 @@
 #include <iostream>
 #include <istream>
 #include <fstream>
-#include <chrono>
+#include <omp.h>
 using namespace std;
 
 void TakeRes(ifstream& in, ofstream& out) {
@@ -14,15 +14,13 @@ void TakeRes(ifstream& in, ofstream& out) {
 	double res = 0.0;
 	while (1) {
 		d.Read(in);
+		d.Show();
 		if (in.eof()) break;
-		auto begin = std::chrono::steady_clock::now(); // начальное время
+		double start = omp_get_wtime();
 		res = Rect_Meth_(d.lb, d.ub, d.nspl, d.func);
-		auto end = std::chrono::steady_clock::now(); // конечное время
-		auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin); // искомое время
-		cout << "Result: " << res << endl;
-		cout << "Time = " << (double)elapsed_ms.count() << " ms\n" << endl;
+		double finishTime = omp_get_wtime();
 		r.result = res;
-		r.time = (double)elapsed_ms.count();
+		r.time = finishTime - start;
 		r.Write(out);
 	}
 }
@@ -35,17 +33,18 @@ int main(int argc, char * argv[])
 		string ResName = argv[1];
 		string TestName = argv[2];
 		Res.open(ResName, ios::binary | ios::trunc);
-		Test.open(TestName, ios::binary);
-
-		if (!Res.is_open() || !Test.is_open())
-			cout << "Do no open file" << endl;
-		else
-			TakeRes(Test, Res);
+		Test.open(TestName, ios::binary);		
 	}
 	else {
 		cout << "Invalid count of arguments" << endl;
-		return 1;
+		Res.open("res.ans", ios::binary, ios::trunc);
+		Test.open("data.dat", ios::binary);
 	}
+
+	if (!Res.is_open() || !Test.is_open())
+		cout << "Do no open file" << endl;
+	else
+		TakeRes(Test, Res);
 
 	Res.close();
 	Test.close();

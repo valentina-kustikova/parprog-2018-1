@@ -16,8 +16,8 @@ void Deserializer(ifstream& in, ofstream& out) {
 
 int main(int argc, char* argv[])
 {
-	ofstream TXT;
 	ifstream BIN;
+	ofstream TXT;
 	if (argc == 3) {
 		string NameBIN = argv[1];
 		string NameTXT = argv[2];
