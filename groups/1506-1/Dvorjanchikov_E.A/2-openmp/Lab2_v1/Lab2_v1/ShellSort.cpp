@@ -219,10 +219,9 @@ void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n,
 void Sort(double* mas, int mas_size, double** mas_pointer, double* sizes_mas, int count_divene, int pointer_k, int *shifts)
 {
 	double* res_mas = new double[mas_size];
-	int j;
 #pragma omp parallel
 	{
-#pragma omp for private(j)
+#pragma omp for 
 		for (int j = 0; j < count_divene; j++)
 		{
 			ShellSort(mas_pointer[j], sizes_mas[j]);
@@ -305,8 +304,8 @@ int main(int argc, char* argv[])
 	fwrite(&mas_size, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(double), mas_size, fp);
 	fclose(fp);
-	err = fopen_s(&fp, "time.txt", "w");
-	fprintf_s(fp, "Time %f \n", end_time - start_time);
+	err = fopen_s(&fp, "time.txt", "a");
+	fprintf_s(fp, "Time : %f \n", end_time - start_time);
 	fclose(fp);
 	delete(mas);
 	delete(mas_pointer);

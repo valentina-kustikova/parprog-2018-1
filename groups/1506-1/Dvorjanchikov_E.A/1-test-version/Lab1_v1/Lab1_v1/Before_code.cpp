@@ -242,8 +242,8 @@ void Sort(double* mas,int mas_size,double** mas_pointer,double* sizes_mas,int co
 		{
 			mas_pointer[i] = mas + shifts[i];
 		}
-		delete(res_mas);
 	}
+	delete(res_mas);
 }
 int main(int argc,char* argv[])
 {
@@ -299,8 +299,8 @@ int main(int argc,char* argv[])
 	fwrite(&mas_size, sizeof(int), 1, fp);
 	fwrite(mas, sizeof(double), mas_size, fp);
 	fclose(fp);
-	err = fopen_s(&fp, "time.txt", "w");
-	fprintf_s(fp, "Time %f \n", end_time - start_time);
+	err = fopen_s(&fp, "time.txt", "a");
+	fprintf_s(fp, "Time : %f \n", end_time - start_time);
 	fclose(fp);
 	delete(mas);
 	delete(mas_pointer);

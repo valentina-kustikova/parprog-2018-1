@@ -1,0 +1,7 @@
+Input : S
+New : Yes
+Count of elements : 100
+Type : Random
+Check : Yes
+Output : S
+Show : No
