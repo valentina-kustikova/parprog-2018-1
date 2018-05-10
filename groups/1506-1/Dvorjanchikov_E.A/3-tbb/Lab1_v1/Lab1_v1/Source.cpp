@@ -256,6 +256,7 @@ void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n,
 	delete(f_points);
 	delete(s_counts);
 	delete(s_points);
+	delete(dashs);
 }
 
 void Merges(double* mas, int mas_size, double** mas_pointer, int* sizes_mas, int count_divene, int pointer_k, int *shifts)
@@ -339,6 +340,7 @@ int main(int argc, char* argv[])
 	fprintf_s(fp, "Time : %f \n", end_time - start_time);
 	fclose(fp);
 	delete(mas);
+	delete(shifts);
 	delete(mas_pointer);
 	delete(sizes_mas);
 	return 0;

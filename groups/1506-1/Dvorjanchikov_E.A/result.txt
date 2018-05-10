@@ -1,0 +1,80 @@
+Size 10000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 11000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 12000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 13000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 14000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 15000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 16000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 17000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 18000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 19000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 20000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 21000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 22000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 23000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 24000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 25000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 26000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 27000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 28000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+Size 29000
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.
+AC. Array is sorted correctly.

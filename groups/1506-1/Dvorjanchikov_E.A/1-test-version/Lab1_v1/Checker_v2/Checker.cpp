@@ -31,39 +31,20 @@ public:
 	};
 	result(bool read = false)
 	{
-		if (read) bur = fopen("result.txt", "r");
+		if (read) bur = fopen("result.txt", "a+");
 		else
-			bur = fopen("result.txt", "w");
+			bur = fopen("result.txt", "a+");
 	}
 	~result()
 	{
 		fclose(bur);
 	}
-	void write_type(ext_cls t)
-	{
-		fwrite(&t, sizeof(t), 1, bur);
-	}
-	void write_verdict(verdict v)
-	{
-		write_type(ext_cls::VERDICT);
-		fwrite(&v, sizeof(v), 1, bur);
-	}
 	void write_message(string str)
 	{
-		write_type(ext_cls::MESSAGE);
 		int l = str.size();
-		fwrite(&l, sizeof(l), 1, bur);
+		char c = '/';
 		fwrite(&str[0], sizeof(str[0]), l, bur);
-	}
-	void write_time(long long x)
-	{
-		write_type(ext_cls::TIME);
-		fwrite(&x, sizeof(x), 1, bur);
-	}
-	void write_memory(unsigned long long x)
-	{
-		write_type(ext_cls::MEMORY);
-		fwrite(&x, sizeof(x), 1, bur);
+		fprintf_s(bur, "\n");
 	}
 } checker_result;
 
@@ -116,12 +97,12 @@ int main(int argc, char * argv[])
 	if (flag == false) {
 
 		checker_result.write_message("AC. Array is sorted correctly.");
-		checker_result.write_verdict(verdict::AC);
+		//checker_result.write_verdict(verdict::AC);
 	}
 	else
 	{
 		checker_result.write_message("WA. Array isn't sorted corrently.");
-		checker_result.write_verdict(verdict::WA);
+		//checker_result.write_verdict(verdict::WA);
 	}
 	delete(arr);
 	delete(res_arr);

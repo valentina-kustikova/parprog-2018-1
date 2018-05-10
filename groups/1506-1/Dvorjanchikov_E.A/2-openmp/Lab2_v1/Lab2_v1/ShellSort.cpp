@@ -215,6 +215,7 @@ void Divede_Conquer(double* mas, double* f_mas, double* s_mas, int f_n, int s_n,
 	delete(f_points);
 	delete(s_counts);
 	delete(s_points);
+	delete(dashs);
 }
 void Sort(double* mas, int mas_size, double** mas_pointer, double* sizes_mas, int count_divene, int pointer_k, int *shifts)
 {
@@ -307,6 +308,7 @@ int main(int argc, char* argv[])
 	err = fopen_s(&fp, "time.txt", "a");
 	fprintf_s(fp, "Time : %f \n", end_time - start_time);
 	fclose(fp);
+	delete(shifts);
 	delete(mas);
 	delete(mas_pointer);
 	delete(sizes_mas);

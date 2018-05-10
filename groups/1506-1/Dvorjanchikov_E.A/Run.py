@@ -9,7 +9,7 @@ for i in range(7):
      param.append(parse_module.parseString(data).asList().pop(2))
 f.close()
 s1 = os.getcwd();
-os.chdir(s1+'/x64/Debug')
+os.chdir(s1+'/1-test-version/Lab1_v1/x64/Release')
 namein = param.pop(0)
 recreate = param.pop(0)
 count = param.pop(0)
