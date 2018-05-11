@@ -241,8 +241,7 @@ int main(int argc, char * argv[])
 	if (argc > 1) {
 		fileName = argv[1];
 		string str = string(argv[1]) + string(".out");
-		answerName = new char[str.length()];
-		String_to_Char(str, answerName);
+		answerName = (char*)str.c_str();
 	}
 	freopen_s(&matr_in, "matr.in", "rb", stdin);
 
@@ -280,10 +279,8 @@ int main(int argc, char * argv[])
 	for (int i = 0; i<realSize; i++) {
 		for (int j = 0; j<realSize; j++) {
 			fread(&A[i*N + j], sizeof(double), 1, stdin);
-			//cout << A[i*N + j] << " ";
+			
 		}
-		//cout << endl;
-
 	}
 
 	//cout << endl;
@@ -292,23 +289,16 @@ int main(int argc, char * argv[])
 		for (int j = 0; j < realSize; j++) {
 
 			fread(&B[i*N + j], sizeof(double), 1, stdin);
-			//cout << B[i*N + j] << " ";
+			
 		}
-		//cout << endl;
+		
 	}
 
-	//cout << endl;
 	double time = omp_get_wtime();
 	Strassen(N, A, B, C);
 	time = omp_get_wtime() - time;
 	cout << time;
-	/*for (int i = 0; i < N; i++) {
-	for (int j = 0; j < N; j++) {
-	cout << C[i*N + j] << " ";
-	}
-	cout << endl;
-	}
-	*/
+	
 
 	for (int i = 0; i < realSize; i++) {
 		for (int j = 0; j < realSize; j++) {
@@ -326,11 +316,7 @@ int main(int argc, char * argv[])
 	fwrite(C_new, sizeof(*C_new), realSize*realSize, file_out);
 
 
-	//freopen_s(&matr_out, "answer.ans", "wb", stdout);
-	////fwrite(&time, sizeof(time), 1, answer);
-	//fwrite(&realSize, sizeof(realSize), 1, matr_out);
-	//fwrite(C_new, sizeof(*C_new), realSize*realSize, matr_out);
-
+	
 	fclose(matr_in);
 	fclose(matr_out);
 	system("pause");

@@ -200,5 +200,9 @@ int main(int argc, char * argv[])
 	fclose(bui);
 	fclose(bua);
 	fout.close();
+	delete[] A;
+	delete[] B;
+	delete[] C;
 	return 0;
+
 }

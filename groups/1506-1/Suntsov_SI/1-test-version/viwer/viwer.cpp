@@ -62,5 +62,6 @@ int main(int argc, char * argv[])
 	}
 	fout.close();
 	fclose(in);
+	delete[] C;
 	return 0;
 }
