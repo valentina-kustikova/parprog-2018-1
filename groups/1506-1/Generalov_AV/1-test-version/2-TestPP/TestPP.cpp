@@ -87,13 +87,13 @@ int main(int argc, char* argv[])
 
 	if (argc == 3) {
 		string NameF = argv[1];
-		int ÑomplexityTest = atoi(argv[2]);
+		int ComplexityTest = atoi(argv[2]);
 		Data d;
 		f.open(NameF, ios::binary | ios::out | ios::trunc);
 		if (!f.is_open())
 			cout << "Do no open file" << endl;
 		else 
-			GeneratorIntegral(f, ÑomplexityTest);
+			GeneratorIntegral(f, ComplexityTest);
 	}
 	else {
 		cout << "Invalid number of arguments" << endl;

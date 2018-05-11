@@ -24,6 +24,8 @@ DE = Deadly Error = Ошибка тестирующей системы */
 
 //enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE }; 
 
+double eps = 1e-3;
+
 class result {
 private: 
 	ofstream res;
@@ -55,22 +57,20 @@ public:
 
 void TakeCheckRes(string CheckResName, ifstream& Seq, ifstream& Ref) {
 	checker_result.Open(CheckResName);
-	//while (1) {
-		ResultOut DataRef;
-		ResultOut DataSeq;
-		DataRef.Read(Ref);
-		DataSeq.Read(Seq);
-		/*if (Seq.eof()) break;
-		else {*/
-			if (abs(DataSeq.result - DataRef.result)*abs(DataSeq.result - DataRef.result) < 1) {
-				checker_result.WriteMessage("The solution is correct");
-			}				
-			else {
-				checker_result.WriteMessage("The solution is uncorrect");
-			}
-				
-		//}
-	//}
+	ResultOut DataRef;
+	ResultOut DataSeq;
+	DataRef.Read(Ref);
+	DataSeq.Read(Seq);
+	DataRef.Show();
+	DataSeq.Show();
+	if (abs(DataSeq.result - DataRef.result) < eps) {
+		checker_result.WriteMessage("The solution is correct");
+		cout << "The solution is correct" << endl;
+	}				
+	else {
+		checker_result.WriteMessage("The solution is uncorrect");
+		cout << "The solution is uncorrect" << endl;
+	}
 	checker_result.Close();
 }
 
