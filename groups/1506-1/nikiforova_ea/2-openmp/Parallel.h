@@ -25,22 +25,18 @@ void linearsPARALLEL(Mat source, Mat result,int CountOfProc)
 	{
 		int n = omp_get_max_threads();
 		tid = omp_get_thread_num();
-		//cout << "hi,baby, i'm thread " << tid << endl;
-		if (tid == 0) cout << "Set threads: " << omp_get_num_threads() << endl << "Opportunity: " << n << endl;
+		
 
 #pragma omp for schedule(guided)
 		for (int i = 0; i < source.rows; i++)
-		{//cout << "hi,baby, i'm thread " << tid << endl;
+		{
 			for (int j = 0; j < source.cols; j++)
 			{
 				hist[source.at<uchar>(i, j)]++;
 			}
 		}
 	}
-		painthist(source);
-	
-
-
+	painthist(source);
 	int i = 0;
 	while (i < 256 && hist[i] == 0) i++;
 	min = i;
@@ -51,10 +47,10 @@ void linearsPARALLEL(Mat source, Mat result,int CountOfProc)
 	{
 		int n = omp_get_max_threads();
 		tid = omp_get_thread_num();
-		if (tid == 0) cout << "Set threads: " << omp_get_num_threads() << endl << "Opportunity: " << n << endl;
+		
 		#pragma omp for schedule(guided)
 		for (int i = 0; i <result.rows; i++)
-		{//cout << "hi,baby, i'm thread " << tid << endl;
+		{
 			for (int j = 0; j < result.cols; j++)
 			{
 				result.at<uchar>(i, j) = round(255 * (result.at<uchar>(i, j) - min) / (max - min));
@@ -63,7 +59,7 @@ void linearsPARALLEL(Mat source, Mat result,int CountOfProc)
 	}
 	//unsigned int end_time = clock(); // конечное время
 	//unsigned int search_time = end_time - start_time; // искомое время
-	//cout << search_time << endl;
+	//cout << "OMP ----------> " << search_time << endl;
 	painthist(result);
 
 }

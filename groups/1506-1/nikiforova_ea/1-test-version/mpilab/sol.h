@@ -48,25 +48,10 @@ void linears(Mat source, Mat result)
 	painthist(source);
 	
 
-	//int isfirst = true;
-	//for (int r = 0;r < 256;r++)
-	// {
-	//if ((hist[r] > 0) && (isfirst == true))
-	//	 {
-	//	min = r;
-	//	isfirst = false;
-	//	}
-	//if ((hist[r] > 0) && (r > max)) max = r;
-	//}
-
 	int i = 0;
 	while (i < 256 && hist[i] == 0) i++;
 	min = i;
-	//for (; i < 256; i++)
-	//{
-	//	if (i > max) max = i;
-	//	if (i < min) min = i;
-	//}
+
 	i = 255;
 	while (i > 0 && hist[i] == 0) i--;
 	max = i;
@@ -83,17 +68,4 @@ void linears(Mat source, Mat result)
 	painthist(result);
 }
 
-//int main()
-//{
-//	string a= "C:\\test\\";
-//	Mat source;
-//	source = imread(a+"20.jpg", IMREAD_GRAYSCALE);
-//	Mat res = Mat::zeros(source.size(), CV_8UC1);
-//	linears(source, res);
-//
-//	//equalizeHist(source, res2);
-//	imwrite("result.jpg", res);
-//	//imwrite("result2.jpg", res2);
-//	return 0;
-//}
 

@@ -93,9 +93,9 @@ bool compareres(Mat fir, Mat sec)
 }
 int main(int argc, char* argv[])
 {
-	int numtest = atoi(argv[1]);		//номер теста
-	string inputf = argv[2];            //имя входного файла (формат не надо, директорию тоже)
-	string outpf = argv[3];				//имя выходного файла (формат не надо, директорию тоже, такое имя будет у выходной картинки)
+	int numtest = atoi(argv[1]);		
+	string inputf = argv[2];            
+	string outpf = argv[3];				
 	string dir= "test2\\";
 
 	string filename = dir + inputf;
