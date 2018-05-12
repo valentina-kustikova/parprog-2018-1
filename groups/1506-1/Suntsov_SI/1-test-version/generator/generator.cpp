@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
 	if (argc > 1)
 		n = n_tests[atoi(argv[1])];
 	// записываем в бинарном виде размерность матриц   
-	fwrite(&n, sizeof(n), 1, stdout);
+	fwrite(&n, sizeof(n), 1, inp);
 	// создаём временный массив для строки матрицы  
 	double *cur = new double[n];
 	double *A = new double[n*n];
@@ -84,6 +84,9 @@ int main(int argc, char * argv[])
 
 	fclose(answer);
 	fclose(inp);
+	delete[] A;
+	delete[] B;
+	delete[] C;
 	return 0;
 }
 

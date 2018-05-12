@@ -135,16 +135,16 @@ int main(int argc, char * argv[])
 	double res_time = 0;
 
 	// считываем время выполнения программы и результирующую матрицу
-	fread(&res_time, sizeof(res_time), 1, buo);
-	int n;
+	int n = N;
 	fread(&n, sizeof(n), 1, buo);
+	fread(&res_time, sizeof(res_time), 1, buo);
 	fread(res, sizeof(*res), N*N, buo);
 	//cout << res_time << endl;
 	//cout << n << endl;
 
 	// считываем время выполнения и результирующую матрицу из эталонного файла
-	fread(&ans_time, sizeof(res_time), 1, bua);
 	fread(&n, sizeof(n), 1, bua);
+	fread(&ans_time, sizeof(res_time), 1, bua);
 	fread(ans, sizeof(*ans), N*N, bua);
 	//cout << ans_time << endl;
 	cout << n << endl;
@@ -200,9 +200,5 @@ int main(int argc, char * argv[])
 	fclose(bui);
 	fclose(bua);
 	fout.close();
-	delete[] A;
-	delete[] B;
-	delete[] C;
 	return 0;
-
 }

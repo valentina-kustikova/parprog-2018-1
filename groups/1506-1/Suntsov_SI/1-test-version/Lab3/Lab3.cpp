@@ -1,6 +1,7 @@
 // Lab2.cpp: определяет точку входа для консольного приложения.
 //
 
+
 #include  "iostream"
 #include <random>
 #include <ctime>
@@ -64,7 +65,7 @@ int Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
 	int HalfSize = N / 2;
 	int newSize = N / 2;
 
-	if (N <= 32)
+	if (N <= 4)
 	{
 		MUL(MatrixA, MatrixB, MatrixC, N);
 	}
@@ -233,14 +234,14 @@ int main(int argc, char * argv[])
 	FILE *matr_in, *matr_out;
 
 	char* fileName = "matr.in";
-	char* answerName = "matr.out";
+	char* answerName = "answer.ans";
 	int realSize = 0; //считываем из файла
 
 
 
 	if (argc > 1) {
 		fileName = argv[1];
-		string str = string(argv[1]) + string(".out");
+		string str = string(argv[1]) + string(".ans");
 		answerName = (char*)str.c_str();
 	}
 	freopen_s(&matr_in, "matr.in", "rb", stdin);
@@ -279,26 +280,23 @@ int main(int argc, char * argv[])
 	for (int i = 0; i<realSize; i++) {
 		for (int j = 0; j<realSize; j++) {
 			fread(&A[i*N + j], sizeof(double), 1, stdin);
-			
 		}
 	}
-
-	//cout << endl;
 
 	for (int i = 0; i < realSize; i++) {
 		for (int j = 0; j < realSize; j++) {
 
 			fread(&B[i*N + j], sizeof(double), 1, stdin);
-			
+
 		}
-		
+
 	}
 
 	double time = omp_get_wtime();
 	Strassen(N, A, B, C);
 	time = omp_get_wtime() - time;
-	cout << time;
-	
+	//cout << time;
+
 
 	for (int i = 0; i < realSize; i++) {
 		for (int j = 0; j < realSize; j++) {
@@ -310,13 +308,14 @@ int main(int argc, char * argv[])
 
 
 
-	FILE * file_out = fopen("matr.out", "wb");
-	fwrite(&time, sizeof(time), 1, file_out);
+	FILE * file_out = fopen("answer.ans", "wb");
 	fwrite(&realSize, sizeof(realSize), 1, file_out);
+	fwrite(&time, sizeof(time), 1, file_out);
 	fwrite(C_new, sizeof(*C_new), realSize*realSize, file_out);
 
 
-	
+
+	fclose(file_out);
 	fclose(matr_in);
 	fclose(matr_out);
 	system("pause");
