@@ -133,8 +133,8 @@ void RadixSort(queue<BinaryInt> &data, queue<BinaryInt> &sortedData, int numOfBy
 void setResult(queue<BinaryInt> sortedData, BinaryInt *data)
 {
 	//int count = sortedData.size() * omp_get_thread_num();
-	int left = sortedData.size()* omp_get_thread_num();
-	int right = sortedData.size()* (omp_get_thread_num() + 1);
+	int left = sortedData.size()*num_threads();
+	int right = sortedData.size()* (num_threads() + 1);
 	for (left; left < right; left++)
 	{
 		data[left] = sortedData.front();
@@ -144,8 +144,8 @@ void setResult(queue<BinaryInt> sortedData, BinaryInt *data)
 
 void merge(BinaryInt *Array, int size)
 {
-	int left = size * threadnum();
-	int right = size * (threadnum() + 1);
+	int left = size * num_threads();
+	int right = size * (num_threads() + 1);
 	int leftsize = left + size;
 	int rightsize = right + size;
 	int tmp = 0;
@@ -225,12 +225,12 @@ int main(int argc, char * argv[])
 	int pairsprev = thread / 2;
 	int offset = 2;
 
-	if (threadnum() % 2 == 0)
+	if (num_threads() % 2 == 0)
 	{
 		while (pairs > 1)
 		{
 			int sendsize = piece;
-			if (threadnum() >= pairs)
+			if (num_threads() >= pairs)
 				merge(parallel, sendsize);
 			sendsize *= 2;
 			pairs = pairs / 2 + pairs % 2;
