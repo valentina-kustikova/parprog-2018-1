@@ -1,6 +1,3 @@
-// TBB.cpp: определяет точку входа для консольного приложения.
-//
-
 
 #include  "iostream"
 #include <random>
@@ -58,166 +55,6 @@ int MUL(double* MatrixA, double * MatrixB, double* MatrixResult, int MatrixSize)
 	return 0;
 }
 
-
-//void Strassen(int N, double *MatrixA, double *MatrixB, double *MatrixC)
-//{
-//
-//	int HalfSize = N / 2;
-//	int newSize = N / 2;
-//
-//	if (N <= 32)
-//	{
-//		MUL(MatrixA, MatrixB, MatrixC, N);
-//	}
-//	else
-//	{
-//		double* A11;
-//		double* A12;
-//		double* A21;
-//		double* A22;
-//
-//		double* B11;
-//		double* B12;
-//		double* B21;
-//		double* B22;
-//
-//		double* C11;
-//		double* C12;
-//		double* C21;
-//		double* C22;
-//
-//		double* M1;
-//		double* M2;
-//		double* M3;
-//		double* M4;
-//		double* M5;
-//		double* M6;
-//		double* M7;
-//		double* AResult;
-//		double* BResult;
-//
-//
-//		A11 = new double[newSize*newSize];
-//		A12 = new double[newSize*newSize];
-//		A21 = new double[newSize*newSize];
-//		A22 = new double[newSize*newSize];
-//
-//		B11 = new double[newSize*newSize];
-//		B12 = new double[newSize*newSize];
-//		B21 = new double[newSize*newSize];
-//		B22 = new double[newSize*newSize];
-//
-//		C11 = new double[newSize*newSize];
-//		C12 = new double[newSize*newSize];
-//		C21 = new double[newSize*newSize];
-//		C22 = new double[newSize*newSize];
-//
-//		M1 = new double[newSize*newSize];
-//		M2 = new double[newSize*newSize];
-//		M3 = new double[newSize*newSize];
-//		M4 = new double[newSize*newSize];
-//		M5 = new double[newSize*newSize];
-//		M6 = new double[newSize*newSize];
-//		M7 = new double[newSize*newSize];
-//
-//		AResult = new double[newSize*newSize];
-//		BResult = new double[newSize*newSize];
-//
-//
-//		for (int i = 0; i < N / 2; i++)
-//		{
-//			for (int j = 0; j < N / 2; j++)
-//			{
-//				A11[j + i*N / 2] = MatrixA[j + i*N];
-//				A12[j + i*N / 2] = MatrixA[i*N + (j + N / 2)];
-//				A21[j + i*N / 2] = MatrixA[(i + N / 2)*N + j];
-//				A22[j + i*N / 2] = MatrixA[(i + N / 2)*N + (j + N / 2)];
-//
-//				B11[j + i*N / 2] = MatrixB[j + i*N];
-//				B12[j + i*N / 2] = MatrixB[i*N + (j + N / 2)];
-//				B21[j + i*N / 2] = MatrixB[(i + N / 2)*N + j];
-//				B22[j + i*N / 2] = MatrixB[(i + N / 2)*N + (j + N / 2)];
-//
-//			}
-//		}
-//
-//
-//
-//		//M1[][]
-//		ADD(A11, A22, AResult, HalfSize);
-//
-//		ADD(B11, B22, BResult, HalfSize);
-//		Strassen(HalfSize, AResult, BResult, M1);
-//
-//		//M2[][]
-//		ADD(A21, A22, AResult, HalfSize);              //M2=(A21+A22)B11
-//		Strassen(HalfSize, AResult, B11, M2);       //Mul(AResult,B11,M2);
-//
-//													//M3[][]
-//		SUB(B12, B22, BResult, HalfSize);              //M3=A11(B12-B22)
-//		Strassen(HalfSize, A11, BResult, M3);       //Mul(A11,BResult,M3);
-//
-//													//M4[][]
-//		SUB(B21, B11, BResult, HalfSize);           //M4=A22(B21-B11)
-//		Strassen(HalfSize, A22, BResult, M4);       //Mul(A22,BResult,M4);
-//
-//													//M5[][]
-//		ADD(A11, A12, AResult, HalfSize);           //M5=(A11+A12)B22
-//		Strassen(HalfSize, AResult, B22, M5);       //Mul(AResult,B22,M5);
-//
-//
-//													//M6[][]
-//		SUB(A21, A11, AResult, HalfSize);
-//		ADD(B11, B12, BResult, HalfSize);             //M6=(A21-A11)(B11+B12)
-//		Strassen(HalfSize, AResult, BResult, M6);    //Mul(AResult,BResult,M6);
-//
-//													 //M7[][]
-//		SUB(A12, A22, AResult, HalfSize);
-//		ADD(B21, B22, BResult, HalfSize);             //M7=(A12-A22)(B21+B22)
-//		Strassen(HalfSize, AResult, BResult, M7);     //Mul(AResult,BResult,M7);
-//
-//													  //C11 = M1 + M4 - M5 + M7;
-//		ADD(M1, M4, AResult, HalfSize);
-//		SUB(M7, M5, BResult, HalfSize);
-//		ADD(AResult, BResult, C11, HalfSize);
-//
-//		//C12 = M3 + M5;
-//		ADD(M3, M5, C12, HalfSize);
-//
-//		//C21 = M2 + M4;
-//		ADD(M2, M4, C21, HalfSize);
-//
-//		//C22 = M1 + M3 - M2 + M6;
-//		ADD(M1, M3, AResult, HalfSize);
-//		SUB(M6, M2, BResult, HalfSize);
-//		ADD(AResult, BResult, C22, HalfSize);
-//
-//
-//
-//		for (int i = 0; i < HalfSize; i++)
-//		{
-//			for (int j = 0; j < HalfSize; j++)
-//			{
-//				MatrixC[i*N + j] = C11[i*HalfSize + j];
-//				MatrixC[i*N + (j + N / 2)] = C12[i*HalfSize + j];
-//				MatrixC[(i + N / 2)*N + j] = C21[i*HalfSize + j];
-//				MatrixC[(i + N / 2)*N + (j + N / 2)] = C22[i*HalfSize + j];
-//			}
-//		}
-//
-//		delete[] A11; delete[] A12; delete[] A21; delete[] A22;
-//		delete[] B11; delete[] B12; delete[] B21; delete[] B22;
-//		delete[] C11; delete[] C12; delete[] C21; delete[] C22;
-//		delete[] M1; delete[] M2; delete[] M3; delete[] M4; delete[] M5;
-//		delete[] M6; delete[] M7;
-//		delete[] AResult;
-//		delete[] BResult;
-//
-//
-//	}
-//
-//}
-
 class StrassenTask : public task {
 public:
 	int N;
@@ -262,9 +99,18 @@ public:
 			double* M5;
 			double* M6;
 			double* M7;
+			double* tmp1;
+			double* tmp2;
+			double* tmp3;
+			double* tmp4;
+			double* tmp5;
+			double* tmp6;
+			double* tmp7;
+			double* tmp8;
+			double* tmp9;
+			double* tmp10;
 			double* AResult;
 			double* BResult;
-
 
 			A11 = new double[newSize*newSize];
 			A12 = new double[newSize*newSize];
@@ -289,9 +135,18 @@ public:
 			M6 = new double[newSize*newSize];
 			M7 = new double[newSize*newSize];
 
-			AResult = new double[newSize*newSize];
-			BResult = new double[newSize*newSize];
-
+			AResult = new double[HalfSize * HalfSize];
+			BResult = new double[HalfSize * HalfSize];
+			tmp1 = new double[HalfSize * HalfSize];
+			tmp2 = new double[HalfSize * HalfSize];
+			tmp3 = new double[HalfSize * HalfSize];
+			tmp4 = new double[HalfSize * HalfSize];
+			tmp5 = new double[HalfSize * HalfSize];
+			tmp6 = new double[HalfSize * HalfSize];
+			tmp7 = new double[HalfSize * HalfSize];
+			tmp8 = new double[HalfSize * HalfSize];
+			tmp9 = new double[HalfSize * HalfSize];
+			tmp10 = new double[HalfSize * HalfSize];
 
 			for (int i = 0; i < N / 2; i++)
 			{
@@ -313,54 +168,55 @@ public:
 
 
 			//M1[][]
-			ADD(A11, A22, AResult, HalfSize);
-			ADD(B11, B22, BResult, HalfSize);
+			ADD(A11, A22, tmp1, HalfSize);
+			ADD(B11, B22, tmp2, HalfSize);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, AResult, BResult, M1));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, tmp1, tmp2, M1));
 
 			//M2[][]
-			ADD(A21, A22, AResult, HalfSize);  //M2=(A21+A22)B11
-											   //Mul(AResult,B11,M2);
+			ADD(A21, A22, tmp3, HalfSize);  //M2=(A21+A22)B11
+											//Mul(AResult,B11,M2);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, AResult, B11, M2));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, tmp3, B11, M2));
 
 
 			//M3[][]
-			SUB(B12, B22, BResult, HalfSize);              //M3=A11(B12-B22)
-														   //Mul(A11,BResult,M3);
+			SUB(B12, B22, tmp4, HalfSize);              //M3=A11(B12-B22)
+														//Mul(A11,BResult,M3);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, A11, BResult, M3));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, A11, tmp4, M3));
 
 
 			//M4[][]
-			SUB(B21, B11, BResult, HalfSize);           //M4=A22(B21-B11)
-														//Mul(A22,BResult,M4);
+			SUB(B21, B11, tmp5, HalfSize);           //M4=A22(B21-B11)
+													 //Mul(A22,BResult,M4);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, A22, BResult, M4));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, A22, tmp5, M4));
 
 
 			//M5[][]
-			ADD(A11, A12, AResult, HalfSize);           //M5=(A11+A12)B22
-														//Strassen(HalfSize, AResult, B22, M5);       //Mul(AResult,B22,M5);
+			ADD(A11, A12, tmp6, HalfSize);           //M5=(A11+A12)B22
+													 //Strassen(HalfSize, AResult, B22, M5);       
+													 //Mul(AResult,B22,M5);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, AResult, B22, M5));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, tmp6, B22, M5));
 
 
 			//M6[][]
-			SUB(A21, A11, AResult, HalfSize);
-			ADD(B11, B12, BResult, HalfSize);             //M6=(A21-A11)(B11+B12)
-														  //Mul(AResult,BResult,M6);
+			SUB(A21, A11, tmp7, HalfSize);
+			ADD(B11, B12, tmp8, HalfSize);             //M6=(A21-A11)(B11+B12)
+													   //Mul(AResult,BResult,M6);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, AResult, BResult, M6));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, tmp7, tmp8, M6));
 
 
 			//M7[][]
-			SUB(A12, A22, AResult, HalfSize);
-			ADD(B21, B22, BResult, HalfSize);
+			SUB(A12, A22, tmp9, HalfSize);
+			ADD(B21, B22, tmp10, HalfSize);
 			//M7=(A12-A22)(B21+B22)
 			//Mul(AResult,BResult,M7);
 			count++;
-			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, AResult, BResult, M7));
+			list.push_back(*new (allocate_child()) StrassenTask(HalfSize, tmp9, tmp10, M7));
 
 			set_ref_count(count);
 			spawn_and_wait_for_all(list);
@@ -393,7 +249,7 @@ public:
 					MatrixC[(i + N / 2)*N + (j + N / 2)] = C22[i*HalfSize + j];
 				}
 			}
-			//N = N / 2;
+			N = N / 2;
 			delete[] A11; delete[] A12; delete[] A21; delete[] A22;
 			delete[] B11; delete[] B12; delete[] B21; delete[] B22;
 			delete[] C11; delete[] C12; delete[] C21; delete[] C22;
@@ -401,10 +257,14 @@ public:
 			delete[] M6; delete[] M7;
 			delete[] AResult;
 			delete[] BResult;
+			delete[] tmp1; delete[] tmp2; delete[] tmp3; delete[] tmp4;
+			delete[] tmp5; delete[] tmp6; delete[] tmp7; delete[] tmp8;
+			delete[] tmp9; delete[] tmp10;
 		}
 		return NULL;
 	}
 };
+
 
 int main(int argc, char * argv[])
 {
@@ -412,7 +272,7 @@ int main(int argc, char * argv[])
 
 	char* fileName = "matr.in";
 	char* answerName = "matr.out";
-	int realSize = 0; //считываем из файла
+	int realSize = 0; //реальный размер матрицы
 
 
 
@@ -425,7 +285,6 @@ int main(int argc, char * argv[])
 
 	fread(&realSize, sizeof(int), 1, stdin);
 	int N = 0;
-	//получаем размер матрицы, который кратный степени 2
 
 	N = (int)(log2(realSize));
 	int k = pow(2, N);
