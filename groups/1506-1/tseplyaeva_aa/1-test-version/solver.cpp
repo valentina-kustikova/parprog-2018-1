@@ -109,16 +109,10 @@ int main(int argc, char* argv[]){
 	//initializing 
 	a = new double[n];
 	// read array
-	//fseek(in, 0, SEEK_SET);
+	
 	fread(a, sizeof(double), n, in);
 	fclose(in);
-	////////////////////////////////////////////////////////
-	//	for (int i = 0; i < n; i++){
-	//		a[i] = rand() % 50;
-	//	}
-
-
-	//show(a, n);
+	
 	double start = omp_get_wtime();
 
 	shellsort(a,0, n);

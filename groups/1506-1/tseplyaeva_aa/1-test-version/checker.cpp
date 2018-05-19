@@ -131,7 +131,6 @@ int main(int argc, char* argv[]){
 	//initializing 
 	sorted = new double[n];
 	// read array
-	//	fseek(in1, 0 + sizeof(int), SEEK_SET);
 	fread(sorted, sizeof(double), n, in1);
 	double time_res = 0;
 	fread(&time_res, sizeof(double), 1, in1);
@@ -150,8 +149,6 @@ int main(int argc, char* argv[]){
 	//-----------------------------------------------------------------------------
 	qsort(mixed, n, sizeof(double), comp1);
 
-	//show(sorted, n);
-	//show(mixed, n);
 	
 	int m = check(sorted, mixed, n);
 	if (m == 0) {

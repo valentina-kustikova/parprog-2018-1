@@ -51,9 +51,7 @@ void shellsort(double*a, int st, int n){
 	}
 	int m = seq.size();
 	reverse(seq.begin(), seq.end());
-
-	//show(b, 0, size_b);
-	
+		
 	double x;
 	int gap;
 	int j;
@@ -82,16 +80,8 @@ void simple_merge(double* a, int left, int rigth, int part){
 		abc.push_back(a[i]);
 	}
 
-	//	cout << abc.size()<<"  ";
-	//cout << left << rigth<<"   ";
-	//cout << "a   ";
-	//show(a, left, rigth);
 	vector<double> one;
 	vector<double> two;
-
-	//for (int i = left; i < rigth/2+left; i++){
-	//	one.push_back(a[i]);
-	//}
 
 	for (int i = 0; i < part; i++){
 		one.push_back(a[i + left]);
@@ -101,60 +91,34 @@ void simple_merge(double* a, int left, int rigth, int part){
 		two.push_back(a[i + left]);
 	}
 
-	/*cout << "one" << endl;
-	for (int i = 0; i < one.size(); i++){
-	cout << one[i]<<"  ";
-	}
-	cout << endl;
-	cout << endl;
-	cout << "two" ;
-
-	for (int i = 0; i < two.size(); i++){
-	cout << two[i] << "  ";
-	}
-	cout << endl;
-	cout << endl;
-	cout << endl;*/
-
 	abc.clear();
 	unsigned left_it = 0, right_it = 0;
 
-	while (left_it < one.size() && right_it < two.size())
-	{
-		if (one[left_it] < two[right_it])
-		{
+	while (left_it < one.size() && right_it < two.size()){
+		if (one[left_it] < two[right_it]){
 			abc.push_back(one[left_it]);
 			left_it++;
 		}
-		else
-		{
+		else{
 			abc.push_back(two[right_it]);
 			right_it++;
 		}
 	}
 
-	while (left_it < one.size())
-	{
+	while (left_it < one.size()){
 		abc.push_back(one[left_it]);
 		left_it++;
 	}
 
-	while (right_it < two.size())
-	{
+	while (right_it < two.size()){
 		abc.push_back(two[right_it]);
 		right_it++;
 	}
-
-	//	for (int i = 0; i < abc.size(); i++){
-	//	cout << abc[i];
-	//}
 
 	for (int i = 0; i < abc.size(); i++){
 		a[i + left] = abc[i];
 	}
 
-	//cout << "result is:" << endl;
-	//show(a, left, rigth);
 	one.clear(); two.clear(); abc.clear();
 }
 
@@ -164,7 +128,6 @@ void merge(double* a, int n, int parts, int thread_count1){
 	omp_set_num_threads(thread_count1);
 	int left, rigth;
 
-
 #pragma omp parallel for schedule(static) shared(a, parts ,n ) \
   private(left, rigth)
 
@@ -173,23 +136,13 @@ void merge(double* a, int n, int parts, int thread_count1){
 
 		left = i * parts * 2;
 		if (i == (thread_count1 - 1)) {
-
 			rigth = n;
 		}
 		else{
-
 			rigth = left + parts * 2;
 		}
-
-
-		//cout << "From omp:   "<<i<<"   " ;
-		//show(a, left, rigth);
-		//cout << endl;
 		simple_merge(a, left, rigth, parts);
-
 	}
-
-
 }
 
 
@@ -208,24 +161,15 @@ void OmpShellSort(double* a, int n, int thread_count) {
 
 	//sorting by parts
 	for (int i = 0; i < thread_count; ++i) {
-
 		left = i * parts;
 		if (i == (thread_count - 1)) {
 			rigth = n;
 		}
 		else{
-
 			rigth = left + parts;
 		}
-
-		//	cout << left << rigth << endl;
 		shellsort(a, left, rigth);
-		//	show(a, left, rigth);
-		//	cout << endl;
-
 	}
-
-
 
 	//amount of arrys parts to merge
 	//parts = thread_count;
@@ -237,8 +181,6 @@ void OmpShellSort(double* a, int n, int thread_count) {
 
 		thread_count /= 2;
 
-		//	cout << "parts: " << parts;
-		//	cout << "TC: " << thread_count << "    " << endl;
 		merge(a, n, parts, thread_count);
 
 		parts *= 2;
@@ -284,16 +226,9 @@ int main(int argc, char* argv[]){
 	//initializing 
 	a = new double[n];
 	// read array
-	//fseek(in, 0, SEEK_SET);
 	fread(a, sizeof(double), n, in);
 	fclose(in);
-	//////////////////////////////////////////////////////
-	//	for (int i = 0; i < n; i++){
-	//		a[i] = rand() % 50;
-	//	}
-
-
-	//show(a, 0, n);
+	
 	double start = omp_get_wtime();
 
 	OmpShellSort(a, n, thread_count);

@@ -63,8 +63,6 @@ void shellsort(double*a, int st, int n){
 	int m = seq.size();
 	reverse(seq.begin(), seq.end());
 
-	//show(b, 0, size_b);
-
 	double x;
 	int gap;
 	int j;
@@ -92,15 +90,10 @@ void simple_merge(double* a, int left, int rigth, int hm){
 	for (int i = left; i < rigth; i++){
 		abc.push_back(a[i]);
 	}
-	//	cout << abc.size()<<"  ";
-	//cout << left << rigth<<"   ";
-	//show(a, left, rigth);
+	
 	vector<double> one;
 	vector<double> two;
 
-	//for (int i = left; i < rigth/2+left; i++){
-	//	one.push_back(a[i]);
-	//}
 	for (int i = 0; i <hm; i++){
 		one.push_back(a[i + left]);
 	}
@@ -109,60 +102,35 @@ void simple_merge(double* a, int left, int rigth, int hm){
 		two.push_back(a[i + left]);
 	}
 
-	//cout << endl;
-	//cout << "one" << endl;
-	//for (int i = 0; i < one.size(); i++){
-	//	cout << one[i]<<"  ";
-	//}
-	//cout << endl;
-	//cout << "two" ;
-	//cout << endl;
-
-	//for (int i = 0; i < two.size(); i++){
-	//	cout << two[i] << "  ";
-	//}
-	//cout << endl;
-
 	abc.clear();
 
 	unsigned left_it = 0, right_it = 0;
 
-	while (left_it < one.size() && right_it < two.size())
-	{
-		if (one[left_it] < two[right_it])
-		{
+	while (left_it < one.size() && right_it < two.size()){
+		if (one[left_it] < two[right_it]){
 			abc.push_back(one[left_it]);
 			left_it++;
 		}
-		else
-		{
+		else{
 			abc.push_back(two[right_it]);
 			right_it++;
 		}
 	}
 
-	while (left_it < one.size())
-	{
+	while (left_it < one.size()){
 		abc.push_back(one[left_it]);
 		left_it++;
 	}
 
-	while (right_it < two.size())
-	{
+	while (right_it < two.size()){
 		abc.push_back(two[right_it]);
 		right_it++;
 	}
-
-	//	for (int i = 0; i < abc.size(); i++){
-	//	cout << abc[i];
-	//}
 
 	for (int i = 0; i < abc.size(); i++){
 		a[i + left] = abc[i];
 	}
 
-	//cout << "result is:" << endl;
-	//show(a, left, rigth);
 	one.clear(); two.clear(); abc.clear();
 }
 
@@ -173,44 +141,23 @@ void merge(double* a, int n, int parts, int thread_count1, int my_con){
 
 	task_scheduler_init init(task_scheduler_init::deferred);
 	init.initialize(thread_count1);
-	//int hm;
-	//cout << "n " << n << "  " << "parts" << parts << endl;
-
+	
 	parallel_for(tbb::blocked_range<int>(0, thread_count1),
 		[&parts, &left, &rigth, &thread_count1, &n, &a, &glob_parts, &my_con](const blocked_range<int> &r){
-
-		//cout << "  my_con" << my_con<<endl;
 
 		//sorting by parts
 		for (int i = 0; i < thread_count1; ++i) {
 
-
 			left = i *((n - n%parts) / glob_parts);
 
-			//	left = i *(n / parts);
-
 			if (i == (thread_count1 - 1)) {
-
 				rigth = n;
 			}
 			else{
 				rigth = left + ((n - n%parts) / glob_parts);
-				//	rigth = left + my_con*i*2;
-
 			}
 
-
-			//cout <<"HM is :"<< hm << endl;
-
-			//cout << "n/ glob parts " << n/glob_parts <<endl;
-			//	cout << "TC:  " << thread_count1 << " parts: " << parts;
-			//	cout << endl;
-			//	cout << left << " " << rigth << " ";
-			//	cout << endl;
-			//show(a, left, rigth);
 			simple_merge(a, left, rigth, my_con);
-			//	cout << endl;
-			//	cout << endl;
 		}
 
 	});
@@ -239,7 +186,6 @@ void tbbShellSort(double* a, int n, int thread_count){
 				rigth = left + part;
 			}
 
-			//cout << "left " << left << " rigth  " << rigth << endl;
 			shellsort(a, left, rigth);
 			show(a, left, rigth);
 		}
@@ -256,8 +202,6 @@ void tbbShellSort(double* a, int n, int thread_count){
 	for (int i = 0; i < m; i++){
 		thread_count /= 2;
 
-		//	cout << "parts: " << parts;
-		//	cout << "TC: " << thread_count << "    "<<endl;
 		merge(a, n, parts, thread_count, my_con);
 		my_con *= 2;
 		parts /= 2;
@@ -289,31 +233,17 @@ int main(int argc, char* argv[]){
 		thread_count = 2;
 	}
 
-
-	//cout << "TC =" << thread_count;
-
-
 	//read length of array
 	fread(&n, sizeof(size_t), 1, in);
 	//initializing 
 	a = new double[n];
 	// read array
-	//fseek(in, 0, SEEK_SET);
 	fread(a, sizeof(double), n, in);
 	fclose(in);
-	//////////////////////////////////////////////////////
-	//	for (int i = 0; i < n; i++){
-	//		a[i] = rand() % 50;
-	//	}
-
-
-	//show(a, 0, n);
+	
 	double start = omp_get_wtime();
-
 	tbbShellSort(a, n, thread_count);
-
 	double end = omp_get_wtime();
-	//show(a, 0, n);
 	double seconds = (end - start);
 
 	// time at the end of file 
