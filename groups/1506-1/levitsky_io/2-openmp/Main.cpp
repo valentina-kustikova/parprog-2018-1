@@ -138,13 +138,14 @@ void setResult(queue<BinaryInt> sortedData, BinaryInt *data)
 	}
 }
 
-void merge(int* Sorted, BinaryInt *Array, int size)
+void merge(int* &Sorted, BinaryInt *&Array, int size)
 {
 		int left = size * omp_get_thread_num();
 		int right = size * (omp_get_thread_num() + 1);
 		int leftsize = left +size;
 		int rightsize = right + size;
-		int index = 0;
+		int index = size * omp_get_thread_num();
+
 
 		while ((left < leftsize) && (right<rightsize))
 		{
@@ -155,15 +156,13 @@ void merge(int* Sorted, BinaryInt *Array, int size)
 			{
 				Sorted[index] = elemfirst;
 				left++;
-				//tmp = Array[left].d;
-				//Array[left].d = Array[right].d;
-				//Array[right].d = tmp;
-				//right++;
+				index++;
 			}
 			else
 			{
 				Sorted[index] = elemsecond;
 				right++;
+				index++;
 			}
 		}
 
@@ -179,6 +178,39 @@ void merge(int* Sorted, BinaryInt *Array, int size)
 			right++;
 			index++;
 		}
+		for (int i = size * omp_get_thread_num(); i < size * (omp_get_thread_num() + 1) + size; i++)
+			Array[i].d = Sorted[i];
+}
+
+void sorting(queue<BinaryInt> queueData, queue<BinaryInt> sortedData, BinaryInt *parallel, int* mas, int size, int piece)
+{
+#pragma omp parallel private (queueData, sortedData)
+	{
+#pragma omp for
+		for (int i = 0; i < size; i++) {
+			queueData.push(parallel[i]);
+		}
+
+		int u = 3; int o = 128;
+		RadixSort(queueData, sortedData, u, o);
+
+		setResult(sortedData, parallel);
+
+		int sendsize = piece;
+		int counter = 2;
+
+#pragma omp barrier
+		while (sendsize < size)
+		{
+			if (omp_get_thread_num() % counter == 0)
+			{
+				merge(mas, parallel, sendsize);
+			}
+			sendsize *= 2;
+			counter *= 2;
+#pragma omp barrier
+		}
+	}
 }
 
 int main(int argc, char * argv[])
@@ -200,13 +232,10 @@ int main(int argc, char * argv[])
 	freopen(input, "rb", stdin);
 	fread(&size, sizeof(int), 1, stdin);
 	int* mas = new int[size];
-	int* sorted = new int[size];
 	fread(mas, sizeof(int), size, stdin);
 	fclose(stdin);
 
-	//BinaryInt *nonParallel = nullptr;
 	BinaryInt *parallel = new BinaryInt[size];
-	//BinaryInt *parallelCopy = new BinaryInt[size];
 	double startTime = 0;
 	double endTime = 0;
 	double timeOfNonParallel = 0;
@@ -219,94 +248,21 @@ int main(int argc, char * argv[])
 	initData(parallel, size, mas);
 
 	int piece = size / thread;
-	int n = 0;
-	/////////////////////////////////
-#pragma omp parallel private (queueData, sortedData)
-	{
-		startTime = clock();
-#pragma omp for
-		for (int i = 0; i < size; i++) {
-			queueData.push(parallel[i]);
-		}
 
-		int u = 3; int o = 128;
-		RadixSort(queueData, sortedData, u, o);
-
-		setResult(sortedData, parallel);
-
-#pragma omp barrier
-
-#pragma omp master
-		{
-			for (n = 0; n < size; n++)
-			{
-				cout << parallel[n].d << " ";
-			}
-			cout << endl << endl;
-		}
-
-		int pairs = thread / 2;
-		int pairsprev = thread / 2;
-		int offset = 2;
-
-		int counter = 2;
-		int sendsize = piece;
-		/*while (pairs > 1)
-		{
-			pairs = pairs / 2 + pairs % 2;
-			if (pairsprev % pairs == 0 || omp_get_thread_num() != (pairs - 1) * offset)
-			{
-				int sendsize = piece;
-				cout << "Ama proces :" << omp_get_thread_num() << endl;
-				merge(sorted, parallel, sendsize);
-				sendsize *= 2;
-			}
-			pairsprev = pairs;
-			offset *= 2;
-		}*/
-
-		while (pairs > 1)
-		{
-			pairs = pairs / 2 + pairs % 2;
-			if(omp_get_thread_num() % counter == 0 || omp_get_thread_num() % counter == counter)
-				merge(sorted, parallel, sendsize);
-			sendsize *= 2;
-			counter *= 2;
-		}
-
-//#pragma omp for
-//		for (int i = 0; i < piece; i++)
-//		{
-//			sorted[i] = parallel[i].d;
-//		}
-	}
-
-#pragma omp master
-	{
-		for (n = 0; n < size; n++)
-		{
-			cout << sorted[n] << " ";
-		}
-		cout << endl << endl;
-	}
-
-
-	cout << endl << endl;
+	startTime = clock();
+	sorting(queueData, sortedData, parallel, mas, size, piece);
 	endTime = clock();
+
 	timeOfNonParallel = endTime - startTime;
 	cout << "---" << timeOfNonParallel << "---" << endl;
-
-
+	
 	freopen(output, "wb", stdout);
 	fwrite(&size, sizeof(size), 1, stdout);
-	fwrite(sorted, sizeof(*sorted), size, stdout);
+	fwrite(mas, sizeof(*mas), size, stdout);
 	fclose(stdout);
 
 	delete[] mas;
-	delete[] sorted;
-	//delete[] nonParallel;
 	delete[] parallel;
-	//delete[] parallelCopy;
 
 	return 0;
 }
