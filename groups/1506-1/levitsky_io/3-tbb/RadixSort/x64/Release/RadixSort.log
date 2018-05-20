@@ -1,0 +1,8 @@
+﻿  Main.cpp
+Main.cpp(208): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  Создание кода
+  59 of 415 functions (14.2%) were compiled, the rest were copied from previous compilation.
+    58 functions were new in current compilation
+    6 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  RadixSort.vcxproj -> C:\Users\Trintal\Documents\GitHub\parprog-2018-1\groups\1506-1\levitsky_io\3-tbb\x64\Release\RadixSort.exe
