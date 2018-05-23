@@ -1,0 +1,3 @@
+Start : 10000
+Step : 1000
+Count : 20
