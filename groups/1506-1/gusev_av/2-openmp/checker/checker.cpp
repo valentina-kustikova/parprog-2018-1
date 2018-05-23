@@ -3,7 +3,8 @@
 #include <string>
 #include <iostream>
 using namespace std;
-enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };class result
+enum verdict { NO = 1, AC, WA, CE, ML, TL, RE, IL, PE, DE };
+class result
 {
 private:
 	FILE * bur;
@@ -46,7 +47,9 @@ public:
 		write_type(ext_cls::MEMORY);
 		fwrite(&x, sizeof(x), 1, bur);
 	}
-} checker_result;int compare(const double *a, const double *b)
+} checker_result;
+
+int compare(const double *a, const double *b)
 {
 	return *a - *b;
 }

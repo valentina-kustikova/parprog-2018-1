@@ -30,3 +30,30 @@ void QuickSort(double* arr, int size)
 		}
 	}
 }
+void Merge(double *arr1, double *arr2, int arr1_size, int arr2_size, double* res)
+{
+	int i = 0, j = 0; 
+	while (i < arr1_size && j < arr2_size)
+	{
+		if (arr1[i] <= arr2[j])
+		{
+			res[i + j] = arr1[i];
+			i++;
+		}
+		else
+		{
+			res[i + j] = arr2[j];
+			j++;
+		}
+	}
+	while (i < arr1_size)
+	{
+		res[i + arr2_size] = arr1[i];
+		i++;
+	}
+	while (j < arr2_size)
+	{
+		res[j + arr1_size] = arr2[j];
+		j++;
+	}
+}
