@@ -5,5 +5,5 @@ typer/x64
 viewer/x64
 .vs/
 x64/
-Debug
+tbb_qsort/Debug
 *.db
