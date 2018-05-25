@@ -3,7 +3,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "sol.h"
+//#include "sol.h"
+
+#include <ctime>
 
 using namespace std;
 using namespace cv;
@@ -91,25 +93,22 @@ bool compareres(Mat fir, Mat sec)
 	if (k == 1) return false;
 	else return true;
 }
+
 int main(int argc, char* argv[])
 {
-	int numtest = atoi(argv[1]);		
-	string inputf = argv[2];            
-	string outpf = argv[3];				
+	int numtest = atoi(argv[1]);		//номер теста
+	string inputf = argv[2];            //имя входного файла (формат не надо, директорию тоже)
+	string outpf = argv[3];				//имя выходного файла (формат не надо, директорию тоже, такое имя будет у выходной картинки)
 	string dir= "test2\\";
-
 	string filename = dir + inputf;
 	Result checker(dir);
 	Mat basic;
-	viewer(filename, basic);
-	//imwrite("C:\\test2\\result1.jpg", basic);
+	viewer(filename + ".ans", basic);
 	Mat aftertest;
 	filename = dir + outpf;
 	viewer(filename + ".ans", aftertest);
-	//imwrite("C:\\test2\\result2.jpg",aftertest);
-	Mat ideal = Mat::zeros(basic.size(), CV_8UC1);		
-	linears(basic, ideal);          
-	if (compareres(aftertest, ideal)==false)
+
+	if (compareres(aftertest, basic)==false)
 	{
 		checker.write_message("Images doesn't match");
 		cout << "Images doesn't match";

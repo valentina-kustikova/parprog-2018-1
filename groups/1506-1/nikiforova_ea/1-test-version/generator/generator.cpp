@@ -4,9 +4,6 @@
 #include "tbb/task_scheduler_init.h"
 #include "tbb/parallel_for.h"
 #include "tbb/blocked_range2d.h"
-#include "TBB.h"
-#include "sol.h"
-#include "Parallel.h"
 #include <ctime>
 #include <iostream>
 #include <fstream>
@@ -38,7 +35,7 @@ bool typer(Mat pic, string buf)
 }
 Mat generatepic(int a, int b)
 {
-	Mat pic = Mat::zeros(2000,2000, CV_8UC1);
+	Mat pic = Mat::zeros(300,300, CV_8UC1);
 	for (int i=0;i<pic.rows;i++)
 		for (int j=0;j<pic.cols;j++)
 		{
@@ -73,28 +70,17 @@ void clamp(int a, int b)
 int main(int argc, char* argv[])
 {
 	    srand(time(0));
-		int numtest = atoi(argv[1]);
-		int count = atoi(argv[2]);         
-		string inputf = argv[3];           
-		string outpf = argv[4];				
-		int min = stoi(argv[5]);			
-		int max = stoi(argv[6]);
+		int numtest = atoi(argv[1]);       
+		string inputf = argv[2];           
+		string outpf = argv[3];				
+		int min = stoi(argv[4]);			
+		int max = stoi(argv[5]);
 		clamp(min, max);
 		Mat input;
 		string a = "test\\";
 		string b = "test2\\";
 		imwrite(a + inputf + ".jpg", generatepic(min, max));		
-		input = imread(a + inputf + ".jpg", IMREAD_GRAYSCALE);     
-		Mat output = Mat::zeros(input.size(), CV_8UC1);
-		//linearsPARALLEL(input, output,count);                            
-		linearsTBB(input, output, count);
-		imwrite(a + "res_" + inputf + ".jpg", output);					
-		//пишу исходник 
 		string place = b + to_string(numtest);
 		typer(input, place);
-		//пишу результат
-		place = b + outpf + ".ans";
-		typer(output, place);
-
 	return 0;
 }
