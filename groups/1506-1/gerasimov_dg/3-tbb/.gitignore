@@ -1,0 +1,5 @@
+x64/
+*.db
+tbb_pp/x64
+tbb_pp/Debug
+.vs/

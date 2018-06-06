@@ -1,0 +1,3 @@
+﻿  checker.cpp
+c:\users\nikif\source\repos\mpilab\mpilab\sol.h(80): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
+  checker.vcxproj -> C:\Users\nikif\source\repos\mpilab\x64\Debug\checker.exe
