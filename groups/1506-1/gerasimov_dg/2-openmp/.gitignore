@@ -1,0 +1,5 @@
+x64/
+*.db
+Cannon_Omp2/x64
+Cannon_Omp2/Debug
+.vs/
