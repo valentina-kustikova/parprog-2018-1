@@ -1,0 +1,4 @@
+﻿  generator.cpp
+c:\users\nikif\source\repos\mpilab\mpilab\sol.h(80): warning C4244: =: преобразование "double" в "uchar", возможна потеря данных
+c:\users\nikif\source\repos\mpilab\generator\generator.cpp(72): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  generator.vcxproj -> C:\Users\nikif\source\repos\mpilab\x64\Debug\generator.exe
