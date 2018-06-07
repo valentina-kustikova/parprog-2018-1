@@ -52,11 +52,14 @@ void numMultiplVector(double *m, double k, double *a, int n){ /// m = k * a
 
 class VectorsMultiplicator
 {
-	const double **matrix, *vector;
+	double* const *matrix;
+	//const double **matrix;
+	const double *vector;
 	double *const resultVector;
 	int const columns;
 public:
-	VectorsMultiplicator(double **tmatrix, double *tvector,
+	VectorsMultiplicator(double **tmatrix,
+		double *tvector,
 		double *tresultVector, int tcolumns) : matrix(tmatrix),
 		vector(tvector), resultVector(tresultVector),
 		columns(tcolumns) {}
@@ -150,7 +153,8 @@ void grad(double **A, double *b, double *_x, int n){
 
 
 int main(int argc, char* argv[]) {
-	int nThreads = 1, n;
+	int nThreads = 1;
+	int n = 0;
 
 	if (argc > 3) {
 		freopen(argv[1], "rb", stdin);
@@ -163,14 +167,17 @@ int main(int argc, char* argv[]) {
 			freopen("array.in", "rb", stdin);
 			freopen("array.out", "wb", stdout);
 		}
-		else return 1;
+		else {
+			nThreads = 2;
+			freopen("1", "rb", stdin);
+			freopen("1.ans", "wb", stdout);
+		}
 	}
 
 	task_scheduler_init init(nThreads);
 
 	///////
 	fread(&n, sizeof(n), 1, stdin);
-
 	double **A = new double*[n];                                       /// A
 	for (int i = 0; i < n; i++) A[i] = new double[n];
 	for (int i = 0; i < n; i++)
