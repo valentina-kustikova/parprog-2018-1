@@ -1,7 +1,5 @@
-#include "stdafx.h"
 #include "solution2.h"
 #include "solution.h"
-
 #include <vector>
 #include <algorithm>
 #include "omp.h"
@@ -177,7 +175,7 @@ template<typename Tmass> void sort(vector<Tmass>& vMass, int numThreads)
 	}
 }
 
-void sortHoarwithBatcher2(int* mass, int size,int numThreads)
+void sortHoarwithBatcher2(int* mass, int size, int numThreads)
 {
 	if (numThreads <= 1)
 	{

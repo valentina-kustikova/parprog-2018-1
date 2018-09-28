@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "solution3.h"
 #include "solution.h"
 

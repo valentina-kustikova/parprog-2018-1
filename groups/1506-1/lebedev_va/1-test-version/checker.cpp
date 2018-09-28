@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <cstdio>
 #include <cmath>
 #include <string>
@@ -8,11 +9,11 @@ using namespace std;
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 /*
-// Checker :
+// Checker:
 AC = Accepted =
 WA = Wrong Answer =
 PE = Presentation Error =
-//  checker
+//
 NO = No verdict =
 CE = Compilation Error =
 ML = Memory Limit Exceeded =
@@ -41,14 +42,12 @@ public:
 	{
 		fwrite(&t, sizeof(t), 1, bur);
 	}
-	//  verdict
+	//
 	void write_verdict(verdict v)
 	{
 		write_type(ext_cls::VERDICT);
 		fwrite(&v, sizeof(v), 1, bur);
 	}
-	//  checker'a
-	//
 	//
 	void write_message(string str)
 	{
@@ -58,14 +57,14 @@ public:
 		fwrite(&str[0], sizeof(str[0]), l, bur);
 	}
 	//
-	//  before_code
-	// x  100  = 10 ^ (-7)
+
 	void write_time(long long x)
 	{
 		write_type(ext_cls::TIME);
 		fwrite(&x, sizeof(x), 1, bur);
 	}
 	//
+	void write_memory(unsigned long long x)
 	{
 		write_type(ext_cls::MEMORY);
 		fwrite(&x, sizeof(x), 1, bur);
@@ -78,21 +77,21 @@ using ulong = unsigned long;
 int main(int argc, char** argv)
 {
 	//
-	int n = 20;
+	//int n = 20;
 	string nameFile;
 	bool result = true;
 	bool resAll = true;
 
-	if (argc == 2)
-		n = (int)(stod(argv[1])); //= stoi(argv[1]);
+	//	n = (int)(stod(argv[1])); //= stoi(argv[1]);
 
-	for (int i = 1; i <= n; i++)
-	{
+	//for (int i = 1; i <= n; i++)
+	//{
 		//
 		result = true;
-		nameFile = to_string((long long)i);
-		FILE* fTestMassRes = fopen(("./tests/" + nameFile + ".testres").c_str(), "rb");
-		FILE* fResMass = fopen(("./tests/" + nameFile + ".ans").c_str(), "rb");
+		//nameFile = to_string((long long)i);
+		nameFile = argv[1];
+		FILE* fTestMassRes = fopen((nameFile + ".testres").c_str(), "rb");
+		FILE* fResMass = fopen((nameFile + ".ans").c_str(), "rb");
 
 		int sizeMassTest, sizeMassRes;
 		fread(&sizeMassTest, sizeof(sizeMassTest), 1, fTestMassRes);
@@ -137,9 +136,11 @@ int main(int argc, char** argv)
 		}
 
 		checker_result.write_time(timeWorkRes * 1e7);
+		string ss = to_string(timeWorkRes*1e7);
+		checker_result.write_message(ss);
 		fclose(fTestMassRes);
 		fclose(fResMass);
-	}
+	//}
 	cout << resAll << endl;
 	return 0;
 }
